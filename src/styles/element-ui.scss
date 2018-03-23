@@ -1,0 +1,39 @@
+//覆盖一些element-ui样式 覆盖css样式可在这里添加
+.el-table td, .el-table th {
+  padding: 2px 0 2px 2px;
+}
+
+.el-table .cell {
+  padding: 2px 0 2px 2px;
+}
+
+.el-message-box__message p {
+  font-size: 20px;
+}
+
+.el-form-item {
+  margin-bottom: 10px;
+}
+
+.el-form-item.is-error {
+  margin-bottom: 22px;
+}
+
+.el-form-item.read-only {
+  margin-bottom: 0;
+  .el-form-item__label, .el-form-item__content {
+    height: 30px;
+    line-height: 30px;
+  }
+}
+.el-pagination {
+  margin-top: 4px;
+}
+
+.el-popover{
+  padding:2px;
+}
+.iconButton {}
+.el-button.is-disabled {
+  color: #aaa;
+}

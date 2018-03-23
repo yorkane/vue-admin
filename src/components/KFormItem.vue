@@ -1,0 +1,169 @@
+<template>
+  <el-form-item v-show="!isHide" :class="isFieldReadOnly()?'read-only':''"
+                :label="getLabel()"
+                :prop="key">
+    <slot>
+      <template v-if="item.Field.match(/^(password|salt)/ig)">
+      </template>
+      <template v-else-if="isFieldReadOnly()">
+        <span v-if="item.isStatus">{{getStatus(item.Field, model[key], true)}}</span>
+        <span v-else-if="item.isOption">{{getOption(item.Field, model[key], true)}}</span>
+        <el-switch v-else-if="item.isBool" v-model="model[key]" disabled></el-switch>
+        <el-switch v-else-if="item.isIntBool" v-model="model[key]" disabled
+                   :active-value="1" :inactive-value="0"></el-switch>
+        <span v-else>{{getFieldLabel(item)}}</span>
+      </template>
+      <template v-else>
+        <template v-if="item.Field.indexOf('__') > 3">
+          <div style="float:right">
+            <el-tooltip :content="'修改' + item.Comment + '选项'" placement="top" :enterable="false" :open-delay="200">
+              <el-button size="medium" type="primary" icon="el-icon-tickets" @click="intoMapField(item)"></el-button>
+            </el-tooltip>
+          </div>
+          <div style="margin-right:60px;">
+            <k-select v-model="model[key]" :label-field="getLabelField(item)" :isMultiple="item.isText||false"
+                      :placeholder="'请选择'+item.Comment" :options="getMapOptions(item)">
+            </k-select>
+          </div>
+        </template>
+        <el-input-number v-else-if="item.isInt" v-model="model[key]"></el-input-number>
+        <el-input-number v-else-if="item.isFloat" v-model="model[key]" :step="0.1"
+                         :maxlength="item.width"></el-input-number>
+        <el-date-picker v-else-if="item.isDate" v-model="model[key]" type="datetime"
+                        placeholder="选择日期时间"></el-date-picker>
+        <el-select v-else-if="item.isStatus" v-model="model[key]"
+                   :placeholder="'请选择'+item.Comment">
+          <el-option
+            v-for="option in getStatusList(item.Field)"
+            :key="option.id"
+            :label="option.label+' | '+option.id"
+            :value="option.id">
+          </el-option>
+        </el-select>
+
+        <el-select v-else-if="item.isOption||item.isTextOption" v-model="model[key]"
+                   :placeholder="'请选择'+item.Comment" style="min-width:200px;width:70%">
+          <el-option
+            v-for="option in getOptionList(item.Field)"
+            :key="option.value"
+            :label="option.label? option.label +' | '+option.value : option.value"
+            :value="option.value">
+          </el-option>
+        </el-select>
+        <el-switch v-else-if="item.isBool" v-model="model[key]"></el-switch>
+        <el-switch v-else-if="item.isIntBool" v-model.number="model[key]"
+                   :active-value="1" :inactive-value="0"></el-switch>
+        <el-input v-else-if="item.width > 500" v-model="model[key]" :maxlength="item.width" type="textarea"
+                  :placeholder="placeholder" :autosize="{ minRows: 2, maxRows: 10}"></el-input>
+        <el-input v-else v-model="model[key]" :maxlength="item.width" :type="type"
+                  :placeholder="placeholder"></el-input>
+      </template>
+    </slot>
+  </el-form-item>
+</template>
+<script>
+  import klib from '../klib/utils'
+  import {FormItem} from 'element-ui'
+  import KSelect from "./KSelect";
+  import AutoWidthWrapper from "./AutoWidthWrapper";
+
+  export default {
+    components: {
+      AutoWidthWrapper,
+      KSelect
+    },
+    name: 'KFormItem',
+    mixins: [FormItem],
+    data() {
+      return {}
+    },
+    props: {
+      prop: String,
+      item: {
+        type: Object,
+        default: function () {
+          return {
+            Field: ''
+          }
+        }
+      },
+      placeholder: String,
+      type: String,
+      value: [String, Number, Object, Array],
+      label: String,
+      disabled: Boolean,
+      showFieldKey: Boolean,
+      isHide: Boolean,
+      hideLabel: Boolean
+    },
+    created() {
+    },
+
+    mounted() {
+    },
+    computed: {
+      model() {
+        let model = this.form.model
+        //console.log(model, this.key, this.value)
+        return model
+      },
+      key() {
+        return this.prop || this.item.Field
+      }
+    },
+    methods: {
+      isFieldReadOnly(item = this.item) {
+        if (this.disabled || (item.isDate && item.Field.match(/^(create_|last_)/ig))) {
+          return true
+        }
+        if (item.isPK) {
+          if (item.isText && !item.isEditMode) {
+            return false;
+          }
+          return true
+        }
+      },
+      getLabel() {
+        if(this.hideLabel) {
+          return
+        }
+        if (this.label) {
+          if (this.showFieldKey) {
+            return this.label + ' ' + this.key
+          } else {
+            return this.label
+          }
+        }
+        if (this.item.Comment) {
+          if (this.showFieldKey) {
+            return this.item.Comment + ' ' + this.key
+          } else {
+            return this.item.Comment
+          }
+        }
+        return this.key
+      },
+      getLabelField(fi) {
+        let f = fi.Field.split('__')[1]
+        if (f === 'id') {
+          f = 'label'
+        }
+        return f
+      },
+      intoMapField(fi) {
+        let key = fi.Field.split('__')[0]
+        this.$root.$emit('IntoMapField', key, fi)
+        console.debug('send emit to root event', key, fi)
+      },
+      getMapOptions: klib.getMapOptions,
+      getFieldLabel: klib.getFieldLabel,
+      getStatusList: klib.getStatusList,
+      getOptionList: klib.getOptionList,
+      getStatus: klib.getStatus,
+      getOption: klib.getOption,
+    }
+  }
+</script>
+<style>
+
+</style>

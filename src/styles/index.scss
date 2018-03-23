@@ -1,0 +1,127 @@
+@import './element-ui.scss';
+@import './mixin.scss';
+@import './icons/iconfont.css';
+
+body {
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
+  height: 100%;
+}
+
+html {
+  box-sizing: border-box;
+  height: 100%;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+a:focus,
+a:active {
+  outline: none;
+}
+
+a,
+a:focus,
+a:hover {
+  cursor: pointer;
+  color: inherit;
+  text-decoration: none;
+}
+
+.clearfix {
+  &:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+  }
+}
+
+//vue router transition css
+.fade-enter-active,
+.fade-leave-active {
+  transition: all .2s ease
+}
+
+.fade-enter,
+.fade-leave-active {
+  opacity: 0;
+}
+
+#app {
+  height: 100%;
+}
+
+//main-container全局样式
+.app-main {
+  width: 100%;
+  min-height: 100%;
+}
+
+.app-container {
+  padding: 20px;
+}
+
+.svg-icon {
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.15em;
+  fill: currentColor;
+  overflow: hidden;
+}
+
+.onDragEl {
+  width: 100%;
+  border-top: 2px solid red;
+}
+
+.onDropElement {
+  width: 100%;
+  height: 25px;
+  cursor: move;
+  background: transparent;
+}
+
+.onDropElement a, .onDropElement a:visited {
+  color: #5e7382;
+  text-decoration: none;
+}
+
+.onDropElement a:hover {
+  color: #000;
+  text-decoration: underline;
+}
+
+.divGridWrap {
+  border: 1px solid #ccc;
+  border-left: 0;
+  border-top: 0;
+  overflow: hidden;
+  .gridItem {
+    margin: 0px -1px -1px 0px;
+    padding: 1px 5px;
+    line-height: 32px;
+    display: inline-block;
+    height: 36px;
+    border: 1px solid #ccc;
+  }
+}
+.acediff__wrap{
+  .ace_editor{
+    font-family: "Menlo", "Consolas", monospace;
+    font-size: 15px;
+  }
+  position: relative !important;
+}
+.vue2AceEditor {
+  font-family: "Menlo", "Consolas", monospace;
+  font-size: 13px;
+}

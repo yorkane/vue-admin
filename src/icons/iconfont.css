@@ -1,0 +1,190 @@
+@font-face {font-family: "iconfont";
+  src: url('iconfont.eot'), /* IE9*/
+  url('iconfont.ttf') format('truetype'); /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
+}
+
+
+[class^="k-ico"], [class*=" k-ico"] {
+  font-family:"iconfont" !important;
+  margin:0 5px 0 0;
+  font-style:normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.k-ico-projector:before { content: "\e606"; }
+
+.k-ico-tv:before { content: "\e60f"; }
+
+.k-ico-notebook:before { content: "\e610"; }
+
+.k-ico-id-card:before { content: "\e611"; }
+
+.k-ico-file:before { content: "\e612"; }
+
+.k-ico-edit:before { content: "\e613"; }
+
+.k-ico-plan:before { content: "\e615"; }
+
+.k-ico-delete:before { content: "\e617"; }
+
+.k-ico-paste:before { content: "\e618"; }
+
+.k-ico-search:before { content: "\e61a"; }
+
+.k-ico-people:before { content: "\e61b"; }
+
+.k-ico-add:before { content: "\e61d"; }
+
+.k-ico-storage:before { content: "\e61e"; }
+
+.k-ico-account:before { content: "\e61f"; }
+
+.k-ico-xiai:before { content: "\e622"; }
+
+.k-ico-subscribe:before { content: "\e601"; }
+
+.k-ico-html5:before { content: "\e62d"; }
+
+.k-ico-rocket:before { content: "\e602"; }
+
+.k-ico-tag:before { content: "\e603"; }
+
+.k-ico-crown:before { content: "\e604"; }
+
+.k-ico-driver:before { content: "\e614"; }
+
+.k-ico-android:before { content: "\e659"; }
+
+.k-ico-cash:before { content: "\e605"; }
+
+.k-ico-card:before { content: "\e616"; }
+
+.k-ico-chart:before { content: "\e60a"; }
+
+.k-ico-key:before { content: "\e619"; }
+
+.k-ico-browser:before { content: "\e607"; }
+
+.k-ico-catalog:before { content: "\e76f"; }
+
+.k-ico-list:before { content: "\e7b9"; }
+
+.k-ico-linux:before { content: "\e62b"; }
+
+.k-ico-cash1:before { content: "\e60e"; }
+
+.k-ico-chart4:before { content: "\e629"; }
+
+.k-ico-chart7:before { content: "\e63c"; }
+
+.k-ico-product:before { content: "\e63d"; }
+
+.k-ico-collection:before { content: "\e63e"; }
+
+.k-ico-ott:before { content: "\e7f1"; }
+
+.k-ico-stb:before { content: "\e7f2"; }
+
+.k-ico-style:before { content: "\e625"; }
+
+.k-ico-win:before { content: "\e633"; }
+
+.k-ico-code:before { content: "\e61c"; }
+
+.k-ico-org:before { content: "\e6c0"; }
+
+.k-ico-stash:before { content: "\e608"; }
+
+.k-ico-send:before { content: "\e893"; }
+
+.k-ico-app:before { content: "\e8a1"; }
+
+.k-ico-global:before { content: "\e8ab"; }
+
+.k-ico-task:before { content: "\e8cb"; }
+
+.k-ico-camera:before { content: "\e8d1"; }
+
+.k-ico-tool:before { content: "\e8d6"; }
+
+.k-ico-point:before { content: "\e900"; }
+
+.k-ico-shield:before { content: "\e62e"; }
+
+.k-ico-schedule:before { content: "\e65e"; }
+
+.k-ico-download:before { content: "\e646"; }
+
+.k-ico-structure:before { content: "\e65b"; }
+
+.k-ico-migration:before { content: "\e660"; }
+
+.k-ico-data-stream:before { content: "\e663"; }
+
+.k-ico-more:before { content: "\e668"; }
+
+.k-ico-radar:before { content: "\e669"; }
+
+.k-ico-comments:before { content: "\e661"; }
+
+.k-ico-heartbeat:before { content: "\e6b5"; }
+
+.k-ico-plug:before { content: "\e6f8"; }
+
+.k-ico-sliders:before { content: "\e715"; }
+
+.k-ico-phone:before { content: "\e623"; }
+
+.k-ico-pages:before { content: "\e624"; }
+
+.k-ico-eprofile-data:before { content: "\e724"; }
+
+.k-ico-bi-data:before { content: "\e722"; }
+
+.k-ico-porana-data:before { content: "\e728"; }
+
+.k-ico-re-data:before { content: "\e729"; }
+
+.k-ico-ios:before { content: "\e60b"; }
+
+.k-ico-lock:before { content: "\e8cd"; }
+
+.k-ico-shutdown:before { content: "\e9a3"; }
+
+.k-ico-flow:before { content: "\e797"; }
+
+.k-ico-server2:before { content: "\e757"; }
+
+.k-ico-deliver:before { content: "\e7f6"; }
+
+.k-ico-middleware:before { content: "\e64a"; }
+
+.k-ico-monitor:before { content: "\e64b"; }
+
+.k-ico-reroute:before { content: "\e6b7"; }
+
+.k-ico-tuning:before { content: "\e638"; }
+
+.k-ico-chart6:before { content: "\e796"; }
+
+.k-ico-books:before { content: "\e626"; }
+
+.k-ico-server1:before { content: "\e765"; }
+
+.k-ico-filter:before { content: "\e8bf"; }
+
+.k-ico-gift:before { content: "\e8f5"; }
+
+.k-ico-qrcode:before { content: "\e901"; }
+
+.k-ico-fill:before { content: "\e957"; }
+
+.k-ico-supply:before { content: "\e64e"; }
+
+.k-ico-production:before { content: "\e64f"; }
+
+.k-ico-treenode:before { content: "\e711"; }
+
+.k-ico-org1:before { content: "\e6b9"; }
+
