@@ -14,7 +14,7 @@
               <!--<el-button @click="" size="small" round>重置</el-button>-->
               <!--<el-button @click="" size="small" round>取消</el-button>-->
               <el-button type="primary" @click="saveFile" size="small" round>保存</el-button>
-              自动载入
+              <span style="font-size: 14px">自动载入</span>
               <el-switch v-model="auto_reload"></el-switch>
             </template>
           </div>
@@ -90,15 +90,19 @@
       filename(newName) {
         this.loadFile(newName);
       },
+      auto_reload(val) {
+        if (val) {
+          this.autoReload()
+        }
+      }
     },
     methods: {
-      autoReload(v) {
-        v = v || this.auto_reload;
-        if (v) {
+      autoReload() {
+        if (this.auto_reload) {
           setTimeout(() => {
             this.loadFile(null, true);
-            this.autoReload()
-          }, 1000);
+            this.autoReload(true)
+          }, 5000);
         }
         // this.auto_reload = this.auto_reload ? false : true;
       },
@@ -121,11 +125,8 @@
               this.file_loading = false
             },
             200);
-          let mode = fname.split('.')[2]
           editor.setValue(txt);
-          if (fname.indexOf('.conf') > 1) {
-            mode = 'sh'
-          }
+          let mode = fname.split('.')[2]
           editor.setMode(mode);
           if (toEnd) {
             var row = editor.getLength() - 1
@@ -141,11 +142,12 @@
             this.$notify.error({title: '错误', message: fname + '文件载入失败，文件不存在'});
           }
         }).catch(res => {
+          console.log(res)
           this.file_loading = false;
           this.$notify.error({title: '错误', message: '服务器响应错误'});
         })
       },
-      saveFile: function (text) {
+      saveFile (text) {
         if (!text) {
           text = this.codeContent;
         }

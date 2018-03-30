@@ -1,6 +1,6 @@
 <template>
-  <div ref="wrap" class="vue2AceEditor" :height="height"
-       :style="{height: height, width: width,fontSize: fontSize, fontFamily :fontFamily }">
+  <div ref="wrap" class="vue2AceEditor" :height="innerHeight || height"
+       :style="{height: innerHeight||height, width: width,fontSize: fontSize, fontFamily :fontFamily }">
   </div>
 </template>
 <script>
@@ -15,8 +15,8 @@
   import 'brace/mode/css'
   import 'brace/mode/html'
   // import 'brace/mode/apache_conf'
-  // import 'brace/mode/ini'
-  // import 'brace/mode/properties'
+  import 'brace/mode/ini'
+  import 'brace/mode/properties'
   // import 'brace/snippets/javascript'
   // import 'brace/snippets/lua'
   // import 'brace/snippets/php'
@@ -24,6 +24,7 @@
   // import 'brace/snippets/python'
   // import 'brace/snippets/sh'
   import 'brace/theme/monokai'
+  import 'brace/ext/language_tools'
 
   export default {
     props: {
@@ -61,7 +62,7 @@
         default: function () {
           return {
             enableBasicAutocompletion: true,
-            enableSnippets: true,
+            enableSnippets: false,
             enableLiveAutocompletion: true
           };
         }
@@ -71,6 +72,7 @@
     data: function () {
       return {
         editor: null,
+        innerHeight: '',
       };
     },
 
@@ -81,22 +83,27 @@
       let editor = vm.editor = ace.edit(vm.$el);
       let options = vm.options;
       editor.$blockScrolling = Infinity;
-      ace.acequire("ace/ext/language_tools");
       editor.getSession().setMode('ace/mode/' + lang);
       editor.setTheme('ace/theme/' + theme);
       editor.setValue(vm.value, 1);
+      let lightHeight = editor.renderer.lineHeight
+      let lines = Math.ceil(window.screen.availHeight * 1.5 / lightHeight)
+      console.log(lines)
       editor.setOptions({
         enableBasicAutocompletion: false,
-        enableSnippets: true,
-        enableLiveAutocompletion: true
+        enableSnippets: false,
+        enableLiveAutocompletion: true,
+        autoScrollEditorIntoView: true,
+        maxLines: lines,
       });
       editor.on('change', () => {
         this.$emit('input', this.editor.getValue());
       });
       if (!this.height) {
-        editor.setOptions({
-          maxLines: Infinity
-        });
+        this.innerHeight = '500px'
+        // editor.setOptions({
+        //   maxLines: Infinity
+        // });
       }
       editor.session.setUseWrapMode(true);
       editor.commands.addCommand({
@@ -124,6 +131,19 @@
       }
     },
     methods: {
+      adjustHeight() {
+        let lines = this.editor.session.getLength()
+        if (lines > 120) {
+          lines = 120
+        }
+        if (lines < 80) {
+          lines = 80
+        }
+        this.editor.setOptions({
+          maxLines: lines
+        });
+        this.editor.resize()
+      },
       setValue(newContent) {
         this.editor.setValue(newContent, 1);
       },
@@ -131,8 +151,13 @@
         this.editor.selection.moveTo(row, line)
       },
       setMode(lang) {
-        if (lang.toLowerCase() === 'js') {
+        lang = lang.toLowerCase()
+        if (lang.match(/(log|sh|conf)$/i)) {
+          mode = 'sh'
+        } else if (lang === 'js') {
           lang = 'javascript'
+        } else if (lang.match(/(xhtml|shtml|htm)$/)) {
+          lang = 'html'
         }
         this.editor.getSession().setMode('ace/mode/' + lang);
       },
