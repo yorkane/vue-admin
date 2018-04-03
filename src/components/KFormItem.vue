@@ -31,25 +31,37 @@
                          :maxlength="item.width"></el-input-number>
         <el-date-picker v-else-if="item.isDate" v-model="model[key]" type="datetime"
                         placeholder="选择日期时间"></el-date-picker>
-        <el-select v-else-if="item.isStatus" v-model="model[key]"
-                   :placeholder="'请选择'+item.Comment">
-          <el-option
-            v-for="option in getStatusList(item.Field)"
-            :key="option.id"
-            :label="option.label+' | '+option.id"
-            :value="option.id">
-          </el-option>
-        </el-select>
-
-        <el-select v-else-if="item.isOption||item.isTextOption" v-model="model[key]"
-                   :placeholder="'请选择'+item.Comment" style="min-width:200px;width:70%">
-          <el-option
-            v-for="option in getOptionList(item.Field)"
-            :key="option.value"
-            :label="option.label? option.label +' | '+option.value : option.value"
-            :value="option.value">
-          </el-option>
-        </el-select>
+        <template v-else-if="item.isStatus">
+          <el-radio-group v-model="model[key]" v-if="getStatusList(item.Field).length < 6">
+            <el-radio-button v-for="option in getStatusList(item.Field)" :key="option.id" :label="option.label">{{option.label}}
+            </el-radio-button>
+          </el-radio-group>
+          <el-select v-else v-model="model[key]"
+                     :placeholder="'请选择'+item.Comment">
+            <el-option
+              v-for="option in getStatusList(item.Field)"
+              :key="option.id"
+              :label="option.label+' | '+option.id"
+              :value="option.id">
+            </el-option>
+          </el-select>
+        </template>
+        <template v-else-if="item.isOption||item.isTextOption">
+          <el-radio-group v-model="model[key]" v-if="getOptionList(item.Field).length < 6">
+            <el-radio-button v-for="option in getOptionList(item.Field)" :key="option.id" :label="option.id">
+              {{option.label}}
+            </el-radio-button>
+          </el-radio-group>
+          <el-select v-else="item.isOption||item.isTextOption" v-model="model[key]"
+                     :placeholder="'请选择'+item.Comment" style="min-width:200px;width:70%">
+            <el-option
+              v-for="option in getOptionList(item.Field)"
+              :key="option.value"
+              :label="option.label+' | '+option.value"
+              :value="option.value">
+            </el-option>
+          </el-select>
+        </template>
         <el-switch v-else-if="item.isBool" v-model="model[key]"></el-switch>
         <el-switch v-else-if="item.isIntBool" v-model.number="model[key]"
                    :active-value="1" :inactive-value="0"></el-switch>
@@ -124,7 +136,7 @@
         }
       },
       getLabel() {
-        if(this.hideLabel) {
+        if (this.hideLabel) {
           return
         }
         if (this.label) {

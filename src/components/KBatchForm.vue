@@ -53,7 +53,6 @@
 <script>
   import klib from '../klib/utils'
   import KSelect from "./KSelect";
-  import AutoWidthWrapper from "./AutoWidthWrapper";
   import KFormItem from "./KFormItem";
   import KWrap from "./KWrap";
 
