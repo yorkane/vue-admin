@@ -8,7 +8,7 @@
         <!--<k-form-item v-else-if="item.Field == 'icon'" :item="item">-->
         <!--<k-icon-selector type="extend" v-model="model[item.Field]"></k-icon-selector>-->
         <!--</k-form-item>-->
-        <k-form-item v-if="item.Field === 'upstream_role_id'" :item="item">
+        <k-form-item v-if="item.Field === 'url_path'" :item="item">
           <el-autocomplete style="width:90%"
                            class="inline-input"
                            v-model="model[item.Field]"
@@ -63,7 +63,11 @@
         }).then(
           data => {
             data = data.data || {}
-            this.queryList = data.list || []
+            data = data.list || []
+            let list = data.filter(item => {
+              return item.value.indexOf('#') != 0
+            })
+            this.queryList = list
             // console.log(this.queryList, 11111)
           }
         )

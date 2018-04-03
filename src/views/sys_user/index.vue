@@ -25,7 +25,6 @@
   import Sys_user_form from "./form.vue";
   import Sys_user_grid from "./grid.vue";
   import KCondition from "../../components/KCondition.vue";
-  import {store} from '../../main'
 
   export default {
     components: {
@@ -81,7 +80,7 @@
     watch: {},
     created() {
       modelAPI.new('sys_organization').getTree()
-      roleAPI.getTree().then(() => {
+      this._roleApi.getTree().then(() => {
         this._api.getDataStruct().then(data => {
           this.dataStruct = data
           this.loadData();
@@ -163,7 +162,7 @@
         })
       },
       quickEdit(data) {
-        this._api.update(data).then(res  => {
+        this._api.update(data).then(res => {
           this.$notify.info({title: name + '快速修改成功', message: data});
           console.log('quick edit success', res.data)
         })

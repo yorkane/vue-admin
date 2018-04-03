@@ -56,9 +56,12 @@
         :value="item[valueField]">
       </el-option>
     </el-select>
-    <template v-else>{{value}} [列表数据未载入]</template>
-    <!--<el-input-number v-else-if="isSingle" v-model="value"></el-input-number>-->
-    <!--<el-input v-else v-model="value"></el-input>-->
+    <template v-else>
+      <el-tooltip content="列表数据未载入" placement="top" :enterable="false" :open-delay="200">
+        <el-input v-model="value" place-holder="[列表数据未载入]"></el-input>
+      </el-tooltip>
+    </template>
+
   </div>
 </template>
 <script>
