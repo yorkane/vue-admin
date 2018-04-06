@@ -118,7 +118,7 @@
         fname = fname || this.filename;
         if (this.file_loading || this.file_saving) return;
         this.file_loading = true;
-        axios.get('/_file?f=' + fname).then(res => {
+        axios.get('/_console/file?f=' + fname).then(res => {
           let txt = res.data;
           // this.codeContent = txt
           setTimeout(() => {
@@ -126,8 +126,6 @@
             },
             200);
           editor.setValue(txt);
-          let mode = fname.split('.')[2]
-          editor.setMode(mode);
           if (toEnd) {
             var row = editor.getLength() - 1
             editor.moveTo(row, 0)
@@ -136,10 +134,15 @@
           }
           if (txt != 'nil') {
             this.addFileHistory(fname);
-
             this.$notify.success({title: '成功', message: fname + '文件载入完毕', duration: 1000});
           } else {
             this.$notify.error({title: '错误', message: fname + '文件载入失败，文件不存在'});
+          }
+          let inx = fname.lastIndexOf('.')
+          let mode = fname.substr(inx + 1, fname.length)
+          try {
+            editor.setMode(mode);
+          } catch (e) {
           }
         }).catch(res => {
           console.log(res)
@@ -147,7 +150,7 @@
           this.$notify.error({title: '错误', message: '服务器响应错误'});
         })
       },
-      saveFile (text) {
+      saveFile(text) {
         if (!text) {
           text = this.codeContent;
         }
@@ -155,7 +158,7 @@
         if (this.file_saving) return;
         this.file_saving = true;
         // var txt = encodeURIComponent('content') + "=" + encodeURIComponent(editor.getValue());
-        axios.post('/_file?f=' + this.filename, text).then(res => {
+        axios.post('/_console/file?f=' + this.filename, text).then(res => {
           setTimeout(() => {
               this.file_saving = false
             },
@@ -190,9 +193,12 @@
         }
         if (!node.data.isFile) {
           var pt = node.data.path || '';
-          var url = '/_dic?p=' + pt + node.data.name
+          var url = '/_console/dir?p=' + pt + node.data.name
           axios.get(url).then(res => {
             let data = res.data;
+            if (!data.length) {
+              data = []
+            }
             resolve(data)
           }).catch(res => {
             this.$notify.error({title: '错误', message: '数据载入失败'});
