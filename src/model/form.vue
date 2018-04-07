@@ -1,5 +1,5 @@
 <template>
-  <k-wrap :withDialog="withDialog" :visible.sync="showDialog">
+  <k-wrap :withDialog="withDialog" :visible.sync="showDialog" :title="formTitle">
     <el-form :model="model" ref="form" labelWidth="200px" :rules="formRules">
       <template v-for="(item, index) in m_dataStruct._FIELD_LIST">
         <!--<el-form-item :label="item.Comment||item.Field" v-if="item.isPK">-->

@@ -1,5 +1,5 @@
 <template>
-  <div class="auto-height">
+  <div class="kwrap">
     <el-dialog :width="width" :visible.sync="showDialog" v-if="withDialog" :title="title" :before-close="closeDialog">
       <component v-if="componentPath" :is="innerComponent" :visible.sync="showDialog" :model="model"
                  :isEditMode="isEditMode"></component>
@@ -80,3 +80,13 @@
     }
   }
 </script>
+<style>
+  .kwrap .el-dialog__body {
+    padding:0 20px 20px 20px
+  }
+  .kwrap .el-dialog__header {
+    height:36px;
+    line-height: 40px;
+    padding: 0 0 0 20px;
+  }
+</style>

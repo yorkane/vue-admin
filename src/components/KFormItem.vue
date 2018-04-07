@@ -33,7 +33,8 @@
                         placeholder="选择日期时间"></el-date-picker>
         <template v-else-if="item.isStatus">
           <el-radio-group v-model="model[key]" v-if="getStatusList(item.Field).length < 6">
-            <el-radio-button v-for="option in getStatusList(item.Field)" :key="option.id" :label="option.label">{{option.label}}
+            <el-radio-button v-for="option in getStatusList(item.Field)" :key="option.id" :label="option.label">
+              {{option.label}}
             </el-radio-button>
           </el-radio-group>
           <el-select v-else v-model="model[key]"
@@ -57,7 +58,7 @@
             <el-option
               v-for="option in getOptionList(item.Field)"
               :key="option.value"
-              :label="option.label+' | '+option.value"
+              :label="option.label ? option.label + ' | ' + option.value : option.value"
               :value="option.value">
             </el-option>
           </el-select>
@@ -68,7 +69,7 @@
         <el-input v-else-if="item.width > 500" v-model="model[key]" :maxlength="item.width" type="textarea"
                   :placeholder="placeholder" :autosize="{ minRows: 2, maxRows: 10}"></el-input>
         <el-input v-else v-model="model[key]" :maxlength="item.width" :type="type"
-                  :placeholder="placeholder"></el-input>
+                  :placeholder="placeholder" :style="item.isPK ? 'width:70%':null"></el-input>
       </template>
     </slot>
   </el-form-item>
@@ -176,6 +177,3 @@
     }
   }
 </script>
-<style>
-
-</style>

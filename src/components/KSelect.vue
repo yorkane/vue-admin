@@ -47,15 +47,22 @@
         :value="item[valueField]">
       </el-option>
     </el-select>
-    <el-select v-else-if="isList && !isMultiple" v-model="idValue" :size="size" @change="changeValue"
-               style="width:100%;" filterable>
-      <el-option
-        v-for="item in optionList"
-        :key="item[keyField]"
-        :label="getLabel(item)"
-        :value="item[valueField]">
-      </el-option>
-    </el-select>
+    <template v-else-if="isList && !isMultiple">
+      <el-radio-group v-model="idValue" v-if="optionList.length < 6" @change="changeValue" :size="size">
+        <el-radio-button v-for="item in optionList" :key="item[keyField]" :label="item[valueField]" :size="size">
+          {{getLabel(item)}}
+        </el-radio-button>
+      </el-radio-group>
+      <el-select v-else v-model="idValue" :size="size" @change="changeValue"
+                 style="width:100%;" filterable>
+        <el-option
+          v-for="item in optionList"
+          :key="item[keyField]"
+          :label="getLabel(item)"
+          :value="item[valueField]">
+        </el-option>
+      </el-select>
+    </template>
     <template v-else>
       <el-tooltip content="列表数据未载入" placement="top" :enterable="false" :open-delay="200">
         <el-input v-model="value" place-holder="[列表数据未载入]"></el-input>

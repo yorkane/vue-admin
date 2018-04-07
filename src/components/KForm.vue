@@ -56,6 +56,10 @@
     computed: {
       form() {
         return this.getComponentsByName('el-form')[0]
+      },
+      formTitle() {
+        let txt = this.isEditMode ? '修改' : '创建'
+        return txt + this.m_dataStruct._COMMENT
       }
     },
     created() {
