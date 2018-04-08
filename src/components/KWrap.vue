@@ -31,7 +31,7 @@
       visible: Boolean,
       width: {
         type: String,
-        default: '60%'
+        default: '70%'
       },
       withDialog: {
         type: Boolean,
@@ -85,8 +85,9 @@
     padding:0 20px 20px 20px
   }
   .kwrap .el-dialog__header {
-    height:36px;
-    line-height: 40px;
+    height:40px;
+    line-height: 45px;
     padding: 0 0 0 20px;
+    border-bottom: 1px solid #eee;
   }
 </style>

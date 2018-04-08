@@ -30,6 +30,9 @@
     },
     name: 'empty',
     data() {
+      this.$root.$on('IntoMapField', (key, field) => {
+        this.$router.push({path: '/model/' + field.Comment + '/' + key});
+      })
       return {
         noDialog: false,
         show: true,

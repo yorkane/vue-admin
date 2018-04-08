@@ -1,6 +1,6 @@
 <template>
-  <k-wrap :withDialog="withDialog" :visible.sync="showDialog" :title="'批量修改' + dataStruct._COMMENT">
-    <template v-for="(item, index) in fieldList"><!--KSelect 占用的空间大，需要单独一行-->
+  <k-wrap :withDialog="withDialog" width="75%" :visible.sync="showDialog" :title="'批量修改' + dataStruct._COMMENT">
+    <div v-for="(item, index) in fieldList" style="line-height: 40px"><!--KSelect 占用的空间大，需要单独一行-->
       <div style="float:left;width:130px;">{{item.Comment}}</div>
       <div style="margin-left: 130px;min-height: 40px;">
         <k-select :size="size" v-model="model[item.Field]" :label-field="getLabelField(item)"
@@ -8,7 +8,7 @@
                   :placeholder="'请选择'+item.Comment" :options="getMapOptions(item)">
         </k-select>
       </div>
-    </template>
+    </div>
     <div class="divGridWrap" style="width: 799px;margin: 0 0 10px 0;">
       <template v-for="(item, index) in normalFieldList">
         <div class="gridItem" style="width: 400px;">

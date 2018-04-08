@@ -37,16 +37,23 @@
 
       </template>
     </template>
-    <el-select v-else-if="isList && isMultiple" v-model="idList" :size="size" @change="changeValue" style="width:100%;"
-               multiple filterable
-               clearable>
-      <el-option
-        v-for="item in optionList"
-        :key="item[keyField]"
-        :label="getLabel(item)"
-        :value="item[valueField]">
-      </el-option>
-    </el-select>
+    <template v-else-if="isList && isMultiple">
+      <el-checkbox-group v-if="optionList.length < 8" v-model="idList" @change="changeValue">
+        <el-checkbox v-for="item in optionList" :label="item[valueField]" :key="item[keyField]" :size="size" border="">
+          {{getLabel(item)}}
+        </el-checkbox>
+      </el-checkbox-group>
+      <el-select v-else v-model="idList" :size="size" @change="changeValue" style="width:100%;"
+                 multiple filterable
+                 clearable>
+        <el-option
+          v-for="item in optionList"
+          :key="item[keyField]"
+          :label="getLabel(item)"
+          :value="item[valueField]">
+        </el-option>
+      </el-select>
+    </template>
     <template v-else-if="isList && !isMultiple">
       <el-radio-group v-model="idValue" v-if="optionList.length < 6" @change="changeValue" :size="size">
         <el-radio-button v-for="item in optionList" :key="item[keyField]" :label="item[valueField]" :size="size">
@@ -252,6 +259,7 @@
         // console.debug('KSelect syncOption: option loaded:', val, '|value:', this.value, '|optionList:', this.optionList, '|isList', this.isList)
       },
       changeValue(val) {
+        console.log(val)
         if (val === undefined) {
           this.$emit('input', '')
         } else if (val.push) {

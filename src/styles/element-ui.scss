@@ -26,14 +26,35 @@
     line-height: 30px;
   }
 }
+
 .el-pagination {
   margin-top: 4px;
 }
 
-.el-popover{
-  padding:2px;
+.el-popover {
+  padding: 2px;
 }
-.iconButton {}
+
+.iconButton {
+}
+
 .el-button.is-disabled {
-  color: #aaa;
+  color: #999;
+}
+
+.el-dialog__headerbtn {
+  top: 10px;
+  right: 15px;
+}
+
+.el-checkbox.is-bordered.el-checkbox--medium {
+  padding: 8px 10px 2px 10px;
+}
+
+.el-checkbox + .el-checkbox {
+  margin-left: 20px;
+}
+
+.el-checkbox__label {
+  padding-left: 5px;
 }

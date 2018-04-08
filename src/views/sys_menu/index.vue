@@ -1,5 +1,5 @@
 <template>
-  <div class="mainPanel">
+  <auto-height-wrapper class="mainPanel">
     <div class="tree" style="float:left;min-height:600px;border-right:1px solid #dfe6ec;">
       <k-tree :loading="loading" :data="treeData" @insert="handleInsert" @edit="handleEdit"
               @delete="handleDelete" @move="handleMove" @node-click="loadIntoTable"></k-tree>
@@ -15,7 +15,7 @@
                      @inserted="inserted" :visible.sync="dialog_edit_show"
       ></sys_menu_form>
     </div>
-  </div>
+  </auto-height-wrapper>
 </template>
 <script>
   import {getList, update, desc, deleteById} from '../../api/sys_menu'
@@ -24,9 +24,11 @@
   import Sys_menu_form from "./form.vue";
   import Sys_menu_grid from "./grid.vue";
   import KCondition from "../../components/KCondition.vue";
+  import AutoHeightWrapper from "../../components/AutoHeightWrapper";
 
   export default {
     components: {
+      AutoHeightWrapper,
       KCondition,
       Sys_menu_grid,
       Sys_menu_form,

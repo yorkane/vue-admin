@@ -1,5 +1,5 @@
 <template>
-  <div class="mainPanel">
+  <auto-height-wrapper class="mainPanel">
     <div class="tree" style="float:left;min-height:600px;border-right:1px solid #dfe6ec;">
       <k-tree :loading="loading" :data="treeData" @insert="handleInsert" @edit="handleEdit"
               @delete="handleDelete" @move="handleMove" @node-click="loadIntoTable"
@@ -20,7 +20,7 @@
       <sys_role_form :model="currentRow" :isEditMode="isEditMode" withDialog :dataStruct="dataStruct"
                      @inserted="inserted" :visible.sync="dialog_edit_show"></sys_role_form>
     </div>
-  </div>
+  </auto-height-wrapper>
 </template>
 <script>
   import roleAPI from '../../api/sys_role'
@@ -31,9 +31,11 @@
   import KCondition from "../../components/KCondition.vue";
   import MenuPermission from "../sys_menu/menuPermission.vue";
   import RefRoleDialog from "./refRoleDialog.vue";
+  import AutoHeightWrapper from "../../components/AutoHeightWrapper";
 
   export default {
     components: {
+      AutoHeightWrapper,
       RefRoleDialog,
       MenuPermission,
       KCondition,

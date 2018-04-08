@@ -1,14 +1,14 @@
 <template>
   <auto-height-wrapper>
-    <div class="tree" style="float:left;min-height:600px;border-right:1px solid #dfe6ec;">
+    <auto-height-wrapper class="tree" style="float:left;min-height:600px;border-right:1px solid #dfe6ec;">
       <k-tree :data="dataTree" @insert="handleTreeEvent" @edit="handleTreeEvent"
               @delete="handleTreeEvent" @move="handleNodeMove" @node-click="handleNodeClick"
               @detail="handleTreeEvent"></k-tree>
-    </div>
+    </auto-height-wrapper>
     <div style="overflow: auto;">
       <k-condition ref="condition" size="mini" :dataStruct="m_dataStruct" @btnEvt_insert="handleEvent"
                    @btnEvt_refresh="getSearch()" @query="getSearch"></k-condition>
-      <model-grid :dataStruct="m_dataStruct" :model="gridData" :totalCount="totalCount"
+      <model-grid class="tree-grid" :dataStruct="m_dataStruct" :model="gridData" :totalCount="totalCount"
                   :page.sync="page" :pageSize.sync="pageSize" :selected.sync="selectedList"
                   @quickEdit="quickEdit" @sort="sortField" @btnEvt_edit="handleEvent" @btnEvt_delete="handleEvent"
                   @pageChange="getData()" @order-change="quickEdit" drag-order></model-grid>
@@ -25,11 +25,13 @@
   import KCondition from "../components/KCondition.vue";
   import KDataStruct from "../components/KDataStruct.vue";
   import ModelGrid from "./grid.vue";
+  import AutoHeightWrapper from "../components/AutoHeightWrapper";
 
 
   export default {
     name: 'ModelIndex',
     components: {
+      AutoHeightWrapper,
       ModelGrid,
       KCondition,
       mform,
@@ -42,7 +44,7 @@
        * @type {modelAPI}
        * @private
        */
-      this._api = modelAPI.new(this.$route.params.table || 'sys_logs',{},this.$store)
+      this._api = modelAPI.new(this.$route.params.table || 'sys_logs', {}, this.$store)
       return {
         isEditMode: true,
         loading: false, //切换Loading显示状态
@@ -259,5 +261,7 @@
   }
 </script>
 <style>
-
+  .tree-grid .el-table--border{
+    border-left: 0;
+  }
 </style>

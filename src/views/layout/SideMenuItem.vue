@@ -1,19 +1,19 @@
 <template>
   <div>
     <template v-for="(item, index) in menus">
-      <template v-if="!item.__children && !item.isHidden">
+      <template v-if="!item.__children && item.is_hidden!=1">
         <router-link :to="getRouter(item)">
           <el-menu-item :index="item.name+index">
             <var :class="item.icon"></var><span>{{item.name}}</span>
           </el-menu-item>
         </router-link>
       </template>
-      <el-submenu :index="item.name+index" v-if="item.__children && !item.isHidden">
+      <el-submenu :index="item.name+index" v-if="item.__children && item.is_hidden != 1">
         <template slot="title">
           <var :class="item.icon"></var><span>{{item.name}}</span>
         </template>
         <template v-for="(child, index2) in item.__children">
-          <template v-if="!item.isHidden">
+          <template v-if="child.is_hidden !=1">
             <el-menu-item :index="index+child.name+'/'+index2" v-if="child.option_target=='_blank'">
               <a :href="getFullUrl(child)" target="_blank"><kbd
                 :class="child.icon"></kbd><span>{{child.name}}</span></a>
