@@ -1,8 +1,8 @@
 <template>
   <k-wrap :withDialog="withDialog" :visible.sync="showDialog">
     <div>
-      <auto-height-wrapper>
-        <div class="tree" style="float:left;border-right:1px solid #dfe6ec;width:200px;height:100%;">
+      <auto-height-wrapper height="100%">
+        <div class="tree" style="float:left;border-right:1px solid #dfe6ec;width:200px;">
           <div style="margin: 10px;">
             <!--<el-radio-group v-model="layoutMode" size="medium" style="margin: 5px 5px 10px 5px;" @change="changeMode">-->
             <!--<el-radio-button label="全屏编辑"></el-radio-button>-->

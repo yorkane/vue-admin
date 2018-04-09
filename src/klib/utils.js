@@ -21,8 +21,13 @@ const klib_utils = {
   getFieldLabel(fi, maxLength) {
     let val = this.model[fi.Field]
     let v = klib_utils.getMapValue.call(this, fi)
+    if (v === null || v === undefined) {
+      return ''
+    }
+    // if (fi.Field.indexOf('__') > 0) {
     // console.log(fi.Field, v, val, typeof(v))
-    if (v && v.mapped) {
+    // }
+    if (v.mapped) {
       let field = fi.Field.split('__')[1]
       if (field === 'id') {
         field = null
@@ -47,13 +52,10 @@ const klib_utils = {
       }
       return val.substr(0, maxLength || 50);
     } else {
-      if (fi.isText && typeof(v) !== 'string') {
-        v = JSON.stringify(v)
+      if (v.mapped === false) {
+        return v.list.join(',')
       }
-      if (typeof(v) === 'string') {
-        v = v.substr(0, maxLength || 50);
-      }
-      return v
+      return v.toString().substr(0, maxLength || 50);
     }
   },
   /**
@@ -93,7 +95,9 @@ const klib_utils = {
         if (typeof(p) !== 'string') {
           changed = true
         } else {
-          p = {[field]: p}
+          if (field) {
+            p = {[field]: p}
+          }
         }
         vArr.push(p)
       }

@@ -32,6 +32,12 @@ const textHistory = {
       data
     })
   },
+  getLatestById(id) {
+    return service({
+      url: 'lor/text/lastest/' + id,
+      method: 'get',
+    })
+  },
 }
 textHistory.__proto__ = klib_api
 

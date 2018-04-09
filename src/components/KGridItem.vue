@@ -17,7 +17,7 @@
                @change="quickEdit(item.Field)"></el-switch>
     <i v-else-if="item.Field =='icon'" style="font-size: 24px;color: #1f2d3d"
        :class="model['icon']"></i>
-    <template v-else>{{getFieldLabel(item, 36)}}</template>
+    <template v-else>{{getFieldLabel(item, 60)}}</template>
   </div>
 </template>
 <script>

@@ -1,5 +1,5 @@
 <template>
-  <auto-height-wrapper class="mainPanel">
+  <auto-height-wrapper height="100%" class="mainPanel">
     <div class="tree" style="float:left;min-height:600px;border-right:1px solid #dfe6ec;">
       <k-tree :loading="loading" :data="treeData" @insert="handleInsert" @edit="handleEdit"
               @delete="handleDelete" @move="handleMove" @node-click="loadIntoTable"></k-tree>

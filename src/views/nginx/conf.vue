@@ -9,7 +9,7 @@
                    @btnEvt_refresh="getData()" @query="getData"></k-condition>
       <model-grid :dataStruct="m_dataStruct" :model="gridData" :totalCount="totalCount"
                   :page.sync="page" :pageSize.sync="pageSize" :selected.sync="selectedList"
-                  @quickEdit="quickEdit" @sort="sortField" @btnEvt_edit="handleEvent" @btnEvt_delete="handleEvent"
+                  @quickEdit="quickEdit" @sort="sortField" @btnEvt_edit="handleEvent"  @btnEvt_inspect="handleEvent" @btnEvt_delete="handleEvent"
                   @pageChange="getData()"
       ></model-grid>
       <mform :model.sync="currentRow" :isEditMode="isEditMode" withDialog :dataStruct="m_dataStruct"
@@ -59,7 +59,7 @@
       }
     },
     created() {
-      modelAPI.new('nginx_proxy').getData({pageSize: 1000})
+      modelAPI.new('nginx_location').getData({pageSize: 1000})
 
     },
     methods: {
@@ -138,6 +138,11 @@
             break
           case 'btnEvt_permission':
             //ref.permissions.editPermission(data)
+            break
+          case 'btnEvt_inspect':
+            //ref.permissions.editPermission(data)
+            // console.log(data)
+            this.$router.push({path: '/text/edit/' + data.id});
             break
           case 'btnEvt_delete':
             console.warn('try to delete data', data)

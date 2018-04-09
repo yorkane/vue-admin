@@ -161,7 +161,6 @@
         return f
       },
       getMapOptions: klib.getMapOptions,
-      getFieldLabel: klib.getFieldLabel,
       getStatusList: klib.getStatusList,
       getOptionList: klib.getOptionList,
       getStatus: klib.getStatus,

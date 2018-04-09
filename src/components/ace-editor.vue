@@ -1,6 +1,5 @@
 <template>
-  <div ref="wrap" class="vue2AceEditor" :height="innerHeight || height"
-       :style="{height: innerHeight||height, width: width,fontSize: fontSize, fontFamily :fontFamily }">
+  <div ref="wrap" class="vue2AceEditor" :style="{width: width,fontSize: fontSize, fontFamily :fontFamily }">
   </div>
 </template>
 <script>
@@ -40,7 +39,7 @@
         type: String,
         default: 'monokai'
       },
-      height: String,
+      height: Number,
       fontFamily: {
         type: String,
         default: "'Microsoft Yahei', monospace, sans-serif;"
@@ -87,8 +86,13 @@
       editor.setTheme('ace/theme/' + theme);
       editor.setValue(vm.value, 1);
       let lightHeight = editor.renderer.lineHeight
-      let lines = Math.ceil(window.screen.availHeight * 1.5 / lightHeight)
-      console.log(lines)
+      let lines = 30
+      if (this.height) {
+        lines = Math.ceil(this.height / lightHeight)
+      } else {
+        lines = Math.ceil(window.screen.availHeight * 1.5 / lightHeight)
+      }
+      // console.log(lines)
       editor.setOptions({
         enableBasicAutocompletion: false,
         enableSnippets: false,
@@ -100,7 +104,7 @@
         this.$emit('input', this.editor.getValue());
       });
       if (!this.height) {
-        this.innerHeight = '500px'
+        // this.innerHeight = '500px'
         // editor.setOptions({
         //   maxLines: Infinity
         // });
@@ -143,6 +147,11 @@
           maxLines: lines
         });
         this.editor.resize()
+      },
+      resize() {
+        setTimeout(() => {
+          this.editor.resize()
+        }, 5)
       },
       setValue(newContent) {
         this.editor.setValue(newContent, 1);

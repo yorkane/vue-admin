@@ -64,15 +64,6 @@
           that.$refs.diff.doDiff()
         }, 200)
       });
-      let left = this.$route.params.left
-      let right = this.$route.params.right
-      if (left && right) {
-        // this.tapi.getData('version IN (' + left + ', ' + right + ')').then(data => {
-        //   console.log(data)
-        //   this.oldText = data.list[0].text
-        //   this.newText = data.list[1].text
-        // });
-      }
       return {
         showRight: true,
         showLeft: true,
@@ -88,13 +79,29 @@
       }
     },
     mounted() {
-      let arr = this.tapi.getCache('compare')
-      if (arr && arr.length === 4) {
-        this.oldText = arr[0]
-        this.newText = arr[1]
-        this.displayName = arr[2].version + '|' + arr[3].version
-        this.dataPO = arr[2]
-        this.currentVersion = arr[2].version
+      this.ace = this.$refs.ace
+      let id = this.$route.params.id
+      if(this.$route.params.left && this.$route.params.right) {
+        let arr = this.tapi.getCache('compare')
+        if (arr && arr.length === 4) {
+          this.oldText = arr[0]
+          this.newText = arr[1]
+          this.displayName = arr[2].version + '|' + arr[3].version
+          this.dataPO = arr[2]
+          this.currentVersion = arr[2].version
+        }
+      } else if(id) {
+        this.tapi.getLatestById(id).then(resp=>{
+          let data = resp.data
+          this.dataPO = data
+          this.oldText = data.text
+          this.newText = data.text
+          this.currentVersion = data.version
+          this.displayName = data.version
+          // this.layoutMode = '全屏编辑'
+          // this.changeMode()
+          this.doCompare()
+        })
       }
     },
     watch: {
@@ -130,6 +137,7 @@
             this.showRight = true
             break;
         }
+        this.ace.resize()
       },
       save() {
         this.dataPO.text = this.newText

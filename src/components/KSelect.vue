@@ -178,6 +178,12 @@
       },
     },
     created() {
+      this.$on('fieldReset', () => {
+        this.cancleTree()
+      });
+      this.$on('cancel', (msg) => {
+        this.cancleTree(msg)
+      });
       setTimeout(() => {
         this.syncVal(this.value)
         this.syncOption(this.options)
@@ -259,7 +265,6 @@
         // console.debug('KSelect syncOption: option loaded:', val, '|value:', this.value, '|optionList:', this.optionList, '|isList', this.isList)
       },
       changeValue(val) {
-        console.log(val)
         if (val === undefined) {
           this.$emit('input', '')
         } else if (val.push) {
@@ -304,7 +309,7 @@
       showTreeSelect() {
         this.showPopover = true;
         this.$nextTick(() => {
-          console.log(this.idList, this.value, 'showTreeSelect')
+          // console.log(this.idList, this.value, 'showTreeSelect')
           if (this.isMultiple) {
             this.$refs.ktree.setCheckedKeys(this.idList, true)
           } else {

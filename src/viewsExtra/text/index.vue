@@ -144,7 +144,6 @@
             })
             break
           case 'btnEvt_inspect':
-
             let p1 = this.selectedList[0]
             let p2 = this.selectedList[1]
             if (!p1 || !p2 || this.selectedList.length > 2) {
@@ -155,7 +154,7 @@
               return
             }
             this._api.setCache('compare', [p1.text, p2.text, p1, p2])
-            this.$router.push({path: p1.version + '/' + p2.version});
+            this.$router.push({path: p1.version + '/v/' + p2.version});
             break;
           default:
             return this.sysList

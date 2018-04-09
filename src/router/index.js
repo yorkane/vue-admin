@@ -99,9 +99,10 @@ export const constantRouterMap = [
     noDropdown: true,
     children: [
       {path: 'list/', name: '文本列表', component: text_index},
-      {path: ':left/:right', name: '文本对比', component: text_compare},
+      {path: ':left/v/:right', name: '文本对比', component: text_compare},
       {path: 'tool/', name: '对比工具', component: text_compareTool},
-      {path: 'code/', name: '服务器代码管理', component: text_code}
+      {path: 'code/', name: '服务器代码管理', component: text_code},
+      {path: 'edit/:id', name: '代码编辑', component: text_compare}
     ]
   },
   {

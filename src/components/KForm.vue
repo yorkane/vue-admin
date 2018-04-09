@@ -50,7 +50,10 @@
         type: Boolean,
         default: false
       },
-      'refs': String,
+      'refs': {
+        type: String,
+        default: 'el-form'
+      },
       componentMap: Object
     },
     computed: {
@@ -137,15 +140,15 @@
         }
       },
       reset() {
-        let ds = this.m_dataStruct
+        // let ds = this.m_dataStruct
         // restore data from original field data
         for (let key in this.model) {
+          // console.log(key, ' = ', this.model[key])
           let val = this.___oridata[key];
-          if (val !== null && val !== undefined) {
-            this.model[key] = val
-          }
+          // if (val !== null && val !== undefined) {
+          this.model[key] = val
+          // }
         }
-
         //this.resetFields(); call native reset will overwrite the saved data
         //this.$emit('reset')
       },
@@ -154,9 +157,8 @@
         if (this.withDialog) {
           this.showDialog = false
           this.$emit('update:visible', false)
-
         }
-        //console.log('cancled')
+        this.broadcast('k-select', 'cancel')
         this.$emit('cancel')
       },
       close() {
@@ -303,6 +305,12 @@
       afterSave(isEditMode, plainObjct, resp, model) {
         let title = isEditMode ? '更新记录成功' : '新建记录成功'
         this.$notify.info({title: title, message: plainObjct})
+      },
+      broadcast(componentName, eventName, params) {
+        let list = this.getComponentsByName(componentName)
+        for (let i = 0; i < list.length; i++) {
+          list[i].$emit(eventName, params);
+        }
       },
       formatDate: klib.formatDate,
       getComponentsByName: klib.getComponentsByName,

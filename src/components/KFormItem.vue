@@ -78,11 +78,9 @@
   import klib from '../klib/utils'
   import {FormItem} from 'element-ui'
   import KSelect from "./KSelect";
-  import AutoWidthWrapper from "./AutoWidthWrapper";
 
   export default {
     components: {
-      AutoWidthWrapper,
       KSelect
     },
     name: 'KFormItem',

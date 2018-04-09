@@ -1,10 +1,10 @@
 <template>
-  <auto-height-wrapper class="mainPanel">
-    <div class="tree" style="float:left;min-height:600px;border-right:1px solid #dfe6ec;">
+  <div class="mainPanel">
+    <auto-height-wrapper class="tree" style="float:left;min-height:600px;border-right:1px solid #dfe6ec;">
       <k-tree :loading="loading" :data="treeData" @insert="handleInsert" @edit="handleEdit"
               @delete="handleDelete" @move="handleMove" @node-click="loadIntoTable"
               @detail="handleEditRolePermission"></k-tree>
-    </div>
+    </auto-height-wrapper>
     <div style="overflow: auto;">
       <k-condition size="mini" :dataStruct="dataStruct" @btnEvt_insert="handleInsert" @btnEvt_refresh="loadData">
         <el-button @click="manageRoot" size="mini" type="primary">管理根目录</el-button>
@@ -20,7 +20,7 @@
       <sys_role_form :model="currentRow" :isEditMode="isEditMode" withDialog :dataStruct="dataStruct"
                      @inserted="inserted" :visible.sync="dialog_edit_show"></sys_role_form>
     </div>
-  </auto-height-wrapper>
+  </div>
 </template>
 <script>
   import roleAPI from '../../api/sys_role'
