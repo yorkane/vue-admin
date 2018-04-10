@@ -17,7 +17,8 @@
         <template v-if="item.Field.indexOf('__') > 3">
           <div style="float:right">
             <el-tooltip :content="'修改' + item.Comment + '选项'" placement="top" :enterable="false" :open-delay="200">
-              <el-button style="padding:10px 11px" type="primary" icon="el-icon-d-arrow-right" @click="intoMapField(item)"></el-button>
+              <el-button style="padding:10px 11px" type="primary" icon="el-icon-d-arrow-right"
+                         @click="intoMapField(item)"></el-button>
             </el-tooltip>
           </div>
           <div style="margin-right:60px;">
@@ -49,7 +50,7 @@
         </template>
         <template v-else-if="item.isOption||item.isTextOption">
           <el-radio-group v-model="model[key]" v-if="getOptionList(item.Field).length < 6">
-            <el-radio-button v-for="option in getOptionList(item.Field)" :key="option.id" :label="option.id">
+            <el-radio-button v-for="option in getOptionList(item.Field)" :key="option.value" :label="option.value">
               {{option.label}}
             </el-radio-button>
           </el-radio-group>
@@ -63,9 +64,12 @@
             </el-option>
           </el-select>
         </template>
-        <el-switch v-else-if="item.isBool" v-model="model[key]"></el-switch>
-        <el-switch v-else-if="item.isIntBool" v-model.number="model[key]"
-                   :active-value="1" :inactive-value="0"></el-switch>
+        <template v-else-if="item.isBool||item.isIntBool">
+          <el-switch v-if="item.isBool" v-model="model[key]"></el-switch>
+          <el-switch v-else="item.isIntBool" v-model.number="model[key]"
+                     :active-value="1" :inactive-value="0"></el-switch>
+          {{item.Field}}
+        </template>
         <el-input v-else-if="item.width > 500" v-model="model[key]" :maxlength="item.width" type="textarea"
                   :placeholder="placeholder" :autosize="{ minRows: 2, maxRows: 10}"></el-input>
         <el-input v-else v-model="model[key]" :maxlength="item.width" :type="type"
@@ -139,14 +143,14 @@
           return
         }
         if (this.label) {
-          if (this.showFieldKey) {
+          if (this.showFieldKey && !this.item.isIntBool && !this.item.is_bool) {
             return this.label + ' ' + this.key
           } else {
             return this.label
           }
         }
         if (this.item.Comment) {
-          if (this.showFieldKey) {
+          if (this.showFieldKey && !this.item.isIntBool && !this.item.is_bool) {
             return this.item.Comment + ' ' + this.key
           } else {
             return this.item.Comment
