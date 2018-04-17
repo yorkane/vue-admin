@@ -3,8 +3,7 @@
     <el-table :data="model" border :loading="loading" element-loading-text="加载中"
               @selection-change="selectionChange"
               stripe
-              @sort-change="sortEvent" highlight-current-row @header-dragend="saveHeaderWidth">
-      <!--<el-table-column type="selection" width="40" fixed="left"></el-table-column>&lt;!&ndash;menu opts here&ndash;&gt;-->
+              @sort-change="sortEvent" highlight-current-row @header-dragend="saveHeaderWidth"><el-table-column v-if="enableChecked" type="selection" width="40" fixed="left"></el-table-column><!--menu opts here-->
       <el-table-column label="操作" width="160" fixed="right"><!--menu opts here-->
         <template slot-scope="scope">
           <k-button-menus :data="scope.row" size="mini" :index="scope.$index" group round></k-button-menus>
@@ -26,7 +25,7 @@
                 <a class="menuHref" target="_blank">{{scope.row[dataStruct._PK]}}</a>
               </div>
             </template>
-            <span v-else-if="item.Field == 'role'">{{getRoleName(scope.row[item.Field])}}</span>
+            <!--<span v-else-if="item.Field == 'role'">{{getRoleName(scope.row[item.Field])}}</span>-->
             <el-button v-else-if="item.Field == 'key'" type="info" size="mini" :plain="true"
                        @click="showQRCode(scope.row)" class="key-button">{{scope.row.key}}
             </el-button>
@@ -51,7 +50,6 @@
 </template>
 
 <script>
-  import {getList, desc, deleteById} from '../../api/sys_user'
   import roleAPI from '../../api/sys_role'
   import QRCode from 'qrcode'
   import KGridItem from "../../components/KGridItem.vue";

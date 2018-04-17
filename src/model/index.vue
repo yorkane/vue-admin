@@ -27,7 +27,6 @@
   import mform from "./form.vue";
   import KCondition from "../components/KCondition.vue";
   import KDataStruct from "../components/KDataStruct.vue";
-  import {store} from '../main'
   import ModelGrid from "./grid.vue";
   import roleAPI from '../api/sys_role'
   import nginx_confAPI from '../api/nginx_conf'
@@ -74,6 +73,7 @@
     methods: {
       dataStructLoaded(data) {
         if (this._api.isTree) {
+          //如果当前API是Tree 则跳转到 Tree 页面，并把当前Tab关闭
           this.$store.commit('delete_tabs', this.$route.path);
           this.$router.replace({
             path: '/tree/' + data._COMMENT + '/' + data._NAME
@@ -88,7 +88,7 @@
         this.showForm = false
         this.gridData.push(data);
         this.currentRow = Object.assign({}, this.m_dataStruct._DEFAULT)
-        console.log(this._api.data(store))
+        // console.log(this._api.data(store))
         // console.log(this.gridData)
       },
       quickEdit(data) {
