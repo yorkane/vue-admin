@@ -3,8 +3,7 @@ import klib_api from "../klib/api";
 
 export function getList(params) {
   return service({
-    url: 'lor/menu/tree?dname=approot&tname=sys_menu',
-    // url: 'lor/role/tree?dname=approot&tname=sys_role',
+    url: 'lor/menu/tree?tname=sys_menu',
     method: 'get',
     params
   })

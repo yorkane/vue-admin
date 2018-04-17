@@ -1,9 +1,9 @@
 <template>
   <div>
     <div style="margin:5px 0 5px 0;">
-      <k-condition @btnEvt_insert="handleEvent" size="mini" :dataStruct="dataStruct"
+      <k-condition @btnEvt_insert="handleEvent" size="mini" :dataStruct="m_dataStruct"
                    @btnEvt_batchDelete="handelBatchDelete"
-                   @query="updateQueryCondition" @mnuEvt_mail="" @btnEvt_batch="handleEvent" @btnEvt_mail="">
+                   @query="getData" @mnuEvt_mail="" @btnEvt_batch="handleEvent" @btnEvt_mail="">
       </k-condition>
       <k-batch-form :data-struct="m_dataStruct" :visible.sync="showBatchForm" with-dialog
                     @submit="batchUpdate"></k-batch-form>
@@ -40,7 +40,8 @@
     },
     mixins: [KDataStruct],
     beforeRouteEnter(to, from, next) {
-      roleAPI.getTree().then((data) => {
+      roleAPI.new().getTree().then((data) => {
+        modelAPI.new('sys_organization').getTree()
         next()
       })
     },
@@ -104,7 +105,8 @@
         })
       },
       sortField(orderBy) {
-        this.loadData(null, orderBy)
+        this._orderBy = orderBy
+        this.getData(null, orderBy)
       },
       getData: function (where, orderby) {
         where = this.getWhere(where)

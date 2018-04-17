@@ -20,11 +20,11 @@ service.interceptors.request.use(req => {
     console.log('mock request start', req.url) // for debug
     return req
   }
-  if (req.url.indexOf('?') > 0) {
-    req.url += '&t=' + getTimestamp()
-  } else {
-    req.url += '?t=' + getTimestamp()
-  }
+  // if (req.url.indexOf('?') > 0) {
+  //   req.url += '&t=' + getTimestamp()
+  // } else {
+  //   req.url += '?t=' + getTimestamp()
+  // }
   // if (store.getters.token) {
   let token = getAuthToken()
   if (token) {

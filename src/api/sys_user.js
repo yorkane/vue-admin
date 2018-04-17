@@ -88,7 +88,17 @@ const userAPI = {
       method: 'post',
       data
     })
-  }
+  },
+  batchUpdate(idList, data) {
+    if (idList.join) {
+      idList = idList.join(',')
+    }
+    return service({
+      url: 'lor/sys_user/batch/' + idList,
+      method: 'patch',
+      data
+    })
+  },
 }
 userAPI.__proto__ = klib_api
 
