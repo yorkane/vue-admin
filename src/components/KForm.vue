@@ -140,14 +140,12 @@
         }
       },
       reset() {
-        // let ds = this.m_dataStruct
-        // restore data from original field data
         for (let key in this.model) {
-          // console.log(key, ' = ', this.model[key])
           let val = this.___oridata[key];
-          // if (val !== null && val !== undefined) {
-          this.model[key] = val
-          // }
+          if (key.indexOf('_') !== 0) {
+            //ignore addon values overwrite
+            this.model[key] = val
+          }
         }
         //this.resetFields(); call native reset will overwrite the saved data
         //this.$emit('reset')

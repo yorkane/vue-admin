@@ -70,7 +70,7 @@
                      :active-value="1" :inactive-value="0"></el-switch>
           {{item.Field}}
         </template>
-        <el-input v-else-if="item.width > 500" v-model="model[key]" :maxlength="item.width" type="textarea"
+        <el-input v-else-if="item.width > 200" v-model="model[key]" :maxlength="item.width" type="textarea"
                   :placeholder="placeholder" :autosize="{ minRows: 2, maxRows: 10}"></el-input>
         <el-input v-else v-model="model[key]" :maxlength="item.width" :type="type"
                   :placeholder="placeholder" :style="item.isPK ? 'width:70%':null"></el-input>
