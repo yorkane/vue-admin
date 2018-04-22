@@ -119,7 +119,7 @@
       },
       setOriginalData: function (newVal = {}) {
         let pk = this.m_dataStruct._PK
-        console.log(this.m_dataStruct, newVal)
+        // console.log(this.m_dataStruct, newVal)
         if (!this.___oridata) {
           this.___oridata = {[pk]: -404}
         }
@@ -226,6 +226,7 @@
           this.$notify.info({title: '没有改动', message: ''});
           return
         }
+        console.log(this.$parent)
         if (!this.api) {
           this.$notify.error({title: 'API 没有注入', message: '请检查API props'});
           return

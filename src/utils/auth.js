@@ -62,7 +62,7 @@ export function setAuthToken(token) {
 }
 
 export function removeAuthToken() {
-  console.log('removeAuthToken')
+  console.log('removeAuthToken', getAuthToken())
   Cookies.set(AuthKey, '', {expires: -1, path: '/', domain: location.host})
   Cookies.set(AuthKey, '', {expires: -1, path: '/', domain: getRootDomain()})
   return Cookies.remove(AuthKey)

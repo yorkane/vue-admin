@@ -14,7 +14,7 @@
                   @pageChange="getGrid()"
       ></model-grid>
       <mform :model.sync="currentRow" :isEditMode="isEditMode" withDialog :dataStruct="grid_dataStruct"
-             :fieldMapComponent="{}" :API="mapi"
+             :fieldMapComponent="{}"
              @inserted="inserted" :withDialog="true" :visible.sync="showForm"></mform>
     </div>
   </div>
@@ -93,7 +93,7 @@
       },
       getData(key) {
         key = key || this._key
-        this._api.getTree({}, store, true).then(data => {
+        this._api.getTree({}, true).then(data => {
           this.dataTree = data
           if (key) {
             this.walkTreeNode(data.root, node => {

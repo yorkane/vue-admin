@@ -32,7 +32,7 @@
     },
     computed: {
       api() {
-        return this.API || this._api || this.$parent.API || this.$parent._api
+        return this.API || this._api || this.$parent.API || this.$parent._api||this.$parent.$parent.API || this.$parent.$parent._api
       },
       data() {
         let a = this.api

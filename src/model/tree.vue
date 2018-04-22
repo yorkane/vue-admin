@@ -44,7 +44,7 @@
        * @type {modelAPI}
        * @private
        */
-      this._api = modelAPI.new(this.$route.params.table || 'sys_logs', {}, this.$store)
+      this._api = modelAPI.new(this.$route.params.table || 'sys_logs', {})
       return {
         isEditMode: true,
         loading: false, //切换Loading显示状态
