@@ -119,6 +119,7 @@
       },
       setOriginalData: function (newVal = {}) {
         let pk = this.m_dataStruct._PK
+        console.log(this.m_dataStruct, newVal)
         if (!this.___oridata) {
           this.___oridata = {[pk]: -404}
         }
@@ -140,10 +141,17 @@
         }
       },
       reset() {
+        // console.log(this.model)
+        // console.log(this.___oridata)
+        // return
+        if (this.___oridata[this.m_dataStruct._PK] === -404) {
+          // data untouched
+          return
+        }
         for (let key in this.model) {
           let val = this.___oridata[key];
           if (key.indexOf('_') !== 0) {
-            //ignore addon values overwrite
+            // ignore addon values overwrite
             this.model[key] = val
           }
         }
