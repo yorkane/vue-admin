@@ -4,7 +4,8 @@
               @selection-change="selectionChange"
               stripe
               @sort-change="sortEvent" highlight-current-row>
-      <el-table-column v-if="enableChecked" type="selection" width="40" fixed="left"></el-table-column><!--menu opts here-->
+      <el-table-column v-if="enableChecked" type="selection" width="40" fixed="left"></el-table-column>
+      <!--menu opts here-->
       <el-table-column label="操作" width="160" fixed="right"><!--menu opts here-->
         <template slot-scope="scope">
           <k-button-menus :data="scope.row" size="mini" :index="scope.$index" group round></k-button-menus>
@@ -64,6 +65,7 @@
         required: false,
         default: 20,
       },
+      dbclickEventName: String,
       enableChecked: Boolean,
       dragOrder: Boolean,
       hidePage: Boolean
@@ -288,6 +290,11 @@
         document.addEventListener("dragover", function (event) {
           event.preventDefault()
         });
+      },
+      doubleClickRow(row, event) {
+        if (this.dbclickEventName) {
+          this.$emit(this.dbclickEventName, row, -1, this.dbclickEventName)
+        }
       },
       getOption: klib.getOption,
       getStatus: klib.getStatus,

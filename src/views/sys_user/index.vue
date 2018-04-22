@@ -7,7 +7,7 @@
       </k-condition>
       <k-batch-form :data-struct="m_dataStruct" :visible.sync="showBatchForm" with-dialog
                     @submit="batchUpdate"></k-batch-form>
-      <sys_user_grid enable-checked :dataStruct="m_dataStruct" :model="gridData" :totalCount="totalCount"
+      <sys_user_grid enable-checked :dataStruct="m_dataStruct" :model="gridData" :totalCount="totalCount" dbclick-event-name="btnEvt_edit"
                      :page.sync="page" :pageSize.sync="pageSize" @pageChange="getData()"
                      :selected.sync="selectedList"
                      @quickEdit="quickEdit" @sort="sortField" @btnEvt_edit="handleEvent" @btnEvt_delete="handleEvent"

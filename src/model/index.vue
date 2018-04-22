@@ -10,7 +10,7 @@
       </k-condition>
       <k-batch-form :data-struct="m_dataStruct" :visible.sync="showBatchForm" with-dialog
                     @submit="batchUpdate"></k-batch-form>
-      <model-grid enable-checked :dataStruct="m_dataStruct" :model="gridData" :totalCount="totalCount"
+      <model-grid dbclickEvent enable-checked :dataStruct="m_dataStruct" :model="gridData" :totalCount="totalCount" dbclick-event-name="btnEvt_edit"
                   :page.sync="page" :pageSize.sync="pageSize" :selected.sync="selectedList"
                   @quickEdit="quickEdit" @sort="sortField" @btnEvt_edit="handleEvent" @btnEvt_delete="handleEvent"
                   @pageChange="getData()"
@@ -145,6 +145,7 @@
         return orderBy
       },
       handleEvent(data, index, eventName) {
+        // console.log(data, 'in handelEVent')
         //let ref = this.$refs
         switch (eventName) {
           case 'btnEvt_insert':

@@ -2,7 +2,7 @@
   <div>
     <el-table :data="model" border :loading="loading" element-loading-text="加载中"
               @selection-change="selectionChange"
-              stripe
+              stripe @row-dblclick="doubleClickRow"
               @sort-change="sortEvent" highlight-current-row @header-dragend="saveHeaderWidth">
       <el-table-column v-if="enableChecked" type="selection" width="40" fixed="left"></el-table-column><!--menu opts here-->
       <el-table-column label="操作" width="160" fixed="right"><!--menu opts here-->
