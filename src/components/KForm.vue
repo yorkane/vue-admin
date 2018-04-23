@@ -119,14 +119,21 @@
       },
       setOriginalData: function (newVal = {}) {
         let pk = this.m_dataStruct._PK
-        // console.log(this.m_dataStruct, newVal)
+        if (!pk) {
+          return
+        }
         if (!this.___oridata) {
-          this.___oridata = {[pk]: -404}
+          this.___oridata = {
+            [pk]: -404
+          }
         }
         let pkid = newVal[pk]
-        if (!pkid || this.___oridata[pk] == pkid) return; //already loaded
+        if (pkid === undefined || pkid === null || this.___oridata[pk] === pkid) return; //already loaded
         let ds = this.m_dataStruct
         for (let key in newVal) {
+          if (key === undefined) {
+            continue;
+          }
           let val = newVal[key];
           let tp = typeof(val)
           if (tp === 'function') continue; //ignore function
@@ -135,19 +142,20 @@
             if (fi.isDate) {
               this.___oridata[key] = val || null // this.formatDate(val);
             } else {
-              this.___oridata[key] = val || null;
+              this.___oridata[key] = val
             }
           }
         }
       },
       reset() {
-        // console.log(this.model)
+        // console.log(this.m_dataStruct)
         // console.log(this.___oridata)
         // return
         if (this.___oridata[this.m_dataStruct._PK] === -404) {
           // data untouched
           return
         }
+        // console.log(this.model, this.___oridata)
         for (let key in this.model) {
           let val = this.___oridata[key];
           if (key.indexOf('_') !== 0) {

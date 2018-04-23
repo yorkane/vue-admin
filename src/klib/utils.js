@@ -25,7 +25,6 @@ const klib_utils = {
       return ''
     }
     // if (fi.Field.indexOf('__') > 0) {
-    // console.log(fi.Field, v, val, typeof(v))
     // }
     if (v.mapped) {
       let field = fi.Field.split('__')[1]
@@ -37,8 +36,10 @@ const klib_utils = {
         for (let i = 0; i < v.list.length; i++) {
           let p = v.list[i]
           if (field) {
-            vArr.push(p[field] || p)
+            //using field to get first
+            vArr.push(p[field] || p.label || p.name || p.desc || p)
           } else {
+            // ignore id checks
             vArr.push(p.label || p.name || p.desc || p)
           }
         }
@@ -73,31 +74,21 @@ const klib_utils = {
     let ds = klib_utils.getParentDataStruct.call(this)
     let arr = fi.Field.split('__')
     let key = arr[0]
-
     let field = arr[1]
-    if (field === 'id') {
-      field = null
-    }
     let func = ds._MAP_FIELD[key]
     let v = func(val, getAll)
-    // console.log(key, v, 'getMapValue')
     if (v && getAll) {
       return v || val
     }
     if (!v) return val;
 
     if (v.push) {
-      //console.log(v)
       let vArr = []
       let changed = false
       for (let i = 0; i < v.length; i++) {
         let p = v[i]
-        if (typeof(p) !== 'string') {
+        if (field && p[field]) {
           changed = true
-        } else {
-          if (field) {
-            p = {[field]: p}
-          }
         }
         vArr.push(p)
       }

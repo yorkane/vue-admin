@@ -103,6 +103,7 @@
         buttonLabel: '',
         selectValue: '',
         isSingle: true,
+        valueType: 'string',
         defaultExpandedKeys: [],
       }
     },
@@ -192,6 +193,7 @@
     },
     mounted() {
       this.optionList = this.getOptionsList()
+      // console.log(this.optionList, this.keyField, this.valueField, this.labelField)
     },
     methods: {
       syncVal(val) {
@@ -216,9 +218,16 @@
             return
           }
           this.idList = []
-          val.split(',').forEach(v => {
-            this.idList.push(parseInt(v))
-          })
+          if(this.valueType === 'number') {
+            val.split(',').forEach(v => {
+              this.idList.push(parseInt(v))
+            })
+          } else {
+            val.split(',').forEach(v => {
+              this.idList.push(v)
+            })
+          }
+
         } else {
           this.idList = val ? [val] : []
         }
@@ -265,10 +274,16 @@
         // console.debug('KSelect syncOption: option loaded:', val, '|value:', this.value, '|optionList:', this.optionList, '|isList', this.isList)
       },
       changeValue(val) {
+        console.log(val, 333)
+        console.log(val[0] === null, 333)
         if (val === undefined) {
           this.$emit('input', '')
         } else if (val.push) {
+          if (!val[0]) {
+            console.log(val.splice(0, 1))
+          }
           let v = val.join(',')
+          console.log(v)
           this.$emit('input', v)
         } else {
           if (this.isSingle) {
@@ -283,24 +298,33 @@
       },
       getLabel(val) {
         let lb = val[this.labelField] || val['label'] || val['name'] || val['desc']
+        // console.log(val,21,this.labelField, lb)
         return lb
       },
       getOptionsList() {
         if (this.options) {
+          let list = this.options.list || this.options
+          let tip = list[0]
+          if (tip) {
+            tip = tip[this.valueField]
+            if (tip) {
+              this.valueType = typeof(tip)
+            }
+          }
           return this.options.list || this.options
         }
         let arr = []
+        // console.log(this.keyField, this.labelField, this.valueField)
         // If no options inject, than make the list by value
         if (this.value && this.value.substr) {
           this.value.split(this.splitter).forEach(val => {
             arr.push({
-              [this.keyField]: parseInt(val),
+              [this.keyField]: val,
               [this.labelField]: val,
-              [this.valueField]: parseInt(val),
+              [this.valueField]: val,
             })
           })
         }
-        // console.log(arr)
         return arr
       },
 
@@ -320,10 +344,7 @@
       cancleTree() {
         this.showPopover = false
       },
-      /**
-       * 刷新选择按钮文字
-       * @param isInit
-       */
+
       checkChange(nodes, keys, treeComponent) {
         this.showPopover = false;
         let label

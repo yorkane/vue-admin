@@ -22,7 +22,7 @@
             </el-tooltip>
           </div>
           <div style="margin-right:60px;">
-            <k-select v-model="model[key]" :label-field="getLabelField(item)" :isMultiple="item.isText||false"
+            <k-select v-model="model[key]" :label-field="getLabelField(item)" :key-field="getValueField(item)" :value-field="getValueField(item)" :isMultiple="item.isText||false"
                       :placeholder="'请选择'+item.Comment" :options="getMapOptions(item)">
             </k-select>
           </div>
@@ -163,6 +163,10 @@
         if (f === 'id') {
           f = 'label'
         }
+        return f
+      },
+      getValueField(fi) {
+        let f = fi.Field.split('__')[1]
         return f
       },
       intoMapField(fi) {

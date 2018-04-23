@@ -20,6 +20,7 @@ function loadDataStruct(data) {
       if (fi.Field.indexOf('__') > 3) {
         let arr = fi.Field.split('__')
         let key = arr[0]
+        let key_field = arr[1]
         //注册字段映射闭包
         data._MAP_FIELD[key] = function (id, getAll) {
           // console.log(key, id, klib_api.data(key) || klib_api.tree(key), store)
@@ -32,7 +33,11 @@ function loadDataStruct(data) {
             let list = []
             for (let j = 0; j < idlist.length; j++) {
               let vid = idlist[j]
-              list.push(klib_api.getById(vid, key) || vid);
+              if (key_field === data._PK) {
+                list.push(klib_api.getById(vid, key) || vid);
+              } else {
+                list.push(klib_api.getByValue(key_field, id) || vid);
+              }
             }
             return list
           }
@@ -199,7 +204,7 @@ const klib_api = {
         }
       }
     }
-    if(!url) {
+    if (!url) {
       console.debug('%c' + key + ' try to loaded from remote server failed', 'background:#aaa;color:#fff', 'url is empty')
       return new Promise(function (resolve) {
         resolve()
@@ -281,6 +286,30 @@ const klib_api = {
       return val
     }
     return null
+  },
+  getByValue(field, value, key, name) {
+    key = key || this.key
+    let st = this.getState(key, name);
+    let data = st.dataList
+    if (data) {
+      for (let i = 0; i < data.length; i++) {
+        let item = data[i];
+        if (item[field] === value) {
+          return item
+        }
+      }
+    }
+    data = st.dataTree
+    if (data) {
+      let item
+      klib.walkTreeNode(data, function (node, node_list, index) {
+        if (node[field] === value) {
+          item = node
+          return true
+        }
+      })
+      return item
+    }
   }
 }
 export default klib_api
