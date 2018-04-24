@@ -197,6 +197,7 @@
     },
     methods: {
       syncVal(val) {
+        this.idListStr = val
         if (this.isTree) {
           let ktree = this.$refs.ktree
           if (!val && val !== 0) {
@@ -204,8 +205,6 @@
           } else {
             if (this.isSingle) {
               this.defaultExpandedKeys = [val]
-            } else {
-              this.idListStr = val
             }
             this.getButtonlabel(val)
           }
@@ -274,8 +273,6 @@
         // console.debug('KSelect syncOption: option loaded:', val, '|value:', this.value, '|optionList:', this.optionList, '|isList', this.isList)
       },
       changeValue(val) {
-        console.log(val, 333)
-        console.log(val[0] === null, 333)
         if (val === undefined) {
           this.$emit('input', '')
         } else if (val.push) {
