@@ -15,7 +15,7 @@
       </template>
       <template v-else>
         <template v-if="item.Field.indexOf('__') > 3">
-          <div style="float:right">
+          <div style="right:0;position: absolute">
             <el-tooltip :content="'修改' + item.Comment + '选项'" placement="top" :enterable="false" :open-delay="200">
               <el-button style="padding:10px 11px" type="primary" icon="el-icon-d-arrow-right"
                          @click="intoMapField(item)"></el-button>

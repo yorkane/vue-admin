@@ -26,6 +26,7 @@
   import KDataStruct from "../components/KDataStruct.vue";
   import ModelGrid from "./grid.vue";
   import AutoHeightWrapper from "../components/AutoHeightWrapper";
+  import klib_utils from "../klib/utils"
 
 
   export default {
@@ -257,11 +258,14 @@
             break;
         }
       },
+      insertNodeInTree: klib_utils.insertNodeInTree,
+      walkTreeNode: klib_utils.walkTreeNode,
+      deleteNodeInTree: klib_utils.deleteNodeInTree,
     }
   }
 </script>
 <style>
-  .tree-grid .el-table--border{
+  .tree-grid .el-table--border {
     border-left: 0;
   }
 </style>

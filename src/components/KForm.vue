@@ -234,7 +234,7 @@
           this.$notify.info({title: '没有改动', message: ''});
           return
         }
-        console.log(this.$parent)
+        // console.log(this.$parent)
         if (!this.api) {
           this.$notify.error({title: 'API 没有注入', message: '请检查API props'});
           return
@@ -318,6 +318,7 @@
       // },
       //abstract method hook, you should always override this method
       afterSave(isEditMode, plainObjct, resp, model) {
+        console.log(isEditMode, plainObjct, resp, model)
         let title = isEditMode ? '更新记录成功' : '新建记录成功'
         this.$notify.info({title: title, message: plainObjct})
       },

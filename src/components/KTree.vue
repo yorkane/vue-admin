@@ -8,9 +8,7 @@
            @click="filterText=''"
         ></i>
       </el-input>
-
     </div>
-
     <el-tree ref="ktree" :check-strictly="checkStrictly"
              :data="data.root||data"
              :props="tprop"
@@ -20,13 +18,22 @@
              @node-click="nodeClick"
              @check-change="handleNodeChecked"
              :highlight-current="highlightCurrent"
-             :render-content="nodeRender"
              :show-checkbox="showCheckBox"
              :filter-node-method="filterMethod"
              :default-checked-keys="defaultCheckedKeys"
              :defaultExpandedKeys="defaultExpandedKeys"
              :style="getHeight()"
              class="ktree">
+      <span class="k-tree-node" slot-scope="{ node, data }">
+        <span :title="data.desc||data.comment">{{ data[tprop.label] }}</span>
+        <span class="node-menu-bar">
+          <i v-if="_events.insert" class="el-icon-plus" @click="sendEvent($event,'insert', data)" title="新建"></i>
+          <i v-if="_events.edit" class="el-icon-edit" @click="sendEvent($event,'edit', data)" title="编辑"></i>
+          <i v-if="_events.delete" class="el-icon-delete" @click="sendEvent($event, 'delete', data)" title="删除"></i>
+          <i v-if="_events.move" class="el-icon-share" @click="sendEvent($event,'move', data)" title="移动"></i>
+          <i v-if="_events.detail" class="el-icon-tickets" @click="sendEvent($event, 'detail', data)" title="详情"></i>
+        </span>
+      </span>
     </el-tree>
     <div style="text-align: right" v-if="showCheckBox && !hideButton">
       <el-button-group style="margin:5px">
@@ -223,7 +230,8 @@
         let stack = [data[parent_key]];
         while (stack.length > 0) {
           let pid = stack.pop();
-          let obj = this.data.nodeDic[pid];
+          console.log(this.data, pid)
+          let obj = this.data.___dic[pid];
           if (obj) {
             path.push(obj[pk]);
             pid = obj[parent_key];
@@ -321,148 +329,79 @@
           }
         }
       },
-      /* 构建分类title及工具 */
-      nodeRender(h, {_self, node, data}) {
-        let has_edit = _self._events.edit ? true : false;
-        let has_insert = _self._events.insert ? true : false;
-        let has_delete = _self._events.delete ? true : false;
-        let has_move = _self._events.move ? true : false;
-        let has_detail = _self._events.detail ? true : false;
-        let childrenNodes = [h('span', data.name)]
-        if (data.id === 0) {
+      sendEvent(event, eventName, data) {
 
-        } else {
-          if (has_edit || has_insert || has_delete || has_move || has_detail) {
-            let ktreeBar = []
-            if (has_insert) {
-              // 添加
-              ktreeBar.push(
-                h('i', {
-                  'class': 'el-icon-plus',
-                  on: {
-                    click: function (event) {
-                      event.stopPropagation()
-//                    console.log('click insert',data, node)
-                      _self.$emit('insert', data, 'insert')
-                    }
-                  }
-                }))
-            }
-            if (has_edit) {
-              // 编辑
-              ktreeBar.push(
-                h('i', {
-                  'class': 'el-icon-edit',
-                  on: {
-                    click: function (event) {
-                      event.stopPropagation()
-//                    console.log('click edit',data, node)
-                      _self.$emit('edit', data, 'edit')
-                    }
-                  }
-                }),)
-            }
-            if (has_delete) {
-              // 删除
-              ktreeBar.push(
-                h('i', {
-                  'class': 'el-icon-delete',
-                  on: {
-                    click: function (event) {
-                      event.stopPropagation()
-                      _self.$confirm('删除该节点, 是否继续? ', '提示(您可以选择隐藏或者标记删除)', {
-                        confirmButtonText: '确定',
-                        cancelButtonText: '取消',
-                        type: 'warning'
-                      }).then(() => {
-                        _self.$emit('delete', data, 'delete')
-                      }).catch(() => {
-                      })
-                    }
-                  }
-                })
-              )
-            }
-            if (has_move) {
-              // 移动
-              ktreeBar.push(
-                h('i', {
-                  'class': 'el-icon-share',
-                  on: {
-                    click: function (event) {
-                      _self.moveTo(data); //open select node dialog
-                      event.stopPropagation()
-                    }
-                  }
-                })
-              )
-            }
-            if (has_detail) {
-              // 详情
-              ktreeBar.push(
-                h('i', {
-                  'class': 'el-icon-tickets',
-                  on: {
-                    click: function (event) {
-                      _self.$emit('detail', data, 'detail')
-                      event.stopPropagation()
-                    }
-                  }
-                })
-              )
-            }
-            childrenNodes.push(h('span', {'class': 'ktree-bar'}, ktreeBar))
-          }
+        event.stopPropagation()
+        switch (eventName) {
+          case 'insert':
+          case 'detail':
+          case 'edit':
+            this.$emit(eventName, data, eventName)
+            break;
+          case 'move':
+            this.moveTo(data); //open select node dialog
+            break;
+          case 'delete':
+            this.$confirm('删除该节点, 是否继续? ', '提示(您可以选择隐藏或者标记删除)', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
+              this.$emit(eventName, data, eventName)
+            }).catch(() => {
+            })
+            break;
+          default:
         }
-        return h(
-          'div',
-          {
-            'class': 'el-tree-node__label',
-            prop: {
-              children: '-'
-            }
-          },
-          childrenNodes
-        )
-      }
+      },
     }
   }
 </script>
 
-<style>
+<style lang="scss">
   .ktree__wrapper {
     min-width: 300px;
     text-align: left;
     border: 0;
-  }
 
-  .KTreeFilter button {
-    margin: 0;
-  }
-
-  .el-tree-node {
-    position: relative;
-  }
-
-  .el-tree-node__content:hover .ktree-bar {
-    display: block;
-  }
-
-  .ktree-bar {
-    display: none;
-    position: absolute;
-    top: 0;
-    right: 10px;
-    font-size: 12px;
-  }
-
-  .ktree-bar > i {
-    color: #999;
-    display: inline-block;
-    padding: 5px;
-  }
-
-  .ktree-bar > i:hover {
-    color: #20a0ff;
+    .KTreeFilter button {
+      margin: 0;
+    }
+    .el-tree-node {
+      position: relative;
+    }
+    .k-tree-node {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 14px;
+      padding-right: 8px;
+      .node-menu-bar {
+        display: none;
+      }
+      .extra {
+        position: absolute;
+      }
+    }
+    .k-tree-node:hover {
+      i {
+        color: #999;
+        display: inline;
+        padding: 1px;
+      }
+      i:hover {
+        color: #00B7FF;
+        background: #5e7382;
+      }
+      .extra {
+        display: none;
+      }
+      .node-menu-bar {
+        position: absolute;
+        right: 0;
+        display: block;
+      }
+    }
   }
 </style>

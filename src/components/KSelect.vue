@@ -189,14 +189,18 @@
         this.syncVal(this.value)
         this.syncOption(this.options)
       }, 1)
-
     },
     mounted() {
       this.optionList = this.getOptionsList()
+      setTimeout(() => {
+        this.syncVal(this.value)
+        this.syncOption(this.options)
+      }, 1)
       // console.log(this.optionList, this.keyField, this.valueField, this.labelField)
     },
     methods: {
       syncVal(val) {
+        // console.log(val)
         this.idListStr = val
         if (this.isTree) {
           let ktree = this.$refs.ktree
@@ -205,21 +209,27 @@
           } else {
             if (this.isSingle) {
               this.defaultExpandedKeys = [val]
+            } else {
+              this.defaultExpandedKeys = val.split(',')
             }
             this.getButtonlabel(val)
           }
         }
         this.isSingle = (typeof(val) === 'number') || !this.isMultiple
-        this.idValue = this.isSingle ? parseInt(val) : val
+        if (this.valueType === 'number' && this.isSingle) {
+          val = parseInt(val)
+        }
+        this.idValue = val
         if (this.isMultiple && val) {
           if (!val.split) { //防止错误的value 类型注入
             this.$emit('input', '')
             return
           }
           this.idList = []
-          if(this.valueType === 'number') {
+          if (this.valueType === 'number') {
             val.split(',').forEach(v => {
-              this.idList.push(parseInt(v))
+              v = parseInt(v)
+              this.idList.push(v)
             })
           } else {
             val.split(',').forEach(v => {
@@ -273,21 +283,25 @@
         // console.debug('KSelect syncOption: option loaded:', val, '|value:', this.value, '|optionList:', this.optionList, '|isList', this.isList)
       },
       changeValue(val) {
+        console.log(val)
         if (val === undefined) {
           this.$emit('input', '')
         } else if (val.push) {
-          if (!val[0]) {
-            console.log(val.splice(0, 1))
-          }
+          val.sort()
           let v = val.join(',')
-          console.log(v)
           this.$emit('input', v)
         } else {
           if (this.isSingle) {
-            val = parseInt(val)
+            let vInt = parseInt(val)
+            if (vInt || vInt === 0) {
+              val = vInt
+            }
             this.$emit('input', val)
           } else {
-            val = val.replace(/([\d,]*)[^\d,]*/ig, '$1')
+            val = val.replace(/(^,|,,|,$)]*/g, '')
+            val = val.split(',')
+            val.sort()
+            val = val.join(',')
             this.idListStr = val
             this.$emit('input', val)
           }
@@ -304,7 +318,7 @@
           let tip = list[0]
           if (tip) {
             tip = tip[this.valueField]
-            if (tip) {
+            if (tip !== undefined) {
               this.valueType = typeof(tip)
             }
           }
