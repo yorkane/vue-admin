@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="text-overflow: ellipsis;">
     <el-tag v-if="item.isStatus" :type="getTagType(model[item.Field])" size="small" hit>
       {{getStatus(item.Field,
       model[item.Field], true)}}
@@ -17,7 +17,8 @@
                @change="quickEdit(item.Field)"></el-switch>
     <i v-else-if="item.Field =='icon'" style="font-size: 24px;color: #1f2d3d"
        :class="model['icon']"></i>
-    <template v-else>{{getFieldLabel(item, 60)}}</template>
+    <template v-else-if="item.Field.indexOf('__')>5">{{getFieldLabel(item, 60)}}</template>
+    <template v-else>{{maxContent(model[item.Field])}}</template>
   </div>
 </template>
 <script>
@@ -26,6 +27,11 @@
   export default {
     name: 'KGridItem',
     data() {
+      if (this.item.Field.indexOf('__') > 4) {
+        this.$root.$on('k-data-ready', () => {
+          this.$forceUpdate()
+        })
+      }
       return {}
     },
     props: {
@@ -44,6 +50,10 @@
         type: [String, Number],
         required: true
       },
+      maxColumnLength: {
+        type:Number,
+        default: 60
+      }
     },
     mounted() {
     },
@@ -72,6 +82,12 @@
         if (tags) {
           return tags[val]
         }
+      },
+      maxContent(text) {
+        if (text && text.length > this.maxColumnLength) {
+          return (text.substr(0, this.maxColumnLength) + '...')
+        }
+        return text
       },
       getParentProp: klib.getParentProp,
       getFieldLabel: klib.getFieldLabel,

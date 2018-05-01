@@ -32,7 +32,7 @@
     },
     computed: {
       api() {
-        return this.API || this._api || this.$parent.API || this.$parent._api||this.$parent.$parent.API || this.$parent.$parent._api
+        return this.API || this._api || this.$parent.API || this.$parent._api || this.$parent.$parent.API || this.$parent.$parent._api
       },
       data() {
         let a = this.api
@@ -89,20 +89,32 @@
         let flist = data._FIELD_LIST
         let selfAPI = this.api
         if (!flist || !selfAPI || !selfAPI.new) return;
+        let dataFetchedNc = 0
+        let that = this
+
+        function checkDataFetchedNc() {
+          dataFetchedNc--;
+          // console.log(dataFetchedNc)
+          if (dataFetchedNc === 0) {
+            that.$root.$emit('k-data-ready')
+          }
+        }
+
         for (let i = 0; i < flist.length; i++) {
           let fname = flist[i].Field;
           let inx = fname.indexOf('__')
           if (inx > 1) {
             fname = fname.substring(0, inx)
             let api = selfAPI.new(fname)
+            dataFetchedNc++;
             if (api.key !== selfAPI.key) { //可执行的API
               if (api.isTree) { // 此API明确指定 Tree结构
-                api.getTree()
+                api.getTree().then(checkDataFetchedNc)
               } else {
                 //此API未明确指定 Tree结构，可能是初次载入，两个API接口都尝试一次
                 //根据返回结果判定是否Tree结构
-                api.getData()
-                api.getTree()
+                api.getData().then(checkDataFetchedNc)
+                api.getTree().then()
               }
             }
           }
