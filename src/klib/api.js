@@ -235,7 +235,11 @@ const klib_api = {
           }
           //this.___isTree = true
           let desc = data.tree_desc
-          klib.walkTreeNode(data.root, node => {
+          klib.walkTreeNode(data.root, (node, list, index) => {
+            if (node === null || node === undefined) {
+              list.splice(index, 1)
+              return
+            }
             if (!node.parent_id) {
               node.__depth = 1;
             } else {

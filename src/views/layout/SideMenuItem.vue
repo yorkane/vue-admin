@@ -39,6 +39,9 @@
 
   export default {
     name: 'SideMenuItem',
+    data() {
+      return {}
+    },
     props: {
       menus: {
         type: Array

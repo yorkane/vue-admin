@@ -311,7 +311,10 @@
         return this.$refs.ktree.getCheckedNodes(isLeafOnly)
       },
       getNode(data) {
-        return this.$refs.ktree.getNode(data)
+        let tree = this.$refs.ktree
+        if (tree && tree.getNode) {
+          return tree.getNode(data)
+        }
       },
       toggleLoading() {
         if (this.loading) {

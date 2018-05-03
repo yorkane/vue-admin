@@ -9,7 +9,7 @@
 <script>
   import {mapGetters} from 'vuex'
   import SidebarItem from './SidebarItem'
-  import {getList} from '../../api/sys_menu'
+  import menuAPI from '../../api/sys_menu'
   import SideMenuItem from "./SideMenuItem.vue";
 
   export default {
@@ -28,9 +28,12 @@
       ])
     },
     created() {
-      getList().then(resp => {
-        this.menu = resp.data.root;
+      menuAPI.getTree().then(data => {
+        this.menu = data.root;
       })
+      // getList().then(resp => {
+      //   this.menu = resp.data.root;
+      // })
     }
   }
 </script>
