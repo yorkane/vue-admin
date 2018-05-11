@@ -16,7 +16,7 @@
              :expand-on-click-node="expandOnClickNode"
              :default-expand-all="defaultExpandAll"
              @node-click="nodeClick"
-             @check-change="handleNodeChecked"
+             @check="handleNodeChecked"
              :highlight-current="highlightCurrent"
              :show-checkbox="showCheckBox"
              :filter-node-method="filterMethod"
@@ -285,7 +285,7 @@
         let keys = this.$refs.ktree.getCheckedKeys()
         this.$emit('check-confirm', nodes, keys, this)
       },
-      handleNodeChecked: function (data, isChecked, isChildrenChecked) {
+      handleNodeChecked: function (data, checkedInfo) {
         // if (isChecked && this.isSingleCheck) {
         // if(this.lastCheckedNode) {
         //   this.$refs.ktree.setChecked(this.lastCheckedNode)
@@ -299,7 +299,8 @@
         //   this.$refs.ktree.setCurrentNode(data)
         // }
         // }
-        this.$emit('check-change', data, isChecked, isChildrenChecked)
+        // console.log(data, isChecked)
+        this.$emit('check', data, checkedInfo)
       },
       setCheckedKeys(keys, isChecked) {
         return this.$refs.ktree.setCheckedKeys(keys, isChecked)

@@ -14,6 +14,7 @@
                 :is-single-check="isSingle"
                 :is-multiple-check="isMultiple"
                 @cancel="cancleTree"
+                @check="checkSingle"
                 :default-expanded-keys="defaultExpandedKeys"
                 :disabled="readOnly"
         >
@@ -355,7 +356,22 @@
       cancleTree() {
         this.showPopover = false
       },
-
+      checkSingle(data, checkedInfo) {
+        if (!this.isSingle) return;
+        let checkedKeys = checkedInfo.checkedKeys
+        if (checkedKeys.length < 1) return;
+        if (checkedKeys.length === 1) {
+          this.__last_key = checkedKeys[0]
+          return
+        }
+        // console.log(checkedInfo.checkedKeys, this.__last_key)
+        if (this.__last_key === checkedKeys[0]) {
+          this.__last_key = checkedKeys[1]
+        } else {
+          this.__last_key = checkedKeys[0]
+        }
+        this.$refs.ktree.setCheckedKeys([this.__last_key], true)
+      },
       checkChange(nodes, keys, treeComponent) {
         this.showPopover = false;
         let label
