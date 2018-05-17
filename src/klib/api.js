@@ -1,78 +1,6 @@
 import service from '../utils/service'
 import klib from './utils'
 
-function loadDataStruct(data) {
-  if (!data._FIELD_LIST) return data;
-  if (!data._FIELD_DIC) { //未初始化
-    data._FIELD_DIC = {}; //生成字段字典
-    data._RULES = {}; // 生成表单检查规则
-    data._MAP_FIELD = {} //生成字段映射字典
-    for (let i = 0; i < data._FIELD_LIST.length; i++) {
-      let fi = data._FIELD_LIST[i];
-      data._FIELD_DIC[fi.Field] = fi;
-      if (fi.isPK) {
-        //data._PK = fi.Field; //原生 接口已经有_PK
-      } else if (fi.notNull) { //根据字段中不允许空的配置，加入公共的验证规则
-        data._RULES[fi.Field] = {required: true, message: fi.Field + ' ' + (fi.Comment || '') + "不能为空", trigger: 'blur'}
-      }
-
-      //根据 字段名中包含 `__` 字符判断 Map 的table 与字段
-      if (fi.Field.indexOf('__') > 3) {
-        let arr = fi.Field.split('__')
-        let key = arr[0]
-        let key_field = arr[1]
-        //注册字段映射闭包
-        data._MAP_FIELD[key] = function (id, getAll) {
-          // console.log(key, id, klib_api.data(key) || klib_api.tree(key), store)
-          if (getAll) {
-            // console.log(data)
-            return klib_api.tree(key) || klib_api.data(key)
-          }
-          if (id.indexOf && id.indexOf(',') > 0) {
-            let idlist = id.split(',')
-            let list = []
-            for (let j = 0; j < idlist.length; j++) {
-              let vid = idlist[j]
-              if (key_field === data._PK) {
-                list.push(klib_api.getById(vid, key) || vid);
-              } else {
-                list.push(klib_api.getByValue(key_field, id) || vid);
-              }
-            }
-            return list
-          }
-          return klib_api.getById(id, key)
-        }
-      }
-    }
-  }
-  if (!data.statusValueDic) {
-    data.statusDic = data._STATUS; //注册状态字典
-    let dic = {};
-    for (var key in data._STATUS) {
-      var list = data._STATUS[key];
-      for (var i = 0; i < list.length; i++) {
-        var si = list[i];
-        dic[si.id] = si;
-      }
-    }
-    data.statusValueDic = dic; //注册状态值对应字典
-  }
-  if (!data.optionsValueDic) {
-    let dic = {};
-    data.optionsDic = data._OPTIONS; //注册选项字典
-    for (key in data._OPTIONS) {
-      var list = data._OPTIONS[key];
-      for (var i = 0; i < list.length; i++) {
-        var pi = list[i];
-        dic[pi.id] = pi;
-      }
-    }
-    data.optionsValueDic = dic; //注册选项ID字典
-  }
-  return data;
-}
-
 /**@class klib_api*/
 const klib_api = {
   _apiCacheDict: {},
@@ -162,13 +90,15 @@ const klib_api = {
       })
     }
     return new Promise(function (resolve, reject) {
+      let ds
+
       service({
         url: url,
         method: 'get',
         params
       }).then(resp => {
         let data = resp.data
-        st.dataStruct = loadDataStruct.call(that, data)
+        st.dataStruct = that.loadDataStruct(data)
         console.log('%c' + key + ' data-structure loaded from remote server', 'background:#000;color:#FFF', data)
         resolve(st.dataStruct)
       }).catch(data => {
@@ -314,6 +244,85 @@ const klib_api = {
       })
       return item
     }
-  }
+  },
+  loadDataStruct(data) {
+    if (!data._FIELD_LIST) return data;
+    if (!data._FIELD_DIC) { //未初始化
+      data._FIELD_DIC = {}; //生成字段字典
+      data._RULES = {}; // 生成表单检查规则
+      data._MAP_FIELD = {} //生成字段映射字典
+      for (let i = 0; i < data._FIELD_LIST.length; i++) {
+        let fi = data._FIELD_LIST[i];
+        data._FIELD_DIC[fi.Field] = fi;
+        if (fi.isPK) {
+          //data._PK = fi.Field; //原生 接口已经有_PK
+        } else if (fi.notNull) { //根据字段中不允许空的配置，加入公共的验证规则
+          data._RULES[fi.Field] = {
+            required: true,
+            message: fi.Field + ' ' + (fi.Comment || '') + "不能为空",
+            trigger: 'blur'
+          }
+        }
+
+        //根据 字段名中包含 `__` 字符判断 Map 的table 与字段
+        if (fi.Field.indexOf('__') > 3) {
+          let arr = fi.Field.split('__')
+          let key = arr[0]
+          let key_field = arr[1]
+          //注册字段映射闭包
+          data._MAP_FIELD[key] = function (id, getAll) {
+            // console.log(key, id, klib_api.data(key) || klib_api.tree(key), store)
+            if (getAll) {
+              // console.log(data)
+              return klib_api.tree(key) || klib_api.data(key)
+            }
+            if (id.indexOf && id.indexOf(',') > 0) {
+              let idlist = id.split(',')
+              let list = []
+              for (let j = 0; j < idlist.length; j++) {
+                let vid = idlist[j]
+                if (key_field === data._PK) {
+                  list.push(klib_api.getById(vid, key) || vid);
+                } else {
+                  list.push(klib_api.getByValue(key_field, id) || vid);
+                }
+              }
+              return list
+            }
+            return klib_api.getById(id, key)
+          }
+        }
+      }
+    }
+    if (!data.statusValueDic) {
+      data.statusDic = data._STATUS; //注册状态字典
+      let dic = {};
+      for (var key in data._STATUS) {
+        var list = data._STATUS[key];
+        for (var i = 0; i < list.length; i++) {
+          var si = list[i];
+          dic[si.id] = si;
+        }
+      }
+      data.statusValueDic = dic; //注册状态值对应字典
+    }
+    if (!data.optionsValueDic) {
+      let dic = {};
+      data.optionsDic = data._OPTIONS; //注册选项字典
+      for (key in data._OPTIONS) {
+        var list = data._OPTIONS[key];
+        for (var i = 0; i < list.length; i++) {
+          var pi = list[i];
+          dic[pi.id] = pi;
+        }
+      }
+      data.optionsValueDic = dic; //注册选项ID字典
+    }
+    key = key || this.key
+    let st = this.getState(key);
+    st.dataStruct = data
+    this.dataStruct = data
+    return data;
+  },
 }
 export default klib_api

@@ -2,6 +2,9 @@
   <el-form-item v-show="!isHide" :class="isFieldReadOnly()?'read-only':''"
                 :label="getLabel()"
                 :prop="key">
+    <template slot="label">
+      <slot name="label">{{getLabel() + form.labelSuffix}}</slot>
+    </template>
     <slot>
       <template v-if="item.Field.match(/^(password|salt)/ig)">
       </template>

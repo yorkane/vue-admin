@@ -17,6 +17,9 @@
           ></el-autocomplete>
         </k-form-item>
         <k-form-item showFieldKey :item="item" v-else>
+          <template slot="label">
+            <field-info edit-table :item.sync="item"></field-info>
+            </template>
           <component :is="getComponent(item.Field)" :item="item" v-model="model[item.Field]" :model="model"></component>
         </k-form-item>
       </template>
@@ -31,12 +34,14 @@
   import KForm from "../components/KForm.vue";
   import KWrap from "../components/KWrap.vue";
   import KIconSelector from "../components/KIconSelector.vue";
+  import FieldInfo from "./fieldInfo";
 
 
   export default {
     name: 'ModelForm',
     mixins: [KForm],
     components: {
+      FieldInfo,
       KWrap,
       KFormItem,
     },

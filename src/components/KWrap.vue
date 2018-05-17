@@ -73,6 +73,10 @@
         if (this.withDialog) {
           this.showDialog = false
         }
+        if(this.close) {
+          this.close()
+        }
+        this.$emit('close')
       },
       loadComponent(componentPath) {
         this.innerComponent = _import(componentPath)

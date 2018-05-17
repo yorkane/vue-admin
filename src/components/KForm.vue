@@ -7,14 +7,17 @@
              :size="size">
       <template v-for="(item, index) in m_dataStruct._FIELD_LIST">
         <k-form-item :model="model" :item="item">
-          <component :is="getComponent(item.Field)" :item="item" v-model="model[item.Field]"></component>
+          <slot :row="item" :$index="index">
+            <component :is="getComponent(item.Field)" :item="item" v-model="model[item.Field]">
+            </component>
+          </slot>
         </k-form-item>
       </template>
     </el-form>
-    <slot>
-      <el-button type="primary" @click="submitForm">{{isEditMode ? '保存修改' : '创建'}}</el-button>
-      <el-button @click="reset">重置</el-button>
-      <el-button @click="cancel">取消</el-button>
+    <slot name="buttons">
+      <el-button :size="size" type="primary" @click="submitForm">{{isEditMode ? '保存修改' : '创建'}}</el-button>
+      <el-button :size="size" @click="reset">重置</el-button>
+      <el-button :size="size" @click="cancel">取消</el-button>
     </slot>
   </div>
 </template>
@@ -173,6 +176,7 @@
           this.$emit('update:visible', false)
         }
         this.broadcast('k-select', 'cancel')
+        this.broadcast('k-form', 'cancel')
         this.$emit('cancel')
       },
       close() {
