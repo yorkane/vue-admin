@@ -1,75 +1,98 @@
 const _M = {
-  _OPTIONS: [],
-  _PK: "id",
-  _NAME: "sys_field_info",
-  _DEFAULT: [],
-  _STATUS: [],
   _FIELD_LIST: [
     {
-      Field: "id",
-      notNull: true,
+      width: 11,
       Key: "PRI",
-      isPK: true,
+      notNull: true,
       isInt: true,
-      width: 11
+      Field: "id",
+      isPK: true
     },
     {
+      width: 64,
       Field: "Field",
-      notNull: true,
+      is_readonly: true,
       Comment: "字段名",
       isText: true,
-      width: 64
+      notNull: true
     },
     {
+      width: 64,
       Field: "_DB",
+      is_readonly: true,
       Comment: "所属数据库",
       isText: true,
-      width: 64
+      notNull: true
     },
     {
+      width: 64,
       Field: "_NAME",
-      notNull: true,
+      is_readonly: true,
       Comment: "所属数据表",
       isText: true,
-      width: 64
+      notNull: true
     },
     {
-      Field: "Comment",
+      width: 64,
+      isText: true,
+      grid_width:200,
       Comment: "字段备注",
-      isText: true,
-      width: 64
+      Field: "Comment"
     },
     {
-      Field: "info",
+      width: 500,
+      grid_width:200,
+      isText: true,
       Comment: "描述信息",
-      isText: true,
-      width: 500
+      Field: "info"
     },
     {
+      Comment: "能否为空",
       isIntBool: true,
-      Field: "notNull",
-      Comment: "能否为空"
+      Field: "notNull"
     },
     {
-      Field: "validate_regex",
-      Comment: "正则验证",
+      width: 200,
       isText: true,
-      width: 200
+      Comment: "正则验证",
+      Field: "validate_regex"
     },
     {
+      width: 200,
       Field: "validate_error",
+      hide_in_form: false,
       Comment: "验证错误信息",
       isText: true,
-      width: 200
+      hide_in_grid: true
     },
     {
-      Field: "grid_width",
+      width: 11,
       Comment: "表格宽度",
       isInt: true,
-      width: 11
+      Field: "grid_width"
+    },
+    {
+      Comment: "表格中不显示",
+      isIntBool: true,
+      Field: "hide_in_grid"
+    },
+    {
+      Comment: "表单中不显示",
+      isIntBool: true,
+      Field: "hide_in_form"
+    },
+    {
+      Comment: "禁止编辑",
+      isIntBool: true,
+      Field: "is_readonly"
     }
   ],
-  _DB: "approot",
-  _COMMENT: "自定义字段信息"
+  _PK: "id",
+  _DEFAULT: [ ],
+  _STATUS: [ ],
+  _NAME: "sys_field_info",
+  _OPTIONS: [ ],
+  _COMMENT: "自定义字段信息",
+  _DB: "approot"
 }
 export default _M

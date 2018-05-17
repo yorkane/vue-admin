@@ -127,15 +127,24 @@
       },
       //根据 columnWidth 数组获取表格宽度
       getColWidth(fi) {
-        let name = fi.Field;
-        let cols = this.dataStruct._FIELD_LIST.length
-        let factor = 10 / cols
-        factor = factor < 1 ? 1 : factor
-        let wd = this.columnWidth[name];
+        if (fi.hide_in_grid) {
+          return 0
+        }
+        //Try to get width from FieldInfo
+        let wd = fi.grid_width
+        if (wd && wd > 40) {
+          return wd
+        }
+        //Try to get width from grid configs
+        wd = this.columnWidth[name];
         if (wd !== undefined) {
           // console.log('load from columnWidth',fi.Field, wd)
           return wd
         }
+        let name = fi.Field;
+        let cols = this.dataStruct._FIELD_LIST.length
+        let factor = 10 / cols
+        factor = factor < 1 ? 1 : factor
         if (localStorage) {
           let key = this.getFieldKey('GridWidth', fi.Field)
           let w = localStorage.getItem(key)

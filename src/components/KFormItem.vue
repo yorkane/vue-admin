@@ -1,5 +1,5 @@
 <template>
-  <el-form-item v-show="!isHide" :class="isFieldReadOnly()?'read-only':''"
+  <el-form-item v-if="!item.hide_in_form" v-show="!isHide" :class="isFieldReadOnly()?'read-only':''"
                 :label="getLabel()"
                 :prop="key">
     <template slot="label">
@@ -25,7 +25,8 @@
             </el-tooltip>
           </div>
           <div style="margin-right:60px;">
-            <k-select v-model="model[key]" :label-field="getLabelField(item)" :key-field="getValueField(item)" :value-field="getValueField(item)" :isMultiple="item.isText||false"
+            <k-select v-model="model[key]" :label-field="getLabelField(item)" :key-field="getValueField(item)"
+                      :value-field="getValueField(item)" :isMultiple="item.isText||false"
                       :placeholder="'请选择'+item.Comment" :options="getMapOptions(item)">
             </k-select>
           </div>
@@ -71,7 +72,7 @@
           <el-switch v-if="item.isBool" v-model="model[key]"></el-switch>
           <el-switch v-else="item.isIntBool" v-model.number="model[key]"
                      :active-value="1" :inactive-value="0"></el-switch>
-          {{item.Field}}
+          {{item.Field}} {{model[key]}}
         </template>
         <el-input v-else-if="item.width > 200" v-model="model[key]" :maxlength="item.width" type="textarea"
                   :placeholder="placeholder" :autosize="{ minRows: 2, maxRows: 10}"></el-input>
@@ -97,6 +98,7 @@
     },
     props: {
       prop: String,
+      readOnly: Boolean,
       item: {
         type: Object,
         default: function () {
@@ -131,6 +133,8 @@
     },
     methods: {
       isFieldReadOnly(item = this.item) {
+        if (item.is_readonly) return true;
+        if (this.readOnly) return true;
         if (this.disabled || (item.isDate && item.Field.match(/^(create_|last_)/ig))) {
           return true
         }

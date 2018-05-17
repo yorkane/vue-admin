@@ -272,6 +272,3 @@
     }
   }
 </script>
-<style>
-
-</style>

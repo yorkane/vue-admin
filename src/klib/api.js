@@ -18,6 +18,18 @@ const klib_api = {
       return api
     }
     else {
+      try {
+        api = require('../api/' + key)
+        if (api && api.default) {
+          api = api.default
+          this._apiCacheDict[key] = api
+          api.$store = store || window._$store
+          api.__proto__ = this
+          api = api.new(params, store)
+          return api
+        }
+      } catch (e) {
+      }
       api = {}
     }
     api.key = key

@@ -6,7 +6,7 @@
              :status-icon="statusIcon"
              :size="size">
       <template v-for="(item, index) in m_dataStruct._FIELD_LIST">
-        <k-form-item :model="model" :item="item">
+        <k-form-item :item="item">
           <slot :row="item" :$index="index">
             <component :is="getComponent(item.Field)" :item="item" v-model="model[item.Field]">
             </component>
@@ -70,7 +70,7 @@
     },
     created() {
       if (!this.___oridata) {
-        this.setOriginalData()
+        this.setOriginalData(this.model)
       }
     },
     watch: {
@@ -149,10 +149,11 @@
             }
           }
         }
+        // console.log('setOriginalData set: ',this.___oridata)
       },
       reset() {
         // console.log(this.m_dataStruct)
-        // console.log(this.___oridata)
+
         // return
         if (this.___oridata[this.m_dataStruct._PK] === -404) {
           // data untouched
@@ -166,6 +167,7 @@
             this.model[key] = val
           }
         }
+        // console.log(this.___oridata, this.model)
         //this.resetFields(); call native reset will overwrite the saved data
         //this.$emit('reset')
       },
@@ -214,7 +216,7 @@
             if (val && val.getDate) val = this.formatDate(val)
           }
           if (isEditMode && newVal === val) continue; //In edit mode, new value and old value could not be the same
-
+          // console.log(key, '||new:',newVal,'|| older:',val,this.___oridata)
           if (!newObj) {
             newObj = {};
             newObj[pk] = this.model[pk]
@@ -322,7 +324,7 @@
       // },
       //abstract method hook, you should always override this method
       afterSave(isEditMode, plainObjct, resp, model) {
-        console.log(isEditMode, plainObjct, resp, model)
+        // console.log(isEditMode, plainObjct, resp, model)
         let title = isEditMode ? '更新记录成功' : '新建记录成功'
         this.$notify.info({title: title, message: plainObjct})
       },

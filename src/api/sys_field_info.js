@@ -22,6 +22,11 @@ const sys_field_infoAPI = {
     return inst
   },
   getDataStruct() {
+    if (this.dataStruct) {
+      return new Promise((resolve, reject) => {
+        resolve(this.dataStruct)
+      });
+    }
     return this._getDataStruct(key)
   },
   getData(params, forceReload) {

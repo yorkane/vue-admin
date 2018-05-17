@@ -30,7 +30,7 @@
 
 
   export default {
-    name: 'ModelIndex',
+    name: 'ModelTree',
     components: {
       AutoHeightWrapper,
       ModelGrid,

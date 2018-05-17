@@ -42,7 +42,7 @@ export const constantRouterMap = [
     path: '/sys',
     component: Layout,
     redirect: 'noredirect',
-    name: '系统应用',
+    name: 'system',
     hidden: true,
     icon: 'zujian',
     children: [
@@ -68,6 +68,7 @@ export const constantRouterMap = [
     path: '/model',
     component: Layout,
     hidden: true,
+    name:'modelEntry',
     noDropdown: true,
     children: [{path: ':name/:table*', name: 'model', component: model_index}]
   },
