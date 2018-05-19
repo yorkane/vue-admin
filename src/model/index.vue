@@ -10,17 +10,20 @@
       </k-condition>
       <k-batch-form :data-struct="m_dataStruct" :visible.sync="showBatchForm" with-dialog
                     @submit="batchUpdate"></k-batch-form>
-      <model-grid dbclickEvent enable-checked :dataStruct="m_dataStruct" :model="gridData" :totalCount="totalCount" dbclick-event-name="btnEvt_edit"
+      <model-grid dbclickEvent enable-checked :dataStruct="m_dataStruct" :model="gridData" :totalCount="totalCount"
+                  dbclick-event-name="btnEvt_edit"
                   :page.sync="page" :pageSize.sync="pageSize" :selected.sync="selectedList"
                   @quickEdit="quickEdit" @sort="sortField" @btnEvt_edit="handleEvent" @btnEvt_delete="handleEvent"
                   @pageChange="getData()"
       ></model-grid>
-      <mform :model.sync="currentRow" :isEditMode="isEditMode" withDialog :dataStruct="m_dataStruct"
-             :fieldMapComponent="{}"
-             @inserted="inserted" :withDialog="true" :visible.sync="showForm"></mform>
+
+      <k-form-wrap label-width="200px" :field-editable="isAdmin" :model.sync="currentRow"
+                   :isEditMode="isEditMode" withDialog :dataStruct="m_dataStruct" @inserted="inserted"
+                   :visible.sync="showForm" :component-map="componentMap">
+      </k-form-wrap>
+      <!--<k-form></k-form>-->
     </div>
   </div>
-
 </template>
 <script>
   import modelAPI from '../api/model'
@@ -31,10 +34,17 @@
   import roleAPI from '../api/sys_role'
   import nginx_confAPI from '../api/nginx_conf'
   import KBatchForm from "../components/KBatchForm";
+  import {isAdmin, getRole} from "../utils/auth";
+  import KForm from "../components/KForm";
+  import KFormWrap from "../components/KFormWrap";
+  import KIconSelector from "../components/KIconSelector";
 
   export default {
     name: 'ModelIndex',
     components: {
+      KIconSelector,
+      KFormWrap,
+      KForm,
       KBatchForm,
       ModelGrid,
       KCondition,
@@ -66,9 +76,18 @@
         selectedList: [],
         header_text: '',
         showBatchForm: false,
+        componentMap: {
+          'icon': KIconSelector
+        }
+      }
+    },
+    computed: {
+      isAdmin() {
+        return isAdmin()
       }
     },
     created() {
+      // console.log(this.isAdmin, 'isAdmin')
     },
     methods: {
       dataStructLoaded(data) {
@@ -150,7 +169,7 @@
         switch (eventName) {
           case 'btnEvt_insert':
             this.isEditMode = false
-            this.currentRow = Object.assign({}, this.m_dataStruct._DEFAULT)
+            this.currentRow = {_isEmpty: true}
             this.showForm = true
             break
           case 'btnEvt_edit':

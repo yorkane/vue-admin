@@ -17,21 +17,20 @@ const klib_api = {
     if (api) {
       return api
     }
-    else {
-      try {
-        api = require('../api/' + key)
-        if (api && api.default) {
-          api = api.default
-          this._apiCacheDict[key] = api
-          api.$store = store || window._$store
-          api.__proto__ = this
-          api = api.new(params, store)
-          return api
-        }
-      } catch (e) {
+    let hasLocalAPI = false
+    try {
+      api = require('../api/' + key)
+      hasLocalAPI = true
+      if (api && api.default) {
+        api = api.default
+        hasLocalAPI = true
       }
+    } catch (e) {
+    }
+    if (!hasLocalAPI) {
       api = {}
     }
+
     api.key = key
     api.params = params || {}
     if (klib_api.$store) {
@@ -48,8 +47,16 @@ const klib_api = {
     console.debug(key, ' API created', api, params, store)
     api.__proto__ = this
     this._apiCacheDict[key] = api
+    if (hasLocalAPI) {
+      api = api.new(params, store)
+    }
     return api
   },
+  /**
+   * Set local cache with independent cache space
+   * @param key
+   * @param data
+   */
   setCache(key, data) {
     key = key || this.key
     let st = this.getState(key)
@@ -58,6 +65,11 @@ const klib_api = {
     }
     st.cache[key] = data
   },
+  /**
+   * Get local cache with independent cache space
+   * @param key
+   * @returns {*}
+   */
   getCache(key) {
     key = key || this.key
     let st = this.getState(key)
@@ -92,6 +104,14 @@ const klib_api = {
       return st
     }
   },
+  /**
+   * internally initialize the dataStruct
+   * @param key
+   * @param url
+   * @param params
+   * @returns {Promise<any>}
+   * @private
+   */
   _getDataStruct(key, url, params) {
     let that = this
     key = key || this.key
@@ -102,8 +122,6 @@ const klib_api = {
       })
     }
     return new Promise(function (resolve, reject) {
-      let ds
-
       service({
         url: url,
         method: 'get',
@@ -118,20 +136,50 @@ const klib_api = {
       })
     })
   },
+  /**
+   * Get data as a tree from local cache or remotely
+   * @param params
+   * @param forceReload
+   * @param key
+   * @param url
+   * @returns {*}
+   */
   getTree(params, forceReload, key, url) {
     key = key || this.key
     return this._getData(params, forceReload, key, url, true)
   },
+  /**
+   * get data as list
+   * @param key
+   * @param name
+   * @returns {*}
+   */
   data(key, name) {
     key = key || this.key
     let state = this.getState(key, name);
     if (state) return state.dataList
   },
+  /**
+   * get data as tree
+   * @param key
+   * @param name
+   * @returns {*}
+   */
   tree(key, name) {
     key = key || this.key
     let state = this.getState(key, name);
     if (state) return state.dataTree
   },
+  /**
+   * get data list from local cache or remotely
+   * @param params
+   * @param forceReload
+   * @param key
+   * @param url
+   * @param isTree
+   * @returns {Promise<any>}
+   * @private
+   */
   _getData(params, forceReload, key, url, isTree) {
     let state
     key = key || this.key
@@ -216,6 +264,13 @@ const klib_api = {
       })
     })
   },
+  /**
+   * get data item by item id from local cache
+   * @param id
+   * @param key
+   * @param name
+   * @returns {*}
+   */
   getById(id, key, name) {
     key = key || this.key
     let st = this.getState(key, name);
@@ -223,7 +278,7 @@ const klib_api = {
     if (data && data.___dic) {
       let intId = parseInt(id)
       let val
-      if (intId) {
+      if (intId || intId === 0) {
         val = data.___dic[intId]
       }
       if (val === undefined || val === null) {
@@ -233,6 +288,14 @@ const klib_api = {
     }
     return null
   },
+  /**
+   * get item by item field value from local cache
+   * @param field
+   * @param value
+   * @param key
+   * @param name
+   * @returns {*}
+   */
   getByValue(field, value, key, name) {
     key = key || this.key
     let st = this.getState(key, name);
@@ -257,6 +320,11 @@ const klib_api = {
       return item
     }
   },
+  /**
+   * load initial data-struct data from local file or remote response
+   * @param data
+   * @returns {*}
+   */
   loadDataStruct(data) {
     if (!data._FIELD_LIST) return data;
     if (!data._FIELD_DIC) { //未初始化
@@ -268,12 +336,23 @@ const klib_api = {
         data._FIELD_DIC[fi.Field] = fi;
         if (fi.isPK) {
           //data._PK = fi.Field; //原生 接口已经有_PK
-        } else if (fi.notNull) { //根据字段中不允许空的配置，加入公共的验证规则
-          data._RULES[fi.Field] = {
-            required: true,
-            message: fi.Field + ' ' + (fi.Comment || '') + "不能为空",
-            trigger: 'blur'
+        } else if (fi.notNull === 1 || fi.validate_regex) { //根据字段中不允许空的配置，加入公共的验证规则
+          let rule = []
+          if (fi.notNull) {
+            rule.push({
+              required: true,
+              message: fi.Field + ' ' + (fi.Comment || '') + "不能为空",
+              trigger: 'blur'
+            })
           }
+          if (fi.validate_regex) {
+            rule.push({
+              pattern: fi.validate_regex,
+              message: fi.validate_error || '正则检验错误' + fi.validate_regex,
+              trigger: 'blur'
+            })
+          }
+          data._RULES[fi.Field] = rule
         }
 
         //根据 字段名中包含 `__` 字符判断 Map 的table 与字段
@@ -285,7 +364,6 @@ const klib_api = {
           data._MAP_FIELD[key] = function (id, getAll) {
             // console.log(key, id, klib_api.data(key) || klib_api.tree(key), store)
             if (getAll) {
-              // console.log(data)
               return klib_api.tree(key) || klib_api.data(key)
             }
             if (id.indexOf && id.indexOf(',') > 0) {

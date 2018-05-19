@@ -98,14 +98,14 @@
         this.insertNodeInTree(this.treeData.root, data)
       },
       handleInsert(data) {
-        console.log('start insert in', data)
+        // console.log('start insert in', data)
         this.isEditMode = false;
         this.dialog_edit_show = true;
         data = data || {id: 0} //insert to root if empty data
         this.currentRow = {id: 0, role: 0, status: 0, parent_id: data.id}
       },
       handleEdit: function (data) {
-        console.log('start edit', data)
+        // console.log('start edit', data)
         this.currentRow = data
         this.isEditMode = true
         this.dialog_edit_show = true

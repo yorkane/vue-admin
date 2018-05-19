@@ -42,10 +42,11 @@
       }
     },
     created() {
+      // console.log(this.api, 'dataStruct', this.dataStruct)
       if (this.dataStruct) { //dataStruct injected, maybe not initialized
         if (this.dataStruct._NAME) {
           this.m_dataStruct = this.dataStruct
-          console.debug(this.api.key, ' DataStruct load from prop', this.m_dataStruct)
+          console.debug(this.api ? this.api.key : '', ' DataStruct load from prop', this.m_dataStruct)
           if (this.getData) {
             this.getData()
           }

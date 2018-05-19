@@ -1,5 +1,5 @@
 <template>
-  <el-form-item v-if="!item.hide_in_form" v-show="!isHide" :class="isFieldReadOnly()?'read-only':''"
+  <el-form-item v-show="!isHide" :class="isFieldNoValidate()?'no-validate':''" :size="size"
                 :label="getLabel()"
                 :prop="key">
     <template slot="label">
@@ -26,24 +26,24 @@
           </div>
           <div style="margin-right:60px;">
             <k-select v-model="model[key]" :label-field="getLabelField(item)" :key-field="getValueField(item)"
-                      :value-field="getValueField(item)" :isMultiple="item.isText||false"
+                      tabindex="1" :value-field="getValueField(item)" :isMultiple="item.isText||false"
                       :placeholder="'请选择'+item.Comment" :options="getMapOptions(item)">
             </k-select>
           </div>
         </template>
-        <el-input-number v-else-if="item.isInt" v-model="model[key]"></el-input-number>
+        <el-input-number v-else-if="item.isInt" v-model="model[key]" tabindex="1"></el-input-number>
         <el-input-number v-else-if="item.isFloat" v-model="model[key]" :step="0.1"
-                         :maxlength="item.width"></el-input-number>
+                         :maxlength="item.width" tabindex="1"></el-input-number>
         <el-date-picker v-else-if="item.isDate" v-model="model[key]" type="datetime"
-                        placeholder="选择日期时间"></el-date-picker>
+                        placeholder="选择日期时间" tabindex="1"></el-date-picker>
         <template v-else-if="item.isStatus">
-          <el-radio-group v-model="model[key]" v-if="getStatusList(item.Field).length < 6">
+          <el-radio-group v-model="model[key]" v-if="getStatusList(item.Field).length < 6" tabindex="1">
             <el-radio-button v-for="option in getStatusList(item.Field)" :key="option.id" :label="option.label">
               {{option.label}}
             </el-radio-button>
           </el-radio-group>
           <el-select v-else v-model="model[key]"
-                     :placeholder="'请选择'+item.Comment">
+                     :placeholder="'请选择'+item.Comment" tabindex="1">
             <el-option
               v-for="option in getStatusList(item.Field)"
               :key="option.id"
@@ -53,13 +53,13 @@
           </el-select>
         </template>
         <template v-else-if="item.isOption||item.isTextOption">
-          <el-radio-group v-model="model[key]" v-if="getOptionList(item.Field).length < 6">
+          <el-radio-group v-model="model[key]" v-if="getOptionList(item.Field).length < 6" tabindex="1">
             <el-radio-button v-for="option in getOptionList(item.Field)" :key="option.value" :label="option.value">
               {{option.label}}
             </el-radio-button>
           </el-radio-group>
           <el-select v-else="item.isOption||item.isTextOption" v-model="model[key]"
-                     :placeholder="'请选择'+item.Comment" style="min-width:200px;width:70%">
+                     :placeholder="'请选择'+item.Comment" style="min-width:200px;width:70%" tabindex="1">
             <el-option
               v-for="option in getOptionList(item.Field)"
               :key="option.value"
@@ -69,14 +69,14 @@
           </el-select>
         </template>
         <template v-else-if="item.isBool||item.isIntBool">
-          <el-switch v-if="item.isBool" v-model="model[key]"></el-switch>
-          <el-switch v-else="item.isIntBool" v-model.number="model[key]"
+          <el-switch tabindex="1" v-if="item.isBool" v-model="model[key]"></el-switch>
+          <el-switch tabindex="1" v-else="item.isIntBool" v-model.number="model[key]"
                      :active-value="1" :inactive-value="0"></el-switch>
           {{item.Field}} {{model[key]}}
         </template>
-        <el-input v-else-if="item.width > 200" v-model="model[key]" :maxlength="item.width" type="textarea"
+        <el-input tabindex="1" v-else-if="item.width > 200" v-model="model[key]" :maxlength="item.width" type="textarea"
                   :placeholder="placeholder" :autosize="{ minRows: 2, maxRows: 10}"></el-input>
-        <el-input v-else v-model="model[key]" :maxlength="item.width" :type="type"
+        <el-input tabindex="1" v-else v-model="model[key]" :maxlength="item.width" :type="type"
                   :placeholder="placeholder" :style="item.isPK ? 'width:70%':null"></el-input>
       </template>
     </slot>
@@ -97,6 +97,7 @@
       return {}
     },
     props: {
+      size: String,
       prop: String,
       readOnly: Boolean,
       item: {
@@ -132,6 +133,12 @@
       }
     },
     methods: {
+      isFieldNoValidate() {
+        if (this.item.isIntBool || this.item.isBool) {
+          return true
+        }
+        return this.isFieldReadOnly()
+      },
       isFieldReadOnly(item = this.item) {
         if (item.is_readonly) return true;
         if (this.readOnly) return true;

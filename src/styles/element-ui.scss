@@ -10,7 +10,9 @@
 .el-message-box__message p {
   font-size: 20px;
 }
-
+.form-buttons{
+  margin-top: 10px;
+}
 .el-form-item {
   margin-bottom: 10px;
 }
@@ -19,13 +21,25 @@
   margin-bottom: 22px;
 }
 
-.el-form-item.read-only {
+.el-form-item.el-form-item--mini {
+  margin: 2px 0 5px 0;
+}
+.el-form-item.no-validate {
   margin-bottom: 0;
   .el-form-item__label, .el-form-item__content {
     height: 30px;
     line-height: 30px;
   }
 }
+
+.el-form-item.el-form-item--mini.no-validate {
+  margin-bottom: 0;
+  .el-form-item__label, .el-form-item__content {
+    height: 20px;
+    line-height: 20px;
+  }
+}
+
 
 .el-pagination {
   margin-top: 4px;

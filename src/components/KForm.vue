@@ -1,23 +1,33 @@
 <template>
   <div>
-    <el-form :labelWidth="labelWidth" :ref="refs" :rules="formRules"
-             :labelPosition="labelPosition" :model="model" :inline="inline"
-             :label-suffix="labelSuffix" :show-message="showMessage" :inline-message="inlineMessage"
-             :status-icon="statusIcon"
-             :size="size">
-      <template v-for="(item, index) in m_dataStruct._FIELD_LIST">
-        <k-form-item :item="item">
-          <slot :row="item" :$index="index">
-            <component :is="getComponent(item.Field)" :item="item" v-model="model[item.Field]">
-            </component>
+    <slot name="main">
+      <el-form :labelWidth="labelWidth" :ref="refs" :rules="formRules"
+               :labelPosition="labelPosition" :model="model" :inline="inline"
+               :label-suffix="labelSuffix" :show-message="showMessage" :inline-message="inlineMessage"
+               :status-icon="statusIcon"
+               :size="size" :class="size">
+        <template v-for="(item, index) in m_dataStruct._FIELD_LIST">
+          <slot name="form-item">
+            <k-form-item :item="item" :size="size" v-if="(item.hide_in_form !== 1) || fieldEditable">
+              <slot name="label" slot="label" :row="item">
+                <k-form-field-info :item="item" :edit-table="fieldEditable"></k-form-field-info>
+              </slot>
+              <slot name="component" :row="item" :$index="index">
+                <component :is="getComponent(item.Field)" :item="item" v-model="model[item.Field]">
+                </component>
+              </slot>
+            </k-form-item>
           </slot>
-        </k-form-item>
-      </template>
-    </el-form>
-    <slot name="buttons">
-      <el-button :size="size" type="primary" @click="submitForm">{{isEditMode ? '保存修改' : '创建'}}</el-button>
-      <el-button :size="size" @click="reset">重置</el-button>
-      <el-button :size="size" @click="cancel">取消</el-button>
+        </template>
+      </el-form>
+      <slot name="buttons">
+        <div class="form-buttons">
+          <el-button :size="size" type="primary" @click="submitForm">{{isEditMode ? '保存修改' : '创建'}}</el-button>
+          <el-button :size="size" @click="reset">重置</el-button>
+          <el-button :size="size" @click="resetDefault">默认值</el-button>
+          <el-button :size="size" @click="cancel">取消</el-button>
+        </div>
+      </slot>
     </slot>
   </div>
 </template>
@@ -27,21 +37,27 @@
   import klib from '../klib/utils'
   import KDataStruct from "./KDataStruct.vue";
   import {Form} from 'element-ui'
+  import KForm from './KForm'
+  import KFormFieldInfo from "./KFormFieldInfo";
 
   export default {
     mixins: [KDataStruct, KWrap, Form],
     components: {
+      KFormFieldInfo,
       KFormItem,
-      KWrap
+      KWrap,
+      KForm
     },
     name: 'KForm',
     data() {
       return {
+        isModelChanged: false,
         emptyRule: {},
         formRules: {}
       }
     },
     props: {
+      size: String,
       model: {
         type: Object,
         required: false,
@@ -49,6 +65,7 @@
           return {}
         }
       },
+      fieldEditable: Boolean,
       isEditMode: {
         type: Boolean,
         default: false
@@ -66,12 +83,11 @@
       formTitle() {
         let txt = this.isEditMode ? '修改' : '创建'
         return txt + this.m_dataStruct._COMMENT
-      }
+      },
     },
     created() {
-      if (!this.___oridata) {
-        this.setOriginalData(this.model)
-      }
+      // console.log(this.model)
+      this.setOriginalData(this.model)
     },
     watch: {
       model(val) {
@@ -80,30 +96,54 @@
       }
     },
     mounted() {
-      setTimeout(this.updateValidateRule.bind(this), 300)
+      if (!this.___oridata) {
+        this.setOriginalData(this.model)
+      }
+      setTimeout(() => {
+        this.updateValidateRule()
+      }, 300)
     },
     methods: {
+      /**
+       * Merge dataStruct rules with customized rules
+       */
       updateValidateRule() {
         if (this.m_dataStruct._RULES) {
-          for (let key in this.formRules) {
-            let val = this.m_dataStruct._RULES[key];
-            if (val) {
-              let value = this.formRules[key]
-              value.push(val)
-              // value.splice(0, 0, val)
-            }
-          }
           for (let key in this.m_dataStruct._RULES) {
-            let val = this.formRules[key];
-            if (!val) {
-              val = []
-              let value = this.m_dataStruct._RULES[key]
-              val.push(value)
-              this.formRules[key] = val
+            let rule = this.m_dataStruct._RULES[key];
+            if (rule) {
+              let value = this.formRules[key]
+              if (!value) {
+                //No validate rules found in formRules, just inject the default rules
+                value = []
+                this.formRules[key] = value
+                continue;
+              }
+              //Has rule in formRules, append to the array
+              if (!value.push) {
+                value = [value]
+                this.formRules[key] = value
+              }
+              for (let i = 0; i < rule.length; i++) {
+                value.push(rule[i])
+              }
             }
           }
+          // for (let key in this.m_dataStruct._RULES) {
+          //   let val = this.formRules[key];
+          //   if (!val) {
+          //     val = []
+          //     let value = this.m_dataStruct._RULES[key]
+          //     val.push(value)
+          //     this.formRules[key] = val
+          //   }
         }
+        // console.log(this.formRules, this.m_dataStruct._RULES)
       },
+      /**
+       *
+       * @returns {Array}
+       */
       getKFormItems() {
         let arr = []
         let list = this.getComponentsByName('k-form-item') //search all the KFormItem in this component
@@ -117,21 +157,21 @@
           }
         }
         //console.log(arr)
-        this.fields = arr
+        // this.fields = arr
         return arr
       },
+
       setOriginalData: function (newVal = {}) {
-        let pk = this.m_dataStruct._PK
-        if (!pk) {
+        // console.log('isModelChanged:', this.isModelChanged, 'setOriginalData', newVal, ' set origin:', this.___oridata)
+        if (this.isModelChanged) {
           return
         }
-        if (!this.___oridata) {
-          this.___oridata = {
-            [pk]: -404
-          }
+        if (newVal._isEmpty) {
+          this.resetDefault()
+          return
         }
-        let pkid = newVal[pk]
-        if (pkid === undefined || pkid === null || this.___oridata[pk] === pkid) return; //already loaded
+        this.___oridata = {}
+        // console.log('setOriginalData', newVal, ' set origin:', this.___oridata)
         let ds = this.m_dataStruct
         for (let key in newVal) {
           if (key === undefined) {
@@ -139,9 +179,11 @@
           }
           let val = newVal[key];
           let tp = typeof(val)
-          if (tp === 'function') continue; //ignore function
+          if (val === undefined || tp === 'function') continue; //ignore function
           let fi = ds._FIELD_DIC[key]; //field valid in dataStruct
+          // console.log(this.m_dataStruct._FIELD_DIC, 'sssss', key, val, fi)
           if (fi) {
+            this.isModelChanged = true
             if (fi.isDate) {
               this.___oridata[key] = val || null // this.formatDate(val);
             } else {
@@ -151,26 +193,41 @@
         }
         // console.log('setOriginalData set: ',this.___oridata)
       },
+      resetDefault: function () {
+        this.model._isEmpty = null
+        this.___oridata = {}
+        console.log(this.m_dataStruct._DEFAULT)
+        for (let key in this.m_dataStruct._FIELD_DIC) {
+          let val = this.m_dataStruct._DEFAULT[key]
+          if (key.indexOf('_') !== 0) {
+            this.$set(this.model, key, val)
+            this.___oridata[key] = val
+          }
+        }
+      },
       reset() {
-        // console.log(this.m_dataStruct)
-
-        // return
-        if (this.___oridata[this.m_dataStruct._PK] === -404) {
+        // console.log(this.___oridata, this.model)
+        let pk = this.m_dataStruct._PK
+        if (!this.___oridata) {
           // data untouched
           return
         }
-        // console.log(this.model, this.___oridata)
         for (let key in this.model) {
           let val = this.___oridata[key];
           if (key.indexOf('_') !== 0) {
             // ignore addon values overwrite
-            this.model[key] = val
+            // console.log(key, val)
+            this.$set(this.model, key, val)
           }
         }
         // console.log(this.___oridata, this.model)
         //this.resetFields(); call native reset will overwrite the saved data
-        //this.$emit('reset')
+        this.$emit('reset')
       },
+
+      /**
+       *  Restore original model value and done editing
+       */
       cancel() {
         this.reset()
         if (this.withDialog) {
@@ -180,21 +237,31 @@
         this.broadcast('k-select', 'cancel')
         this.broadcast('k-form', 'cancel')
         this.$emit('cancel')
+        this.isModelChanged = false
+        // this.___oridata = null
       },
+
+      /**
+       *  Save current model as default value and done editing
+       */
       close() {
         if (this.withDialog) {
           this.showDialog = false
           this.$emit('update:visible', false)
         }
-        this.___oridata = null
+        this.isModelChanged = false
         this.setOriginalData(this.model)
         this.$emit('close')
       },
+      /**
+       * Get the edited data and generated updated value plain object
+       * @param isEditMode
+       * @returns {*}
+       */
       getEditData(isEditMode) {
         let list = this.getKFormItems()
         let newObj, pk = this.m_dataStruct._PK
-        // console.log(this.model, this.___oridata);
-        //console.log('origin', this.___oridata, 'new', this.model)
+        // console.log('origin', this.___oridata, 'new', this.model)
         for (let i = 0; i < list.length; i++) {
           let comp = list[i]
           let fi = comp.item; //get dataStruct field in component props
@@ -233,8 +300,11 @@
         }
         return newObj
       },
-      submitForm: function () {
 
+      /**
+       *  Submit current Form
+       */
+      submitForm: function () {
         let newObj = this.getEditData(this.isEditMode)
         if (!newObj) {
           this.$notify.info({title: '没有改动', message: ''});

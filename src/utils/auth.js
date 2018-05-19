@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie'
 
 const TokenKey = 'Admin-Token'
-const AuthKey = '__gate__auth'
+const AuthKey = '_g_auth'
 
 function getRootDomain() {
   let host = location.host
@@ -27,12 +27,37 @@ export function removeToken() {
 export function getName() {
   let t = getAuthToken()
   if (t) {
-    return t.split('!')[0]
+    return t.split('|')[0]
+  }
+}
+
+export function getRole() {
+  let t = getAuthToken()
+  if (t) {
+    let arr = t.split('!')[0]
+    return arr[0].split('|')[1]
+  }
+}
+
+export function isAdmin() {
+  let t = getAuthToken()
+  if (t) {
+    let arr = t.split('|')
+    if (arr[0] === 'admin') {
+      return true
+    }
+    let role = arr[1].split('!')[0]
+    console.log(role, arr, t)
+    if (role === '1' || role === '26') {
+      return true
+    }
   }
 }
 
 export function isLogin() {
   let t = getAuthToken()
+  // alert('getAuthToken:' + t)
+  // console.log('getAuthToken:', t)
   //Has name!xxxxxxx
   if (t && t.split('!')[1]) {
     return true
