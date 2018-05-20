@@ -1,6 +1,6 @@
 <template>
   <k-wrap :withDialog="withDialog" :visible.sync="showDialog" :title="formTitle">
-    <k-form :data-struct="m_dataStruct" :label-width="labelWidth" :visible.sync="showDialog"
+    <k-form :data-struct="m_dataStruct" :label-width="labelWidth" :visible.sync="showDialog" :API="api"
             :is-edit-mode="isEditMode" :model="model" :size="size" :fieldEditable="fieldEditable">
       <!--<template slot="label" slot-scope="item">-->
         <!--<k-form-field-info :edit-table="fieldEditable" :item.sync="item.row"></k-form-field-info>-->

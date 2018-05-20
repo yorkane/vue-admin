@@ -162,8 +162,9 @@
       },
 
       setOriginalData: function (newVal = {}) {
+        let pk = this.m_dataStruct._PK
         // console.log('isModelChanged:', this.isModelChanged, 'setOriginalData', newVal, ' set origin:', this.___oridata)
-        if (this.isModelChanged) {
+        if (this.isModelChanged && newVal[pk] === this.___oridata[pk]) {
           return
         }
         if (newVal._isEmpty) {
@@ -195,13 +196,13 @@
       },
       resetDefault: function () {
         this.model._isEmpty = null
-        this.___oridata = {}
-        console.log(this.m_dataStruct._DEFAULT)
+        // this.___oridata = {}
+        // console.log(this.m_dataStruct._DEFAULT)
         for (let key in this.m_dataStruct._FIELD_DIC) {
           let val = this.m_dataStruct._DEFAULT[key]
           if (key.indexOf('_') !== 0) {
             this.$set(this.model, key, val)
-            this.___oridata[key] = val
+            // this.___oridata[key] = val
           }
         }
       },

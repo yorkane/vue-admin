@@ -13,9 +13,10 @@
                   @quickEdit="quickEdit" @sort="sortField" @btnEvt_edit="handleEvent" @btnEvt_delete="handleEvent"
                   @pageChange="getGrid()"
       ></model-grid>
-      <mform :model.sync="currentRow" :isEditMode="isEditMode" withDialog :dataStruct="grid_dataStruct"
-             :fieldMapComponent="{}"
-             @inserted="inserted" :withDialog="true" :visible.sync="showForm"></mform>
+      <k-form-wrap label-width="200px" :field-editable="isAdmin" :model.sync="currentRow"
+                   :isEditMode="isEditMode" withDialog :dataStruct="grid_dataStruct" @inserted="inserted"
+                   :visible.sync="showForm" :component-map="componentMap">
+      </k-form-wrap>
     </div>
   </div>
 
@@ -30,10 +31,13 @@
   import {store} from '../main'
   import ModelGrid from "./grid.vue";
   import klib from "../klib/utils";
+  import KFormWrap from "../components/KFormWrap";
+  import {isAdmin, getRole} from "../utils/auth";
 
   export default {
     name: 'ModelCategory',
     components: {
+      KFormWrap,
       ModelGrid,
       KCondition,
       mform,
@@ -66,6 +70,7 @@
         currentRoot: [],
         currentCat: {},
         grid_dataStruct: {},
+        componentMap: {}
       }
     },
     created() {

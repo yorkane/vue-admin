@@ -12,30 +12,34 @@
                   :page.sync="page" :pageSize.sync="pageSize" :selected.sync="selectedList"
                   @quickEdit="quickEdit" @sort="sortField" @btnEvt_edit="handleEvent" @btnEvt_delete="handleEvent"
                   @pageChange="getData()" @order-change="quickEdit" drag-order></model-grid>
-      <mform :model.sync="currentRow" :isEditMode="isEditMode" withDialog :dataStruct="m_dataStruct"
-             :fieldMapComponent="{}"
-             @inserted="inserted" :withDialog="true" :visible.sync="showForm"></mform>
+      <k-form-wrap label-width="200px" :field-editable="isAdmin" :model.sync="currentRow" :API="api"
+                   :isEditMode="isEditMode" withDialog :dataStruct="m_dataStruct" @inserted="inserted"
+                   :visible.sync="showForm" :component-map="componentMap">
+      </k-form-wrap>
     </div>
   </auto-height-wrapper>
 </template>
 <script>
   import modelAPI from '../api/model'
   import KTree from "../components/KTree.vue";
-  import mform from "./form.vue";
   import KCondition from "../components/KCondition.vue";
   import KDataStruct from "../components/KDataStruct.vue";
   import ModelGrid from "./grid.vue";
   import AutoHeightWrapper from "../components/AutoHeightWrapper";
   import klib_utils from "../klib/utils"
+  import KFormWrap from "../components/KFormWrap";
+  import KIconSelector from "../components/KIconSelector";
+  import {isAdmin, getRole} from "../utils/auth";
 
 
   export default {
     name: 'ModelTree',
     components: {
+      KIconSelector,
+      KFormWrap,
       AutoHeightWrapper,
       ModelGrid,
       KCondition,
-      mform,
       KTree
     },
     mixins: [KDataStruct],
@@ -56,10 +60,17 @@
         page: 1,
         gridData: [],
         selectedList: [],
+        componentMap: {
+          'icon': KIconSelector
+        }
       }
     },
     created() {
-
+    },
+    computed: {
+      isAdmin() {
+        return isAdmin()
+      }
     },
     methods: {
       inserted: function (data) {
