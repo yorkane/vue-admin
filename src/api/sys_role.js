@@ -20,11 +20,11 @@ const roleAPI = {
   getDataStruct() {
     return this._getDataStruct(key, '/lor/role/desc')
   },
-  getData(params, forceReload){
-    return this._getData(params, forceReload, key, '/lor/role/tree',true)
+  getData(params, forceReload) {
+    return this._getData(params, forceReload, key, '/lor/role/tree', true)
   },
   getTree(params, forceReload) {
-    return this._getData(params, forceReload, key, '/lor/role/tree',true)
+    return this._getData(params, forceReload, key, '/lor/role/tree', true)
   },
   update(data) {
     return service({
@@ -40,7 +40,12 @@ const roleAPI = {
       params
     })
   },
-
+  info(id) {
+    return service({
+      url: 'lor/role/info/' + id,
+      method: 'get',
+    })
+  },
   insert(data) {
     return service({
       url: 'lor/role/insert',

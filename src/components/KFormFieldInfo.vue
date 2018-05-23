@@ -6,7 +6,7 @@
       trigger="manual"
       v-model="showPopup"
       placement="right-start">
-      <div class="fieldInfoDiv" style="margin:5px 10px 5px 5px;max-height:500px;overflow: scroll;"><div
+      <div class="fieldInfoDiv" style="margin:5px 10px 5px 5px;max-height:500px;overflow: auto;"><div
         v-if="!isEditing" v-html="item.info"></div>
         <h3 v-if="isEditing">编辑 {{item.Field + ' | ' + (item.Comment||'')}}</h3>
         <k-form :ref="'kform_' + item.Field" :data-struct="dataStruct" labelWidth="100px"
