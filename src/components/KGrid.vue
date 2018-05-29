@@ -102,7 +102,14 @@
       }
     },
     filters: {},
-    watch: {},
+    watch: {
+      totalCount(val) {
+        if (val <= this.pageSize) {
+          this.m_page = 1
+          this.$emit('update:page', val)
+        }
+      }
+    },
     mounted() {
     },
     created() {
@@ -112,6 +119,9 @@
     },
     methods: {
       pageChange(val) {
+        if (this.totalCount < this.pageSize) {
+          this.m_page = 1
+        }
         this.$emit('update:page', val)
         this.$emit('pageChange', val, this.pageSize)
       },

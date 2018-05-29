@@ -86,6 +86,7 @@
         return isAdmin()
       }
     },
+    watch:{},
     created() {
       // console.log(this.isAdmin, 'isAdmin')
     },
@@ -136,6 +137,7 @@
           this.dataList = data
           this.gridData = data.list
           this.totalCount = data.count
+          console.log(this.page)
         })
       },
       sortField(orderBy) {

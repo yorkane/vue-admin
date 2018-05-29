@@ -81,19 +81,13 @@
         this._api.getUserInfo().then(data => {
           this.info = data.data
           let role = this.info.role || this.info.sys_role__id
-          this.getRoleInfo(role)
+          this.roleInfo = this.info.role_info
           // let role = this.roleApi.getById(this.info.role)
           // if (role) {
           //   this.info.role = role.name
           // }
         })
       },
-      getRoleInfo(id) {
-        this.roleApi.info(id).then(res => {
-          this.roleInfo = res.data
-          this.info.role = this.roleInfo.name
-        })
-      }
     }
   }
 </script>

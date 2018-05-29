@@ -73,7 +73,7 @@
     </template>
     <template v-else>
       <el-tooltip content="列表数据未载入" placement="top" :enterable="false" :open-delay="200">
-        <el-input v-model="value" place-holder="[列表数据未载入]"></el-input>
+        <el-input v-model="value" :size="size" place-holder="[列表数据未载入]"></el-input>
       </el-tooltip>
     </template>
 

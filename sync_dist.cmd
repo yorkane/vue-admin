@@ -1,6 +1,10 @@
+yarn run build
+cd dist
 :<<BAT
-
 @echo off
+
+git add
+
 goto end
 BAT
 
