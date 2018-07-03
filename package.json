@@ -32,6 +32,7 @@
     "uglify-js": "^3.3.14",
     "vue": "^2.5.2",
     "vue-hot-reload-api": "^2.2.0",
+    "vue-json-editor": "^1.2.3",
     "vue-router": "^2.8.1",
     "vue2-ace": "^1.0.6",
     "vuex": "^2.5.0"

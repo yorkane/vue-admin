@@ -182,7 +182,7 @@ const klib_utils = {
    * @param dateobj
    * @returns {*}
    */
-  formatDate: function (dateobj) {
+  formatDate: function (dateobj, isLocalTime) {
     if (!dateobj) return dateobj;
     if (!dateobj.getDate) {
       let num = parseInt(dateobj)
@@ -193,10 +193,14 @@ const klib_utils = {
         dateobj = new Date(dateobj)
       }
     }
-
+    if (isLocalTime) {
+      let d2 = new Date(dateobj - Math.abs(dateobj.getTimezoneOffset() * 60 * 1000))
+      return d2.getFullYear() + "-" + (d2.getMonth() + 1) + "-" + d2.getDate() + " " + d2.getHours() + ":" + d2.getMinutes() + ":" + d2.getSeconds()
+    }
+    // return dateobj.toISOString()
     return dateobj.getFullYear() + "-" + (dateobj.getMonth() + 1) + "-" + dateobj.getDate() + " " + dateobj.getHours() + ":" + dateobj.getMinutes() + ":" + dateobj.getSeconds()
-
   },
+
   /**
    * 获取状态列表用于 Select 组件
    * @param fieldName

@@ -48,7 +48,7 @@ import {
   Progress,
   // Badge,
   Card,
-  // Rate,
+  Rate,
   // Steps,
   // Step,
   // Carousel,
@@ -118,7 +118,7 @@ Vue.use(Upload);
 Vue.use(Progress);
 // Vue.use(Badge);
 Vue.use(Card);
-// Vue.use(Rate);
+Vue.use(Rate);
 // Vue.use(Steps);
 // Vue.use(Step);
 // Vue.use(Carousel);

@@ -20,14 +20,14 @@
           </slot>
         </template>
       </el-form>
-      <slot name="buttons">
-        <div class="form-buttons">
-          <el-button :size="size" type="primary" @click="submitForm">{{isEditMode ? '保存修改' : '创建'}}</el-button>
-          <el-button :size="size" @click="reset">重置</el-button>
-          <el-button :size="size" @click="resetDefault">默认值</el-button>
-          <el-button :size="size" @click="cancel">取消</el-button>
-        </div>
-      </slot>
+    </slot>
+    <slot name="buttons">
+      <div class="form-buttons">
+        <el-button :size="size" type="primary" @click="submitForm">{{isEditMode ? '保存修改' : '创建'}}</el-button>
+        <el-button :size="size" @click="reset">重置</el-button>
+        <el-button :size="size" @click="resetDefault">默认值</el-button>
+        <el-button :size="size" @click="cancel">取消</el-button>
+      </div>
     </slot>
   </div>
 </template>
@@ -117,7 +117,6 @@
                 //No validate rules found in formRules, just inject the default rules
                 value = []
                 this.formRules[key] = value
-                continue;
               }
               //Has rule in formRules, append to the array
               if (!value.push) {
@@ -287,7 +286,10 @@
           // console.log(key, '||new:',newVal,'|| older:',val,this.___oridata)
           if (!newObj) {
             newObj = {};
-            newObj[pk] = this.model[pk]
+            let id = this.model[pk]
+            if (id !== undefined) {
+              newObj[pk] = id
+            }
           }
           if (fi.isDate) {
             if (newVal) {

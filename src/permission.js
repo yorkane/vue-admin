@@ -4,7 +4,7 @@ import NProgress from 'nprogress' // Progress 进度条
 import 'nprogress/nprogress.css'// Progress 进度条样式
 import {expiredToken, getAuthToken, getName, isLogin} from './utils/auth' // 验权
 
-const whiteList = ['/login']
+const whiteList = ['/login', '/test']
 router.beforeEach((to, from, next) => {
   NProgress.start()
   if (isLogin()) {

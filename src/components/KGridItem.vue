@@ -8,7 +8,7 @@
       {{getOption(item.Field,
       model[item.Field], true)}}
     </el-tag>
-    <template v-else-if="item.isDate">{{formatDate(model[item.Field])}}</template>
+    <template v-else-if="item.isDate">{{formatDate(model[item.Field], true)}}</template>
     <el-switch v-else-if="item.isIntBool" v-model="model[item.Field]"
                @change="quickEdit(item.Field)"
                :active-value="1"
