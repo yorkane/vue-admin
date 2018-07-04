@@ -31,7 +31,7 @@
         </el-table-column>
       </template>
     </el-table>
-    <el-pagination :current-page.sync="m_page" @current-change="pageChange" v-if="!hidePage"
+    <el-pagination :current-page.sync="page" @current-change="pageChange" v-if="!hidePage"
                    :total="totalCount" @size-change="sizeChange" background
                    :page-sizes="sizes" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper">
     </el-pagination>

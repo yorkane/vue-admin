@@ -17,7 +17,7 @@ const modelAPI = {
 
   },
   getDataStruct() {
-    let pro = this._getDataStruct(this.key, '/lor/model/' + this.key + '/desc', this.params)
+    let pro = this._getDataStruct(this.key,'/app/model/' + this.key + '/desc', this.params)
     pro.then(data => {
       this.isTree = data._IS_TREE
     })
@@ -28,10 +28,10 @@ const modelAPI = {
     if (this.isTree) {
       return this.getTree(params, forceReload)
     }
-    return this._getData(params, forceReload, this.key, '/lor/model/' + this.key + '/list')
+    return this._getData(params, forceReload, this.key,'/app/model/' + this.key + '/list')
   },
   getTree(params, forceReload) {
-    return this._getData(params, forceReload, this.key, '/lor/model/' + this.key + '/tree', true)
+    return this._getData(params, forceReload, this.key,'/app/model/' + this.key + '/tree', true)
   },
   getList(key, data) {
     return service({

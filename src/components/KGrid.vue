@@ -22,7 +22,7 @@
         </el-table-column>
       </template>
     </el-table>
-    <el-pagination :current-page.sync="m_page" @current-change="pageChange" v-if="hidePage"
+    <el-pagination :current-page.sync="page" @current-change="pageChange" v-if="hidePage"
                    :total="totalCount" @size-change="sizeChange" background
                    :page-sizes="sizes" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper">
     </el-pagination>
@@ -59,6 +59,11 @@
       totalCount: {
         type: Number,
         required: false
+      },
+      page: {
+        type: Number,
+        required: false,
+        default: 1,
       },
       pageSize: {
         type: Number,
@@ -106,7 +111,7 @@
       totalCount(val) {
         if (val <= this.pageSize) {
           this.m_page = 1
-          this.$emit('update:page', val)
+          this.$emit('update:page', 1)
         }
       }
     },

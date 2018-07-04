@@ -279,8 +279,8 @@
           }
           if (fi.isDate) {
             //make sure the datatime object convert to string type for updating in sql
-            if (newVal && newVal.getDate) newVal = this.formatDate(newVal);
-            if (val && val.getDate) val = this.formatDate(val)
+            if (newVal && newVal.getDate) newVal = newVal.toISOString()
+            if (val && val.getDate) val = val.toISOString()
           }
           if (isEditMode && newVal === val) continue; //In edit mode, new value and old value could not be the same
           // console.log(key, '||new:',newVal,'|| older:',val,this.___oridata)
@@ -292,13 +292,7 @@
             }
           }
           if (fi.isDate) {
-            if (newVal) {
-              newObj[key] = this.formatDate(newVal);
-            }
-          } else {
-            if (newVal !== undefined) {
-              newObj[key] = newVal
-            }
+            newObj[key] = newVal.substring(1, 19) + 'Z'
           }
         }
         return newObj

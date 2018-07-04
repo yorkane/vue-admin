@@ -134,7 +134,6 @@
         }
         //console.log(query)
         this._api.getData(query, true).then(data => {
-          utils.
           this.dataList = data
           this.gridData = data.list
           this.totalCount = data.count
