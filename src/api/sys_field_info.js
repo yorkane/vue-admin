@@ -30,24 +30,24 @@ const sys_field_infoAPI = {
     return this._getDataStruct(key)
   },
   getData(params, forceReload) {
-    return this._getData(params, forceReload, key, '/lor/model/sys_field_info/list')
+    return this._getData(params, forceReload, key, '/app/model/sys_field_info/list')
   },
   update(data) {
     return service({
-      url: 'lor/sys_field/update',
+      url: 'app/sys_field/update',
       method: 'post',
       data
     })
   },
   deleteById(id) {
     return service({
-      url: 'lor/model/sys_field_info/' + id,
+      url: 'app/model/sys_field_info/' + id,
       method: 'delete',
     })
   },
   insert(data) {
     return service({
-      url: 'lor/model/sys_field_info/insert',
+      url: 'app/model/sys_field_info/insert',
       method: 'post',
       data
     })
@@ -58,7 +58,7 @@ const sys_field_infoAPI = {
       idList = idList.join(',')
     }
     return service({
-      url: 'lor/model/sys_field_info/batch/' + idList,
+      url: 'app/model/sys_field_info/batch/' + idList,
       method: 'patch',
       data
     })

@@ -184,11 +184,7 @@
           // console.log(this.m_dataStruct._FIELD_DIC, 'sssss', key, val, fi)
           if (fi) {
             this.isModelChanged = true
-            if (fi.isDate) {
-              this.___oridata[key] = val || null // this.formatDate(val);
-            } else {
-              this.___oridata[key] = val
-            }
+            this.___oridata[key] = val
           }
         }
         // console.log('setOriginalData set: ',this.___oridata)
@@ -293,6 +289,8 @@
           }
           if (fi.isDate) {
             newObj[key] = newVal.substring(1, 19) + 'Z'
+          } else {
+            newObj[key] = newVal
           }
         }
         return newObj
