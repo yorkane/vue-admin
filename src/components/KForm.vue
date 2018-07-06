@@ -279,7 +279,8 @@
             if (val && val.getDate) val = val.toISOString()
           }
           if (isEditMode && newVal === val) continue; //In edit mode, new value and old value could not be the same
-          // console.log(key, '||new:',newVal,'|| older:',val,this.___oridata)
+          if (!isEditMode && newVal === undefined) continue; //In insert mode, new value can' be empty
+          // console.log(key, '||new:', newVal, '|| older:', val, this.___oridata)
           if (!newObj) {
             newObj = {};
             let id = this.model[pk]
@@ -288,7 +289,7 @@
             }
           }
           if (fi.isDate) {
-            newObj[key] = newVal.substring(1, 19) + 'Z'
+            newObj[key] = newVal.substring(0, 19) + 'Z'
           } else {
             newObj[key] = newVal
           }
