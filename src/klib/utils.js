@@ -122,7 +122,7 @@ const klib_utils = {
     }
   },
   /**
-   * 获取上层组件的属性
+   * 获取上层组件的属性, 会自动尝试key 或者m_key
    * @param key
    * @param maxLevel
    * @param func
@@ -193,7 +193,17 @@ const klib_utils = {
         dateobj = new Date(dateobj)
       }
     }
-    return dateobj.getFullYear() + "-" + (dateobj.getMonth() + 1) + "-" + dateobj.getDate() + " " + dateobj.getHours() + ":" + dateobj.getMinutes() + ":" + dateobj.getSeconds()
+
+    function fmt(v) {
+      return v < 10 ? '0' + v : v
+    }
+
+    let month = (dateobj.getMonth() + 1)
+    let day = dateobj.getDate()
+    let hour = dateobj.getHours()
+    let min = dateobj.getMinutes()
+    let sec = dateobj.getSeconds()
+    return dateobj.getFullYear() + "-" + fmt(month) + "-" + fmt(day) + " " + fmt(hour) + ":" + fmt(min) + ":" + fmt(sec)
   },
 
   /**

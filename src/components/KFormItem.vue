@@ -1,5 +1,5 @@
 <template>
-  <el-form-item v-show="!isHide" :class="isFieldNoValidate()?'no-validate':''" :size="size"
+  <el-form-item v-show="!isHide && !item.hide_in_form" :class="isFieldNoValidate()?'no-validate':''" :size="size"
                 :label="getLabel()"
                 :prop="key">
     <template slot="label">
@@ -9,8 +9,9 @@
       <template v-if="item.Field.match(/^(password|salt)/ig)">
       </template>
       <template v-else-if="isFieldReadOnly()">
-        <span v-if="item.isStatus">{{getStatus(item.Field, model[key], true)}}</span>
-        <span v-else-if="item.isOption">{{getOption(item.Field, model[key], true)}}</span>
+        <template v-if="item.isStatus">{{getStatus(item.Field, model[key], true)}}</template>
+        <template v-else-if="item.isOption">{{getOption(item.Field, model[key], true)}}</template>
+        <template v-else-if="item.isDate">{{formatDate(model[item.Field], true)}}</template>
         <el-switch v-else-if="item.isBool" v-model="model[key]" disabled></el-switch>
         <el-switch v-else-if="item.isIntBool" v-model="model[key]" disabled
                    :active-value="1" :inactive-value="0"></el-switch>
@@ -194,6 +195,7 @@
       getOptionList: klib.getOptionList,
       getStatus: klib.getStatus,
       getOption: klib.getOption,
+      formatDate: klib.formatDate,
     }
   }
 </script>

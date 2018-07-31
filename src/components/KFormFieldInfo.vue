@@ -5,9 +5,10 @@
       width="400"
       trigger="manual"
       v-model="showPopup"
+      :open-delay="200"
       placement="right-start">
-      <div class="fieldInfoDiv" style="margin:5px 10px 5px 5px;max-height:500px;overflow: auto;"><div
-        v-if="!isEditing" v-html="item.info" style="margin:10px"></div>
+      <div @mouseenter="showPopup=true" @mouseleave="close" class="fieldInfoDiv"><div
+        v-if="!isEditing" v-html="getHTML(item)" style="padding:10px"></div>
         <h3 v-else>编辑 {{item.Field + ' | ' + (item.Comment||'')}}</h3>
         <k-form :ref="'kform_' + item.Field" :data-struct="dataStruct" labelWidth="100px"
                 :is-edit-mode="fieldModel.id!==undefined"
@@ -23,7 +24,7 @@
       </div>
     </el-popover>
     <template v-if="item.info">
-      <span v-popover="'pop_'+item.Field" @mouseenter="showPopup=true;isEditing=false;" @mouseleave="showPopup=false">
+      <span v-popover="'pop_'+item.Field" @mouseenter="showPopup=true;isEditing=false;" @mouseleave="close">
         {{item.Comment||item.Field}}
         <i class="el-icon-info el-icon--right"></i>
       </span>
@@ -113,13 +114,25 @@
         // console.log(this.item)
         return this.item.Comment || this.item.Field;
       },
+      getHTML(item) {
+        return '<pre class="info">' + item.info + '</pre>'
+      },
       getParentDataStruct: klib.getParentDataStruct
     }
   }
 </script>
 <style>
   .fieldInfoDiv {
-    margin: 10px;
+    padding:10px;
+    margin: 0;
+    max-height: 500px;
+    overflow: auto;
+  }
+
+  .fieldInfoDiv pre {
+    margin: 0;
+    word-wrap: break-word;
+    white-space: pre-wrap;
   }
 
   .fieldInfoDiv h3 {

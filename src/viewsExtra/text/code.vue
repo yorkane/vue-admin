@@ -201,6 +201,7 @@
             }
             resolve(data)
           }).catch(res => {
+            //console.log(res)
             this.$notify.error({title: '错误', message: '数据载入失败'});
           });
         } else {

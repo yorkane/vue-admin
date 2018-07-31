@@ -56,6 +56,9 @@ export const constantRouterMap = [
       {
         path: 'sys_role', name: '角色权限管理', component: _import('sys_role/index'),
       },
+      {
+        path: 'api', name: '系统文档及接口', component: _import('api/index'),
+      },
     ]
   },
   {

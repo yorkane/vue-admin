@@ -39,7 +39,6 @@
     },
     computed: {},
     created() {
-
     },
     watch: {},
     mounted() {

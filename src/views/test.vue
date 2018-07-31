@@ -1,6 +1,16 @@
 <template>
   <div style="margin: 20px;">
     <el-card>
+      <el-row>
+        <el-tag>标签一</el-tag>
+        <el-tag type="plain">标签一</el-tag>
+        <el-tag type="success" hit>标签二</el-tag>
+        <el-tag type="info">标签三</el-tag>
+        <el-tag type="warning">标签四</el-tag>
+        <el-tag type="danger">标签五</el-tag>
+
+      </el-row>
+
       <!--<div slot="header">-->
       <!--<span>{{$route.params.name}}</span>-->
       <!--&lt;!&ndash;<el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>&ndash;&gt;-->

@@ -40,9 +40,9 @@
 </template>
 
 <script>
-  import KButtonMenus from "../components/KButtonMenus.vue";
-  import KGridItem from "../components/KGridItem.vue";
-  import KGrid from "../components/KGrid.vue";
+  import KButtonMenus from "../../components/KButtonMenus.vue";
+  import KGridItem from "../../components/KGridItem.vue";
+  import KGrid from "../../components/KGrid.vue";
 
   export default {
     name: 'ModelGrid',
