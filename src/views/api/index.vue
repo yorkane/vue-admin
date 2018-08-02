@@ -11,8 +11,10 @@
       <!--@btnEvt_inspect="handleEvent"-->
       <!--drag-order></model-grid>-->
       <el-row class="row" style="cursor: pointer;height: 100%">
-        <el-card>{{methodInfo}}</el-card>
-        <json-edior :source="methodInfo" :data="methodInfo"></json-edior>
+        <el-card>
+          <json-edior v-model="methodInfo" size="mini"></json-edior>
+        </el-card>
+
       </el-row>
 
       <k-form-wrap label-width="200px" :field-editable="false" :model.sync="currentRow" :API="api"
@@ -61,7 +63,7 @@
         gridData: [],
         selectedList: [],
         componentMap: {},
-        methodInfo: {name: 'title', type: 1, arr: [1, 2, 3, 4, 5]}
+        methodInfo: {name: 'title', type: 0, arr: [1, 2, {a: 3, b: 4, time: '2018-08-08T22:11:11'}], arr2:[6,7,8,9]}
       }
     },
     created() {
