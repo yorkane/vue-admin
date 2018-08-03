@@ -6,15 +6,59 @@
               @detail="handleTreeEvent"></k-tree>
     </auto-height-wrapper>
     <div style="overflow: auto;">
+      <el-row :gutter="20" style="margin:10px">
+        <el-col :span="12">
+          <el-card class="box-card">
+            <div slot="header">{{info.desc}}</div>
+            <div class="text item">
+              <el-table :data="info.params" style="width: 100%">
+                <el-table-column prop="name" label="参数名" width="150"></el-table-column>
+                <el-table-column prop="type" label="类型" width="120"></el-table-column>
+                <el-table-column prop="desc" label="描述" width=""></el-table-column>
+              </el-table>
+              返回类型：{{info.returns}}
+              <hr />
+              返回描述：{{info.return_desc}}
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="12">
+          <el-card class="box-card">
+            <ul v-if="definitions"
+                style="width: 100%">
+              <template v-for="(item, key) in definitions">
+                <el-table :data="objectToArray(item)">
+                  <el-table-column prop="name" label="参数名" width="150"></el-table-column>
+                  <el-table-column prop="type" label="类型" width="120"></el-table-column>
+                  <el-table-column prop="desc" label="描述" width=""></el-table-column>
+                </el-table>
+              </template>
+            </ul>
+          </el-card>
+        </el-col>
+        <!--<el-col :span="8">-->
+        <!--<el-card class="box-card">-->
+        <!--<div slot="header" class="clearfix">-->
+        <!--<span>方法信息</span>-->
+        <!--<el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>-->
+        <!--</div>-->
+        <!--<pre><code class="javascript">const s =-->
+        <!--new Date().toString()</code></pre>-->
+        <!--</el-card>-->
+        <!--</el-col>-->
+      </el-row>
+
       <!--<model-grid class="tree-grid" :dataStruct="m_dataStruct" :model="gridData" :totalCount="totalCount"-->
       <!--:page.sync="page" :pageSize.sync="pageSize" :selected.sync="selectedList"-->
       <!--@btnEvt_inspect="handleEvent"-->
       <!--drag-order></model-grid>-->
-      <el-row class="row" style="cursor: pointer;height: 100%">
-        <el-card>
-          <json-edior v-model="methodInfo" size="mini"></json-edior>
-        </el-card>
-
+      <el-row class="row" style="margin:20px">
+        <json-edior v-model="requestParams" size="mini" extra-tab-label="额外" :active-tab.sync="activeTab"
+                    preview-label="方法定义" :preview-data="methodInfo" result-label="测试结果" :result-data="testResult">
+          <div slot="button" style="margin:10px 0 0">
+            <el-button @click="doTest">开始测试</el-button>
+          </div>
+        </json-edior>
       </el-row>
 
       <k-form-wrap label-width="200px" :field-editable="false" :model.sync="currentRow" :API="api"
@@ -31,15 +75,16 @@
   import KDataStruct from "../../components/KDataStruct.vue";
   import ModelGrid from "./grid.vue";
   import AutoHeightWrapper from "../../components/AutoHeightWrapper";
-  import klib_utils from "../../klib/utils"
   import KFormWrap from "../../components/KFormWrap";
   import JsonEdior from "../../components/jsonEditor";
+  import axios from 'axios'
 
 
   export default {
     name: 'APITree',
     components: {
       JsonEdior,
+      Prism,
       KFormWrap,
       AutoHeightWrapper,
       ModelGrid,
@@ -63,19 +108,47 @@
         gridData: [],
         selectedList: [],
         componentMap: {},
-        methodInfo: {name: 'title', type: 0, arr: [1, 2, {a: 3, b: 4, time: '2018-08-08T22:11:11'}], arr2:[6,7,8,9]}
+        methodInfo: {},
+        activeTab: "0",
+        testResult: '',
+        requestParams: {},
       }
     },
     created() {
     },
-    computed: {},
+    mounted() {
+      setTimeout(() => {
+        // hljs.initHighlightingOnLoad()
+      }, 100)
+
+    },
+    computed: {
+      info() {
+        let info = this.methodInfo.info
+        if (!info) {
+          info = {
+            name: 'Unloaded',
+            desc: '',
+            params: []
+          }
+        }
+        return info
+      },
+      definitions(){
+        let definitions = this.methodInfo.definitions
+        return definitions || {}
+      }
+    },
     methods: {
       loadMethodInfo(id) {
         console.log(id)
         let arr = id.split('@')
-        sysAPI.getInfo(arr[0], arr[1]).then(resp => {
-          this.methodInfo = resp.data
-        })
+        if (arr[1]) {
+          sysAPI.getInfo(arr[0], arr[1]).then(resp => {
+            this.methodInfo = resp.data
+            this.generateRequest(this.methodInfo)
+          })
+        }
       },
       getData: function (where, orderby) {
         let query = {
@@ -140,6 +213,92 @@
             break;
         }
       },
+      getDataByParam(param, definitions) {
+        let tp = param.type
+        let format = param.format
+        let data
+        switch (tp) {
+          case 'number':
+            data = 1
+            break
+          case 'boolean':
+            data = false
+            break
+          case 'number[]':
+            data = [1, 2, 3, 4]
+            break
+          case 'string[]':
+            data = ['1', '2', '3', '4']
+            break
+          case 'number[]|string[]':
+          case 'string[]|number[]':
+            data = [1, 2, 3, 4]
+            break
+          case 'table':
+            data = {}
+            break
+          case 'string':
+          case 'table|string':
+          case 'string|table':
+            if (format === 'date-time') {
+              data = Date.now()
+            } else {
+              data = 'NewString'
+            }
+            break
+          default:
+            let new_tp = definitions[tp]
+            if (new_tp) {
+              data = {}
+              for (let key in new_tp) {
+                let n_param = new_tp[key]
+                n_param.name = key
+                data[key] = this.getDataByParam(n_param, definitions)
+              }
+            } else {
+              data = 'Missing definition: ' + tp
+            }
+            break
+        }
+        return data
+      },
+      generateRequest(schema) {
+        let param = schema.info.params
+        let definitions = schema.definitions
+        console.log(schema, param)
+        let params = {}
+        if (param) {
+          for (let i = 0; i < param.length; i++) {
+            params[param[i].name] = this.getDataByParam(param[i], definitions)
+          }
+        } else {
+          return
+        }
+        this.$set(this.requestParams, params)
+        this.requestParams = params
+        // console.log(params, this.requestParams)
+        // this.requestParams = params
+      },
+      doTest() {
+        this.activeTab = '3' //switch to test panel
+        axios.post(this.methodInfo.uri, this.requestParams)
+          .then(response => {
+            this.testResult = response
+          })
+          .catch(error => {
+            this.testResult = error;
+          });
+      },
+      objectToArray(obj) {
+        let arr = []
+        let inx = 0
+        for (let key in obj) {
+          let val = obj[key]
+          val.name = key
+          arr[inx++] = val
+        }
+        return arr
+      }
     }
   }
 </script>

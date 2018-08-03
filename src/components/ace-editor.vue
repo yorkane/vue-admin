@@ -7,7 +7,6 @@
   import 'brace/mode/javascript'
   import 'brace/mode/java'
   import 'brace/mode/lua'
-  import 'brace/mode/php'
   import 'brace/mode/python'
   import 'brace/mode/sh'
   import 'brace/mode/sql'

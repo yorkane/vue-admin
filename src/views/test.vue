@@ -35,7 +35,6 @@
   import Vue from 'vue'
   import empty from './empty.vue'
   import ElCard from "element-ui/packages/card/src/main";
-  import VueJsonEditor from "vue-json-editor";
   import KForm from "../components/KForm";
   import KFormItem from "../components/KFormItem";
   // import SwaggerUI from "../viewsExtra/swagger/index";
@@ -60,7 +59,6 @@
     components: {
       KFormItem,
       KForm,
-      VueJsonEditor,
       // ContextMenu,
       ElCard
     },

@@ -1,13 +1,29 @@
 <template>
   <div class="kjson-editor">
-    <el-tabs type="border-card" v-if="le === -1" @tab-click="syncValue()">
+    <el-tabs type="border-card" v-if="le === -1" v-model="activeTabName">
       <el-tab-pane label="JSON 编辑">
         <el-input class="jsonTextArea" placeholder="请填写字符串" v-model="sourceCode" :size="size" type="textarea"
                   :autosize="{ minRows: 20, maxRows: 40}"></el-input>
       </el-tab-pane>
-      <el-tab-pane label="字段编辑">
+      <el-tab-pane label="字段编辑" lazy>
+        <el-button type="success" size="mini" icon="el-icon-upload2" style="width: 100%;margin:0 0 5px 0"
+                   @click="getSourceCode()">保存修改
+        </el-button>
         <json-editor v-model="value" :le="0" ref="level0" :size="size"></json-editor>
+        <!--<slot name="button"></slot>-->
       </el-tab-pane>
+      <el-tab-pane :label="previewLabel" v-if="previewData || previewLabel !== 'Preview'" lazy>
+        <prism :language="previewType">{{ previewData }}</prism>
+      </el-tab-pane>
+      <el-tab-pane :label="resultLabel" v-if="resultData || resultLabel !== 'Result'" lazy>
+        <prism :language="resultType">{{ resultData }}</prism>
+      </el-tab-pane>
+      <el-tab-pane v-if="extraTabLabel" :label="extraTabLabel">
+        <slot name="tab">
+          Extra content
+        </slot>
+      </el-tab-pane>
+      <slot name="button"></slot>
     </el-tabs>
     <el-row v-else>
       <table cellspacing="0" cellpadding="4">
@@ -74,7 +90,7 @@
             <td colspan="7" style="width: 100%;margin:0;padding: 0 ">
               <json-editor v-model="item.data" :le="level+1" :is-new="item.isNew" :parent="item" :type="item.type"
                            :size="size" :keyEntry="item.name" v-show="item.show"
-                           ref="subEditor"></json-editor>
+                           :ref="'subEditor' + item.id"></json-editor>
             </td>
           </tr>
         </template>
@@ -85,9 +101,13 @@
 
 <script>
   import Vue from 'vue'
+  import 'prismjs'
+  import 'prismjs/themes/prism-tomorrow.css'
+  import Prism from 'vue-prism-component'
 
   var eventHub = new Vue()
   export default {
+    components: {Prism},
     name: "jsonEditor",
     props: {
       value: Object | Array,
@@ -103,6 +123,29 @@
         type: String,
         default: 'Object'
       },
+      extraTabLabel: String,
+      activeTab: {
+        type: String,
+        default: "1"
+      },
+      previewLabel: {
+        type: String,
+        default: 'Preview'
+      },
+      previewType: {
+        type: String,
+        default: 'javascript'
+      },
+      resultLabel: {
+        type: String,
+        default: 'Result'
+      },
+      resultType: {
+        type: String,
+        default: 'javascript'
+      },
+      previewData: [String, Object, Array],
+      resultData: [String, Object, Array],
     },
     data: function () {
       return {
@@ -110,10 +153,19 @@
         items: [],
         sourceCode: '',
         eventHub: {},
-        nc: 1,
+        nc: 0,
       }
     },
-    computed: {},
+    computed: {
+      activeTabName: {
+        get() {
+          return this.activeTab.toString()
+        },
+        set(value) {
+          this.$emit('update:activeTab', value)
+        }
+      },
+    },
     created() {
       if (this.le === -1) {
         this.eventHub = new Vue()
@@ -134,8 +186,10 @@
       },
       sourceCode(val) {
         // console.log(val)
-        this.$emit('input', JSON.parse(val))
-      }
+        let obj = JSON.parse(val)
+        this.$emit('input', obj)
+        this.$emit('change', obj)
+      },
     },
     methods: {
       syncValue() {
@@ -160,49 +214,58 @@
       getSourceCode() {
         eventHub.$emit('updateParent')
         setTimeout(() => {
-          console.log(this.$refs.level0.value)
-          this.sourceCode = this.JSONFormat(JSON.stringify(this.$refs.level0.value))
+          // console.log(this.$refs.level0)
+          this.sourceCode = this.JSONFormat(JSON.stringify(this.value))
         }, 2)
 
       },
       addElement() {
+        let newId = this.nc++;
         switch (this.type) {
           case 'Array':
             let length = this.items.length
             // let last_item = this.items[length - 1]
             this.items.push({
               isNew: true,
-              data: 'New Element: ' + this.nc,
+              data: 'New Element: ' + newId,
               name: length,
               show: true,
-              type: 'String'
+              type: 'String',
+              id: newId
             })
             break
           case 'Object':
             this.items.push({
               isNew: true,
               show: true,
-              name: 'Key' + this.nc,
+              name: 'Key' + newId,
               type: 'String',
-              data: "New value " + this.nc
+              data: "New value " + newId,
+              id: newId
             })
             break
           default:
             break
         }
-        this.nc++
         // console.log(this.items)
+      },
+      createNewItem(name, data, type) {
+        let item = {isNew: this.isNew, id: this.nc++}
+        this.$set(item, 'name', name)
+        this.$set(item, 'data', data)
+        this.$set(item, 'show', true)
+        this.$set(item, 'type', type)
+        return item
       },
       parsedItems() {
         // this.sourceCode = this.JSONFormat(JSON.stringify(this.value))
         this.items = []
-        let subIndex = 0
         let parent = this.parent || {type: this.type}
         for (let key in this.value) {
           let val = this.value[key]
           let tp = typeof(val)
-          // console.log(key, '=', val)
-          let item = {name: key, data: val, parent: parent, isNew: this.isNew}
+          console.log(key, '=', val)
+          let item = this.createNewItem(key, val, parent)
           // this.$set(item,"name",key);
           // this.$set(item,"data",val);
           switch (tp) {
@@ -224,8 +287,6 @@
               } else {
                 item.type = 'Object'
               }
-              item.subIndex = subIndex
-              subIndex = subIndex + 1
               this.$set(item, "show", true)
               break;
           }
@@ -246,15 +307,7 @@
             type: 'warning'
           }).then(() => {
             this.items.splice(index, 1)
-            this.$message({
-              type: 'success',
-              message: '删除成功!'
-            });
           }).catch(() => {
-            this.$message({
-              type: 'info',
-              message: '已取消删除'
-            });
           });
         }
         else {
@@ -268,32 +321,20 @@
       changeType: function (item) {
         item.isNew = true
         if (item.type === 'Array') {
-          this.$set(item, "data", ['new Element' + this.nc]);
-          this.nc++
+          this.$set(item, "data", ['Auto Inject From: ' + item.id]);
         } else if (item.type === 'Object') {
-          this.$set(item, "data", {["NewKey" + this.nc]: "NewValue" + this.nc});
-          this.nc++
+          this.$set(item, "data", {["AutoInject" + item.id]: "Auto Inject From:" + item.id});
         } else {
           item.data = item.data.toString()
-          // delete item.data
-        }
-        let index = 0
-        for (let i = 0; i < this.items.length; i++) {
-          let item = this.items[i]
-          if (item.type === 'Array' || item.type === 'Object') {
-            item.subIndex = index
-            index++;
-          }
         }
         item.show = true
       },
       addSubNode(item) {
         // console.log(this.$refs.subEditor, item.subIndex)
-        let subNode = this.$refs.subEditor[item.subIndex]
+        let subNode = this.$refs['subEditor' + item.id]
         if (subNode) {
-          subNode.addElement()
+          subNode[0].addElement()
         } else {
-
         }
       },
       copyInArray(item) {
@@ -303,8 +344,9 @@
         this.items.push(ni)
       },
       JSONFormat(json) {
+        //from https://github.com/phoboslab/json-format
         let p = []
-        let indentType = '\t'
+        let indentType = '  '
         let push = function (m) {
           return '\\' + p.push(m) + '\\';
         }
@@ -362,8 +404,8 @@
   }
 
   .kjson-editor textarea.el-textarea__inner {
-    background: black !important;
-    color: #00B7FF;
+    background: #2d2d2d !important;
+    color: #7ec699;
     font-family: "Menlo", "Consolas", monospace;
   }
 
@@ -387,7 +429,11 @@
 
   .kjson-editor .value {
     min-width: 250px;
-    width: 18%;
+    width: 20%;
+  }
+
+  .kjson-editor pre[class*="language-"] {
+    margin: 0;
   }
 
   .kjson-editor .operation {
