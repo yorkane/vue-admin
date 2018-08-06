@@ -74,7 +74,7 @@
                              size="mini" title="Add Node" icon="el-icon-plus"></el-button>
                 </template>
                 <template v-else>
-                  <el-button type="primary" icon="el-icon-plus" @click="addElement()"
+                  <el-button type="primary" icon="el-icon-plus" @click="addElement(item)"
                              size="mini" title="Add Field"></el-button>
                 </template>
                 <el-button v-if="type === 'Array' && item.type === 'Object'" type="success" icon="el-icon-back"
@@ -219,18 +219,25 @@
         }, 2)
 
       },
-      addElement() {
+      addElement(item) {
         let newId = this.nc++;
+        if (!item) {
+          item = {
+            type: 'String',
+            data: 'New Value' + newId,
+            name: 'Key',
+          }
+        }
         switch (this.type) {
           case 'Array':
             let length = this.items.length
             // let last_item = this.items[length - 1]
             this.items.push({
               isNew: true,
-              data: 'New Element: ' + newId,
+              data: item.data,
               name: length,
               show: true,
-              type: 'String',
+              type: item.type,
               id: newId
             })
             break
@@ -238,9 +245,9 @@
             this.items.push({
               isNew: true,
               show: true,
-              name: 'Key' + newId,
-              type: 'String',
-              data: "New value " + newId,
+              name: item.name + newId,
+              type: item.type,
+              data: item.data,
               id: newId
             })
             break
@@ -264,7 +271,7 @@
         for (let key in this.value) {
           let val = this.value[key]
           let tp = typeof(val)
-          console.log(key, '=', val)
+          // console.log(key, '=', val)
           let item = this.createNewItem(key, val, parent)
           // this.$set(item,"name",key);
           // this.$set(item,"data",val);
@@ -292,11 +299,6 @@
           }
           this.items.push(item)
         }
-        // console.log(this.items)
-
-
-        // this.$set(this.items, items)
-        // this.items = items
         return this.items
       },
       remove: function (item, index, level) {

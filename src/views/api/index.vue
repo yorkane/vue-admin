@@ -5,35 +5,41 @@
               @node-click="handleNodeClick"
               @detail="handleTreeEvent"></k-tree>
     </auto-height-wrapper>
-    <div style="overflow: auto;">
-      <el-row :gutter="20" style="margin:10px">
+    <div class="infoZone">
+      <el-row :gutter="20">
         <el-col :span="12">
           <el-card class="box-card">
-            <div slot="header">{{info.desc}}</div>
-            <div class="text item">
-              <el-table :data="info.params" style="width: 100%">
-                <el-table-column prop="name" label="参数名" width="150"></el-table-column>
-                <el-table-column prop="type" label="类型" width="120"></el-table-column>
-                <el-table-column prop="desc" label="描述" width=""></el-table-column>
-              </el-table>
-              返回类型：{{info.returns}}
-              <hr />
-              返回描述：{{info.return_desc}}
+            {{currentId || '未选择'}}
+            <hr/>
+            方法描述：{{info.desc||'无'}}
+            <br/><br/>
+            <el-table :data="info.params" style="width: 100%" header-row-class-name="th-header">
+              <el-table-column prop="name" label="参数名" width="150"></el-table-column>
+              <el-table-column prop="type" label="类型" width="120"></el-table-column>
+              <el-table-column prop="desc" label="描述" width=""></el-table-column>
+            </el-table>
+            <div class="returns">
+              返回类型：{{info.returns || '无'}}
+              <hr/>
+              返回描述：{{info.return_desc || '无'}}
             </div>
           </el-card>
         </el-col>
         <el-col :span="12">
-          <el-card class="box-card">
-            <ul v-if="definitions"
-                style="width: 100%">
+          <el-card>
+            复杂参数类型
+            <hr/>
+            <el-tabs v-if="definitions" tab-position="left">
               <template v-for="(item, key) in definitions">
-                <el-table :data="objectToArray(item)">
-                  <el-table-column prop="name" label="参数名" width="150"></el-table-column>
-                  <el-table-column prop="type" label="类型" width="120"></el-table-column>
-                  <el-table-column prop="desc" label="描述" width=""></el-table-column>
-                </el-table>
+                <el-tab-pane :label="key">
+                  <el-table :data="objectToArray(item)" header-row-class-name="th-header">
+                    <el-table-column prop="name" label="参数名" width="150"></el-table-column>
+                    <el-table-column prop="type" label="类型" width="120"></el-table-column>
+                    <el-table-column prop="desc" label="描述" width=""></el-table-column>
+                  </el-table>
+                </el-tab-pane>
               </template>
-            </ul>
+            </el-tabs>
           </el-card>
         </el-col>
         <!--<el-col :span="8">-->
@@ -52,7 +58,7 @@
       <!--:page.sync="page" :pageSize.sync="pageSize" :selected.sync="selectedList"-->
       <!--@btnEvt_inspect="handleEvent"-->
       <!--drag-order></model-grid>-->
-      <el-row class="row" style="margin:20px">
+      <el-row class="jsonRow">
         <json-edior v-model="requestParams" size="mini" extra-tab-label="额外" :active-tab.sync="activeTab"
                     preview-label="方法定义" :preview-data="methodInfo" result-label="测试结果" :result-data="testResult">
           <div slot="button" style="margin:10px 0 0">
@@ -112,6 +118,7 @@
         activeTab: "0",
         testResult: '',
         requestParams: {},
+        currentId: ''
       }
     },
     created() {
@@ -134,14 +141,14 @@
         }
         return info
       },
-      definitions(){
+      definitions() {
         let definitions = this.methodInfo.definitions
         return definitions || {}
       }
     },
     methods: {
       loadMethodInfo(id) {
-        console.log(id)
+        this.currentId = id
         let arr = id.split('@')
         if (arr[1]) {
           sysAPI.getInfo(arr[0], arr[1]).then(resp => {
@@ -173,7 +180,6 @@
         }
       },
       handleTreeEvent(data, eventName) {
-        // console.log(data, eventName)
         switch (eventName) {
           case 'detail':
             //ref.refRole.editRoleRefs(data)
@@ -196,17 +202,6 @@
             this.isEditMode = true
             this.currentRow = data
             this.showForm = true
-            break
-          case 'btnEvt_delete':
-            console.warn('try to delete data', data)
-            this.api.deleteById(data.id).then(resp => {
-              let indx = this.dataList.list.indexOf(data)
-              this.dataList.list.splice(indx, 1)
-              this.$message({
-                message: '删除成功',
-                type: 'success'
-              });
-            })
             break
           default:
             return this.sysList
@@ -241,10 +236,19 @@
           case 'table|string':
           case 'string|table':
             if (format === 'date-time') {
-              data = Date.now()
+              data = new Date()
             } else {
               data = 'NewString'
             }
+            break
+          case 'table<string, string>':
+            data = {'key': 'str'}
+            break
+          case 'table<string, table>':
+            data = {'key': {}}
+            break
+          case 'table<string, number>':
+            data = {'key': 1}
             break
           default:
             let new_tp = definitions[tp]
@@ -265,18 +269,18 @@
       generateRequest(schema) {
         let param = schema.info.params
         let definitions = schema.definitions
-        console.log(schema, param)
+        // console.log(schema, param)
         let params = {}
         if (param) {
           for (let i = 0; i < param.length; i++) {
             params[param[i].name] = this.getDataByParam(param[i], definitions)
           }
         } else {
+          this.requestParams = {}
           return
         }
         this.$set(this.requestParams, params)
         this.requestParams = params
-        // console.log(params, this.requestParams)
         // this.requestParams = params
       },
       doTest() {
@@ -303,7 +307,44 @@
   }
 </script>
 <style>
+  .infoZone {
+    overflow: auto;
+    padding: 20px;
+    font-size: 12px;
+    color: #606266;
+  }
+
+  .jsonRow {
+    margin: 20px 0 0 0;
+  }
+
+  .infoZone hr {
+    padding: 0;
+    margin: 9px 0 8px 0;
+    color: grey;
+    border: 0;
+    border-bottom: 1px solid #ebeef5;
+    height: 0;
+  }
+
+  .infoZone .th-header th {
+    color: #000;
+    background: #eee;
+  }
+
+  .infoZone .returns {
+    margin: 10px 0;
+  }
+
   .tree-grid .el-table--border {
     border-left: 0;
+  }
+
+  .header {
+
+  }
+
+  .box-card {
+
   }
 </style>

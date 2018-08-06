@@ -6,6 +6,7 @@ var merge = require('webpack-merge')
 var baseWebpackConfig = require('./webpack.base.conf')
 var HtmlWebpackPlugin = require('html-webpack-plugin')
 var FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
+var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 function resolveApp(relativePath) {
   return path.resolve(relativePath);
@@ -36,6 +37,7 @@ module.exports = merge(baseWebpackConfig, {
       favicon: resolveApp('favicon.ico'),
       inject: true
     }),
-    new FriendlyErrorsPlugin()
+    new FriendlyErrorsPlugin(),
+    // new BundleAnalyzerPlugin()
   ]
 })
