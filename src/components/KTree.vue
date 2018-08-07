@@ -132,6 +132,7 @@
       },
       isSingleCheck: Boolean,
       isMultipleCheck: Boolean,
+      onlyLeafCheckable: Boolean,
     },
     computed: {
       tprop() {
@@ -223,23 +224,27 @@
       setChecked(key, isChecked, deep) {
         this.$refs.ktree.setChecked(key, isChecked, deep);
       },
-      getRootPath(data) {
-        let pk = this.data.tree_desc.pk;
-        let parent_key = this.data.tree_desc.parent_key;
-        let path = [data[pk]];
-        let stack = [data[parent_key]];
-        while (stack.length > 0) {
-          let pid = stack.pop();
-          console.log(this.data, pid)
-          let obj = this.data.___dic[pid];
-          if (obj) {
-            path.push(obj[pk]);
-            pid = obj[parent_key];
-            if (pid == 0 || pid == '' || pid == '0') {
-              break;
-            } else {
-              stack.push(pid);
-            }
+      getRootPath(nodeId) {
+        let path = []
+        let data = this.$refs.ktree.getNode(nodeId)
+        if (!data) {
+          if (typeof(nodeId) === 'string') {
+            nodeId = parseNumber(nodeId)
+            data = this.$refs.ktree.getNode(nodeId)
+          } else {
+            data = this.$refs.ktree.getNode(nodeId + '')
+          }
+        }
+        if (!data) return path;
+        data = data.data
+        path.push(data)
+        while (data) {
+          let parent = this.$refs.ktree.getNode(data.parent_id)
+          if (parent) {
+            path.push(parent.data)
+            data = parent.data
+          } else {
+            break
           }
         }
         return path.reverse();
@@ -264,16 +269,19 @@
       /* 点击响应时间 */
       nodeClick(data, treeNode, nodeComponent) {
         this.nodeData = data;
+        this.$emit('node-click', data, treeNode, nodeComponent)
         if (!this.disabled) {
+          if (this.onlyLeafCheckable && treeNode.childNodes && treeNode.childNodes.length > 0) {
+            return
+          }
           if (this.isSingleCheck) {
-            this.$refs.ktree.setCheckedKeys([])
+            this.$refs.ktree.setCheckedKeys([], this.onlyLeafCheckable)
             treeNode.checked = !treeNode.checked
           }
           if (this.isMultipleCheck) {
             treeNode.checked = !treeNode.checked
           }
         }
-        this.$emit('node-click', data, treeNode, nodeComponent)
       },
       /**
        * 发送确认事件
@@ -302,8 +310,8 @@
         // console.log(data, isChecked)
         this.$emit('check', data, checkedInfo)
       },
-      setCheckedKeys(keys, isChecked) {
-        return this.$refs.ktree.setCheckedKeys(keys, isChecked)
+      setCheckedKeys(keys, leafOnly) {
+        return this.$refs.ktree.setCheckedKeys(keys, leafOnly)
       },
       getCheckedKeys(isLeafOnly) {
         return this.$refs.ktree.getCheckedKeys(isLeafOnly)

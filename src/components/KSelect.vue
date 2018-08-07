@@ -17,6 +17,7 @@
                 @check="checkSingle"
                 :default-expanded-keys="defaultExpandedKeys"
                 :disabled="readOnly"
+                :onlyLeafCheckable="onlyLeafCheckable"
         >
         </k-tree>
       </el-popover>
@@ -160,6 +161,7 @@
       dataSourceKey: String,
       readOnly: Boolean,
       disabled: Boolean,
+      onlyLeafCheckable: Boolean,
       treeProps: {
         default: function () {
           return {
@@ -213,7 +215,7 @@
             } else {
               this.defaultExpandedKeys = val.split(',')
             }
-            this.getButtonlabel(val)
+            this.getButtonLabel(val)
           }
         }
         this.isSingle = (typeof(val) === 'number') || !this.isMultiple
@@ -284,7 +286,7 @@
         // console.debug('KSelect syncOption: option loaded:', val, '|value:', this.value, '|optionList:', this.optionList, '|isList', this.isList)
       },
       changeValue(val) {
-        console.log(val)
+        // console.log(val)
         if (val === undefined) {
           this.$emit('input', '')
         } else if (val.push) {
@@ -386,14 +388,18 @@
         }
         let idList = this.isMultiple ? keys.join(',') : keys[0];
         this.$emit('input', idList)
-        // console.log('KSelect:checkChange', nodes, keys, this.value, treeComponent)
-        this.buttonLabel = label
       },
-      getButtonlabel(val) {
+      getButtonLabel(val) {
         if (this.isSingle) {
-          let nd = this.$refs.ktree.getNode(val)
-          if (nd) {
-            this.buttonLabel = nd.label || nd.name || nd.desc
+          let path = this.$refs.ktree.getRootPath(val)
+          if (path) {
+            let label = ''
+            for (let i = 0; i < path.length; i++) {
+              label = label + this.getLabel(path[i]) + ' > '
+            }
+            this.buttonLabel = label.substr(0, label.length - 3)
+          } else {
+            this.buttonLabel = this.getLabel(val)
           }
           return
         }

@@ -17,6 +17,7 @@ const roleAPI = {
   new(params, store) {
     return this.newInstance(key, params, store)
   },
+  IS_TREE: true,
   getDataStruct() {
     return this._getDataStruct(key, '/lor/role/desc')
   },

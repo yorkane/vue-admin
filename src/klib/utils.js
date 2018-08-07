@@ -324,10 +324,15 @@ const klib_utils = {
    * @param root
    * @param fun
    */
-  walkTreeNode(root, fun) {
+  walkTreeNode(root, fun, uniqueKey) {
     if (!root) return;
+    uniqueKey = uniqueKey || 'id'
     let stack = []
     for (let i = 0; i < root.length; i++) {
+      let obj = root[i]
+      if (obj.parent_id === undefined) {
+        obj.parent_id = 0
+      }
       if (fun(root[i], root)) {
         return
       }
@@ -339,6 +344,9 @@ const klib_utils = {
       if (tmpNode.__children) {
         for (let i = 0; i < tmpNode.__children.length; i++) {
           let obj = tmpNode.__children[i];
+          if (obj.parent_id === undefined) {
+            obj.parent_id = tmpNode[uniqueKey]
+          }
           if (fun(obj, tmpNode.__children, i)) {
             return
           }

@@ -59,6 +59,9 @@ export const constantRouterMap = [
       {
         path: 'api', name: '系统文档及接口', component: _import('api/index'),
       },
+      {
+        path: 'schedule', name: '定时任务', component: _import('schedule/scheduleIndex'),
+      }
     ]
   },
   {

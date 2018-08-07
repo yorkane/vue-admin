@@ -10,16 +10,6 @@
         <el-tag type="danger">标签五</el-tag>
 
       </el-row>
-
-      <!--<div slot="header">-->
-      <!--<span>{{$route.params.name}}</span>-->
-      <!--&lt;!&ndash;<el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>&ndash;&gt;-->
-      <!--</div>-->
-      <!--<json-editor :objData="jsonData" v-model="jsonData"></json-editor>-->
-
-      <!--<vue-json-editor v-model="jsonData" mode="view" :show-btns="true" @json-change="onJsonChange"></vue-json-editor>-->
-  <!--<k-json-editor :json-object="jsonData"></k-json-editor>-->
-      <swagger-u-i></swagger-u-i>
     </el-card>
     <!--<context-menu class="right-menu"-->
     <!--:target="contextMenuTarget"-->
@@ -37,21 +27,7 @@
   import ElCard from "element-ui/packages/card/src/main";
   import KForm from "../components/KForm";
   import KFormItem from "../components/KFormItem";
-  // import SwaggerUI from "../viewsExtra/swagger/index";
-  // import JsonEditor from 'vue-json-editor-block-view'
-  // import ContextMenu from "../components/Libs/ContextMenu";
-  const SCHEMA = {
-    type: 'object',
-    title: 'vue-json-editor demo',
-    properties: {
-      name: {
-        type: 'string',
-      },
-      email: {
-        type: 'string',
-      },
-    },
-  };
+
 
 
   const _import = require('../router/_import_' + process.env.NODE_ENV)
@@ -111,11 +87,7 @@
         alert(JSON.stringify(this.model));
       },
       reset() {
-        this.$refs.JsonEditor.reset();
       },
-      onJsonChange(value) {
-        console.log('value:', value)
-      }
     }
   }
 </script>

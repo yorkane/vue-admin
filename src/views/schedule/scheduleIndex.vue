@@ -16,35 +16,25 @@
                   @quickEdit="quickEdit" @sort="sortField" @btnEvt_edit="handleEvent" @btnEvt_delete="handleEvent"
                   @pageChange="getData()"
       ></model-grid>
-
-      <k-form-wrap label-width="200px" :field-editable="isAdmin" :model.sync="currentRow"
+      <mform label-width="200px" :model.sync="currentRow"
                    :isEditMode="isEditMode" withDialog :dataStruct="m_dataStruct" @inserted="inserted"
                    :visible.sync="showForm" :component-map="componentMap">
-      </k-form-wrap>
+      </mform>
       <!--<k-form></k-form>-->
     </div>
   </div>
 </template>
 <script>
-  import modelAPI from '../api/model'
-  import mform from "./form.vue";
-  import KCondition from "../components/KCondition.vue";
-  import KDataStruct from "../components/KDataStruct.vue";
-  import ModelGrid from "./grid.vue";
-  import roleAPI from '../api/sys_role'
-  import nginx_confAPI from '../api/nginx_conf'
-  import KBatchForm from "../components/KBatchForm";
-  import {isAdmin, getRole} from "../utils/auth";
-  import KForm from "../components/KForm";
-  import KFormWrap from "../components/KFormWrap";
-  import KIconSelector from "../components/KIconSelector";
+  import modelAPI from '../../api/model'
+  import mform from "./scheduleForm.vue";
+  import KCondition from "../../components/KCondition.vue";
+  import KDataStruct from "../../components/KDataStruct.vue";
+  import ModelGrid from "./scheduleGrid";
+  import KBatchForm from "../../components/KBatchForm";
 
   export default {
-    name: 'ModelIndex',
+    name: 'scheduleIndex',
     components: {
-      KIconSelector,
-      KFormWrap,
-      KForm,
       KBatchForm,
       ModelGrid,
       KCondition,
@@ -56,18 +46,12 @@
        * @type {modelAPI}
        * @private
        */
-      this._api = modelAPI.new(this.$route.params.table || 'sys_logs', {})
+      this._api = modelAPI.new('sys_schedule', {})
       this.$root.$on('IntoMapField', (key, field) => {
-        if (this._api.isTree) {
-          this.$router.push({path: '/tree/' + field.Comment + '/' + key});
-        } else {
-          this.$router.push({path: '/model/' + field.Comment + '/' + key});
-        }
+        this.$router.push({path: '/model/' + field.Comment + '/' + key});
       })
       return {
         apiDict: {
-          sys_role: roleAPI.new(),
-          nginx_conf: nginx_confAPI.new(),
         },
         isEditMode: true,
         loading: false, //切换Loading显示状态
@@ -81,7 +65,6 @@
         header_text: '',
         showBatchForm: false,
         componentMap: {
-          'icon': KIconSelector
         }
       }
     },

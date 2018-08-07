@@ -7,36 +7,36 @@
     </auto-height-wrapper>
     <div class="infoZone">
       <el-row :gutter="20">
-        <el-col :span="12">
+        <el-col :span="24">
           <el-card class="box-card">
-            {{currentId || '未选择'}}
-            <hr/>
-            方法描述：{{info.desc||'无'}}
-            <br/><br/>
-            <el-table :data="info.params" style="width: 100%" header-row-class-name="th-header">
-              <el-table-column prop="name" label="参数名" width="150"></el-table-column>
-              <el-table-column prop="type" label="类型" width="120"></el-table-column>
-              <el-table-column prop="desc" label="描述" width=""></el-table-column>
-            </el-table>
-            <div class="returns">
-              返回类型：{{info.returns || '无'}}
-              <hr/>
-              返回描述：{{info.return_desc || '无'}}
-            </div>
-          </el-card>
-        </el-col>
-        <el-col :span="12">
-          <el-card>
-            复杂参数类型
-            <hr/>
-            <el-tabs v-if="definitions" tab-position="left">
+            <el-tabs v-if="definitions">
+              <el-tab-pane label="当前方法">
+                {{currentId || '未选择'}}
+                <hr/>
+                方法描述：{{info.desc||'无'}}
+                <br/><br/>
+
+                <el-table :data="info.params" header-row-class-name="th-header">
+                  <el-table-column prop="name" label="参数名" width="150"></el-table-column>
+                  <el-table-column prop="type" label="类型" width="120"></el-table-column>
+                  <el-table-column prop="desc" label="描述" width=""></el-table-column>
+                </el-table>
+
+                <div class="returns">
+                  返回类型：{{info.returns || '无'}}
+                  <hr/>
+                  返回描述：{{info.return_desc || '无'}}
+                </div>
+              </el-tab-pane>
               <template v-for="(item, key) in definitions">
                 <el-tab-pane :label="key">
-                  <el-table :data="objectToArray(item)" header-row-class-name="th-header">
-                    <el-table-column prop="name" label="参数名" width="150"></el-table-column>
-                    <el-table-column prop="type" label="类型" width="120"></el-table-column>
-                    <el-table-column prop="desc" label="描述" width=""></el-table-column>
-                  </el-table>
+                  <div style="min-width: 800px;overflow: auto">
+                    <el-table :data="objectToArray(item)" header-row-class-name="th-header">
+                      <el-table-column prop="name" label="参数名" width="150"></el-table-column>
+                      <el-table-column prop="type" label="类型" width="120"></el-table-column>
+                      <el-table-column prop="desc" label="描述" width=""></el-table-column>
+                    </el-table>
+                  </div>
                 </el-tab-pane>
               </template>
             </el-tabs>

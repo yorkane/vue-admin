@@ -230,7 +230,7 @@ const klib_api = {
               list.splice(index, 1)
               return
             }
-            if (!node.parent_id) {
+            if (node.parent_id === 0) {
               node.__depth = 1;
             } else {
               let pnode = data.___dic[node.parent_id]
