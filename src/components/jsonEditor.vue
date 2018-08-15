@@ -1,11 +1,11 @@
 <template>
   <div class="kjson-editor">
     <el-tabs type="border-card" v-if="le === -1" v-model="activeTabName">
-      <el-tab-pane label="JSON 编辑">
+      <el-tab-pane :label="editorLabel">
         <el-input class="jsonTextArea" placeholder="请填写字符串" v-model="sourceCode" :size="size" type="textarea"
                   :autosize="{ minRows: 20, maxRows: 40}"></el-input>
       </el-tab-pane>
-      <el-tab-pane label="字段编辑" lazy>
+      <el-tab-pane :label="FieldLabel" lazy>
         <el-button type="success" size="mini" icon="el-icon-upload2" style="width: 100%;margin:0 0 5px 0"
                    @click="getSourceCode()">保存修改
         </el-button>
@@ -110,7 +110,7 @@
     components: {Prism},
     name: "jsonEditor",
     props: {
-      value: Object | Array,
+      value: Object | Array | String | Number | Boolean,
       parent: Object,
       index: Number,
       size: String,
@@ -122,6 +122,14 @@
       type: {
         type: String,
         default: 'Object'
+      },
+      editorLabel: {
+        type: String,
+        default: 'JSON编辑'
+      },
+      FieldLabel: {
+        type: String,
+        default: '字段编辑'
       },
       extraTabLabel: String,
       activeTab: {
@@ -146,6 +154,8 @@
       },
       previewData: [String, Object, Array],
       resultData: [String, Object, Array],
+      parseError: String,
+      source: String,
     },
     data: function () {
       return {
@@ -154,6 +164,7 @@
         sourceCode: '',
         eventHub: {},
         nc: 0,
+        valueType: ''
       }
     },
     computed: {
@@ -186,22 +197,41 @@
       },
       sourceCode(val) {
         // console.log(val)
-        let obj = JSON.parse(val)
+        let obj
+        try {
+          obj = JSON.parse(val)
+        } catch (e) {
+          if (val.match(/^[\da-z]/)) {
+            obj = val
+          } else {
+            this.$emit('update:parseError', e.toString())
+            return
+          }
+        }
+        this.$emit('update:parseError', '')
         this.$emit('input', obj)
         this.$emit('change', obj)
       },
     },
     methods: {
       syncValue() {
+        this.valueType = typeof(this.value)
         if (this.le === -1) {
           this.items = []
           setTimeout(() => {
-            this.parsedItems()
             this.getSourceCode()
+            this.parsedItems()
           }, 2)
         }
       },
       updateParent() {
+        let tp = typeof(this.value)
+        if (tp !== 'object') {
+          if (this.items.length) {
+            this.$emit('input', this.items[0].data) //process number boolean string
+            return
+          }
+        }
         if (this.le >= 0) {
           for (let i = 0; i < this.items.length; i++) {
             let item = this.items[i]
@@ -212,12 +242,22 @@
         }
       },
       getSourceCode() {
-        eventHub.$emit('updateParent')
         setTimeout(() => {
           // console.log(this.$refs.level0)
-          this.sourceCode = this.JSONFormat(JSON.stringify(this.value))
+          if (this.valueType !== 'object') {
+            this.sourceCode = this.value
+          } else {
+            try {
+              this.sourceCode = this.JSONFormat(JSON.stringify(this.value))
+            } catch (e) {
+              if (this.value['undefined']) {
+                this.value['undefined'] = undefined
+              }
+              this.sourceCode = this.JSONFormat(JSON.stringify(this.value))
+            }
+          }
         }, 2)
-
+        eventHub.$emit('updateParent')
       },
       addElement(item) {
         let newId = this.nc++;
@@ -267,6 +307,13 @@
       parsedItems() {
         // this.sourceCode = this.JSONFormat(JSON.stringify(this.value))
         this.items = []
+        if (this.valueType !== 'object') {
+          this.items.push({
+            type: this.valueType,
+            data: this.value
+          })
+          return
+        }
         let parent = this.parent || {type: this.type}
         for (let key in this.value) {
           let val = this.value[key]

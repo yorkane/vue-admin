@@ -17,10 +17,10 @@ const timerAPI = {
   },
 
   getDataStruct() {
-    return this._getDataStruct(key, '/lor/timer/desc')
+    return this._getDataStruct(key, '/app/timer/desc')
   },
   getData(params, forceReload) {
-    return this._getData(params, forceReload, key, '/lor/timer/list')
+    return this._getData(params, forceReload, key, '/app/timer/list')
   },
   getTree() {
     return 'not implemented'
@@ -31,20 +31,20 @@ const timerAPI = {
   },
   update(data) {
     return service({
-      url: 'lor/timer/pause/' + data,
+      url: 'app/timer/pause/' + data,
       method: 'post',
     })
   },
   deleteById(id) {
     return service({
-      url: 'lor/timer/' + id,
+      url: 'app/timer/' + id,
       method: 'delete',
     })
   },
 
   insert(data) {
     return service({
-      url: 'lor/timer/insert',
+      url: 'app/timer/insert',
       method: 'post',
       data
     })

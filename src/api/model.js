@@ -35,7 +35,7 @@ const modelAPI = {
   },
   getList(key, data) {
     return service({
-      url: 'lor/model/' + key + '/list',
+      url: 'app/model/' + key + '/list',
       method: 'post',
       data
     })
@@ -45,27 +45,27 @@ const modelAPI = {
       idList = idList.join(',')
     }
     return service({
-      url: 'lor/model/' + this.key + '/batch/' + idList,
+      url: 'app/model/' + this.key + '/batch/' + idList,
       method: 'patch',
       data
     })
   },
   update(data) {
     return service({
-      url: 'lor/model/' + this.key + '/update',
+      url: 'app/model/' + this.key + '/update',
       method: 'post',
       data
     })
   },
   deleteById(id) {
     return service({
-      url: 'lor/model/' + this.key + '/' + id,
+      url: 'app/model/' + this.key + '/' + id,
       method: 'delete'
     })
   },
   insert(data) {
     return service({
-      url: 'lor/model/' + this.key + '/insert',
+      url: 'app/model/' + this.key + '/insert',
       method: 'post',
       data
     })

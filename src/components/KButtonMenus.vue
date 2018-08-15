@@ -115,6 +115,8 @@
           moveRight: {icon: 'el-icon-d-arrow-right', label: '右移'},
           share: {icon: 'el-icon-share', label: '分享'},
           relation: {icon: 'el-icon-share', label: '关联'},
+          run: {icon: 'el-icon-caret-right', label: '运行'},
+          execute: {icon: 'el-icon-caret-right', label: '执行'},
         }
       }
     },

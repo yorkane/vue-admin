@@ -229,7 +229,7 @@
         let data = this.$refs.ktree.getNode(nodeId)
         if (!data) {
           if (typeof(nodeId) === 'string') {
-            nodeId = parseNumber(nodeId)
+            nodeId = parseInt(nodeId)
             data = this.$refs.ktree.getNode(nodeId)
           } else {
             data = this.$refs.ktree.getNode(nodeId + '')

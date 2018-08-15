@@ -7,28 +7,28 @@ const NginxConfAPI = {
     return this.newInstance(key, params, store)
   },
   getDataStruct() {
-    return this._getDataStruct(key, '/lor/nginx/desc')
+    return this._getDataStruct(key, '/app/nginx/desc')
   },
 
   getData(params, forceReload) {
-    return this._getData(params, forceReload, key, '/lor/nginx/list')
+    return this._getData(params, forceReload, key, '/app/nginx/list')
   },
   update(data) {
     return service({
-      url: 'lor/nginx/update',
+      url: 'app/nginx/update',
       method: 'post',
       data
     })
   },
   deleteById(id) {
     return service({
-      url: 'lor/nginx/' + id,
+      url: 'app/nginx/' + id,
       method: 'delete'
     })
   },
   insert(data) {
     return service({
-      url: 'lor/nginx/insert',
+      url: 'app/nginx/insert',
       method: 'post',
       data
     })

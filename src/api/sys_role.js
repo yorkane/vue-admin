@@ -19,37 +19,36 @@ const roleAPI = {
   },
   IS_TREE: true,
   getDataStruct() {
-    return this._getDataStruct(key, '/lor/role/desc')
+    return this._getDataStruct(key, '/app/role/desc')
   },
   getData(params, forceReload) {
-    return this._getData(params, forceReload, key, '/lor/role/tree', true)
+    return this._getData(params, forceReload, key, '/app/role/tree', true)
   },
   getTree(params, forceReload) {
-    return this._getData(params, forceReload, key, '/lor/role/tree', true)
+    return this._getData(params, forceReload, key, '/app/role/tree', true)
   },
   update(data) {
     return service({
-      url: 'lor/role/update',
+      url: 'app/role/update',
       method: 'post',
       data
     })
   },
-  deleteById(params) {
+  deleteById(id) {
     return service({
-      url: 'lor/role/delete',
-      method: 'get',
-      params
+      url: 'app/role/delete/' + id,
+      method: 'delete'
     })
   },
   info(id) {
     return service({
-      url: 'lor/role/info/' + id,
+      url: 'app/role/info/' + id,
       method: 'get',
     })
   },
   insert(data) {
     return service({
-      url: 'lor/role/insert',
+      url: 'app/role/insert',
       method: 'post',
       data
     })

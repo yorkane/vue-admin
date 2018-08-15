@@ -123,7 +123,7 @@
       },
       handleDelete: function (data) {
         console.log('start delete', data)
-        this._api.deleteById({id: data.id}).then(resp => {
+        this._api.deleteById(data.id).then(resp => {
           this.$message({
             message: '删除节点成功',
             type: 'success'

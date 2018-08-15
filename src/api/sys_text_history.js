@@ -7,34 +7,34 @@ const textHistory = {
     return this.newInstance(key, params, store)
   },
   getDataStruct() {
-    return this._getDataStruct(key, '/lor/text/desc')
+    return this._getDataStruct(key, '/app/text/desc')
   },
   getData(params, forceReload) {
-    return this._getData(params, forceReload, key, '/lor/text/list')
+    return this._getData(params, forceReload, key, '/app/text/list')
   },
   update(data) {
     return service({
-      url: 'lor/text/update',
+      url: 'app/text/update',
       method: 'post',
       data
     })
   },
   deleteById(id) {
     return service({
-      url: 'lor/text/' + id,
+      url: 'app/text/' + id,
       method: 'delete'
     })
   },
   insert(data) {
     return service({
-      url: 'lor/text/insert',
+      url: 'app/text/insert',
       method: 'post',
       data
     })
   },
   getLatestById(id) {
     return service({
-      url: 'lor/text/lastest/' + id,
+      url: 'app/text/lastest/' + id,
       method: 'get',
     })
   },

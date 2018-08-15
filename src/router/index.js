@@ -57,7 +57,10 @@ export const constantRouterMap = [
         path: 'sys_role', name: '角色权限管理', component: _import('sys_role/index'),
       },
       {
-        path: 'api', name: '系统文档及接口', component: _import('api/index'),
+        path: 'api', name: '系统文档', component: _import('api/index')
+      },
+      {
+        path: 'api/:className/:methodName', name: '系统接口', component: _import('api/index'), props: true
       },
       {
         path: 'schedule', name: '定时任务', component: _import('schedule/scheduleIndex'),
@@ -75,7 +78,7 @@ export const constantRouterMap = [
     path: '/model',
     component: Layout,
     hidden: true,
-    name:'modelEntry',
+    name: 'modelEntry',
     noDropdown: true,
     children: [{path: ':name/:table*', name: 'model', component: model_index}]
   },

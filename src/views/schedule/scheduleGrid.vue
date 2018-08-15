@@ -4,7 +4,14 @@
               @selection-change="selectionChange"
               stripe @row-dblclick="doubleClickRow"
               @sort-change="sortEvent" highlight-current-row @header-dragend="saveHeaderWidth">
-      <el-table-column v-if="enableChecked" type="selection" width="40" fixed="left"></el-table-column><!--menu opts here-->
+      <!--<el-table-column v-if="enableChecked" type="selection" width="40" fixed="left"></el-table-column>&lt;!&ndash;menu opts here&ndash;&gt;-->
+      <el-table-column width="70" label="立即运行">
+        <template slot-scope="scope">
+          <el-button :type="scope.row.status > 0? 'plain':'success'" size="mini" :disabled="scope.row.status > 0 " round
+                     :icon="scope.row.status < 1 ?'el-icon-caret-right' : 'el-icon-loading'"
+                     @click.stop="$emit('runSchedule', scope.row)"></el-button>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" width="160" fixed="right"><!--menu opts here-->
         <template slot-scope="scope">
           <k-button-menus :data="scope.row" size="mini" :index="scope.$index" group round></k-button-menus>
@@ -26,7 +33,8 @@
                 <a class="menuHref" target="_blank">{{scope.row[dataStruct._PK]}}</a>
               </div>
             </template>
-            <k-grid-item v-else :model="scope.row" :item="item" :PK="dataStruct._PK" :dataStruct="dataStruct"></k-grid-item>
+            <k-grid-item v-else :model="scope.row" :item="item" :PK="dataStruct._PK"
+                         :dataStruct="dataStruct"></k-grid-item>
           </template>
         </el-table-column>
       </template>
@@ -43,7 +51,6 @@
   import KButtonMenus from "../../components/KButtonMenus.vue";
   import KGridItem from "../../components/KGridItem.vue";
   import KGrid from "../../components/KGrid.vue";
-
   export default {
     name: 'scheduleGrid',
     mixins: [KGrid],
@@ -65,6 +72,7 @@
     },
     created() {
     },
+
     methods: {
     }
   }

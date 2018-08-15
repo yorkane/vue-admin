@@ -83,17 +83,20 @@ service.interceptors.response.use(
       console.log('mock get error response, overwrite with mock data', error.config.url) // for debug
       return Promise.resolve(data)
     } else {
+      let msg
       console.log('err', error)// for debug
-      let msg = error.response.data
-      msg = msg.err || error.message
-      Message({
-        message: msg,
-        type: 'error',
-        duration: 3 * 1000
-      })
-      console.error('axios-request:', error.config.url, ' \nResponse:', error.response, '\nError:', msg)
+      if (error.response && error.response.data) {
+        msg = error.response.data
+        msg = msg.err || error.message
+        Message({
+          message: msg,
+          type: 'error',
+          duration: 3 * 1000
+        })
+      }
+      console.error('axios-request:', error.config, ' \nResponse:', error.response, '\nError:', msg)
       // console.log(router)
-      if (msg.indexOf('401') > -1) {
+      if (msg && msg.indexOf('401') > -1) {
         app.$notify.warning({title: '系统错误', message: msg});
         expiredToken()
       }

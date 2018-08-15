@@ -1,6 +1,5 @@
 import Cookies from 'js-cookie'
 
-const TokenKey = 'Admin-Token'
 const AuthKey = '_g_auth'
 
 function getRootDomain() {
@@ -12,17 +11,6 @@ function getRootDomain() {
   return host.replace(/:\d+/, '')
 }
 
-export function getToken() {
-  return Cookies.get(TokenKey)
-}
-
-export function setToken(token) {
-  return Cookies.set(TokenKey, token)
-}
-
-export function removeToken() {
-  return Cookies.remove(TokenKey)
-}
 
 export function getName() {
   let t = getAuthToken()

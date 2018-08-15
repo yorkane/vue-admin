@@ -3,7 +3,7 @@ import klib_api from "../klib/api";
 
 export function getList(params) {
   return service({
-    url: 'lor/menu/tree?tname=sys_menu',
+    url: 'app/menu/tree?tname=sys_menu',
     method: 'get',
     params
   })
@@ -12,7 +12,7 @@ export function getList(params) {
 
 export function desc(params) {
   return service({
-    url: 'lor/menu/desc',
+    url: 'app/menu/desc',
     method: 'get',
     params
   })
@@ -21,7 +21,7 @@ export function desc(params) {
 
 export function update(data) {
   return service({
-    url: 'lor/menu/update',
+    url: 'app/menu/update',
     method: 'post',
     data
   })
@@ -29,7 +29,7 @@ export function update(data) {
 
 export function deleteById(params) {
   return service({
-    url: 'lor/menu/delete',
+    url: 'app/menu/delete',
     method: 'get',
     params
   })
@@ -37,7 +37,7 @@ export function deleteById(params) {
 
 export function insert(data) {
   return service({
-    url: 'lor/menu/insert',
+    url: 'app/menu/insert',
     method: 'post',
     data
   })
@@ -59,24 +59,24 @@ const menuAPI = {
   },
 
   getDataStruct() {
-    return this._getDataStruct(key, '/lor/menu/desc')
+    return this._getDataStruct(key, '/app/menu/desc')
   },
   getTree(params, forceReload) {
-    return this._getData(params, forceReload, key, '/lor/menu/tree', true)
+    return this._getData(params, forceReload, key, '/app/menu/tree', true)
   },
   getData(params, forceReload) {
-    return this._getData(params, forceReload, key, '/lor/model/' + key + '/list')
+    return this._getData(params, forceReload, key, '/app/model/' + key + '/list')
   },
   update(data) {
     return service({
-      url: 'lor/menu/update',
+      url: 'app/menu/update',
       method: 'post',
       data
     })
   },
   deleteById(params) {
     return service({
-      url: 'lor/menu/delete',
+      url: 'app/menu/delete',
       method: 'get',
       params
     })
@@ -84,7 +84,7 @@ const menuAPI = {
 
   insert(data) {
     return service({
-      url: 'lor/menu/insert',
+      url: 'app/menu/insert',
       method: 'post',
       data
     })

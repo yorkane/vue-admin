@@ -1,8 +1,9 @@
 <template>
   <auto-height-wrapper>
     <auto-height-wrapper class="tree" style="float:left;min-height:600px;border-right:1px solid #dfe6ec;">
-      <k-tree :data="dataTree"
+      <k-tree :data="dataTree" ref="ktree"
               @node-click="handleNodeClick"
+              :default-expanded-keys="defaultOpenKey"
               @detail="handleTreeEvent"></k-tree>
     </auto-height-wrapper>
     <div class="infoZone">
@@ -60,9 +61,12 @@
       <!--drag-order></model-grid>-->
       <el-row class="jsonRow">
         <json-edior v-model="requestParams" size="mini" extra-tab-label="额外" :active-tab.sync="activeTab"
-                    preview-label="方法定义" :preview-data="methodInfo" result-label="测试结果" :result-data="testResult">
+                    editor-label="测试参数编辑"
+                    preview-label="方法定义" :preview-data="methodInfo" result-label="测试结果" :result-data="testResult"
+                    :parse-error.sync="badJsonErr">
           <div slot="button" style="margin:10px 0 0">
             <el-button @click="doTest">开始测试</el-button>
+            <el-button @click="doRestore">默认参数</el-button>
           </div>
         </json-edior>
       </el-row>
@@ -84,6 +88,7 @@
   import KFormWrap from "../../components/KFormWrap";
   import JsonEdior from "../../components/jsonEditor";
   import axios from 'axios'
+  import {getAuthToken} from '../../utils/auth'
 
 
   export default {
@@ -97,7 +102,11 @@
       KTree
     },
     mixins: [KDataStruct],
-    data: function () {
+    props: {
+      className: String,
+      methodName: String,
+    },
+    data() {
       /**
        *
        * @type {modelAPI}
@@ -118,15 +127,43 @@
         activeTab: "0",
         testResult: '',
         requestParams: {},
-        currentId: ''
+        currentId: '',
+        defaultOpenKey: [],
+        badJsonErr: '',
       }
     },
     created() {
+      if (this.className && this.methodName) {
+        let id = this.className + '/' + this.methodName
+        let obj
+        this.defaultOpenKey = [id]
+        try {
+          obj = this.$route.query.json
+          if (obj && obj.length > 1) {
+            obj = JSON.parse(obj)
+            let tp = typeof(obj)
+            if (tp === 'object' && obj.length) {
+              throw "参数输入只能是对象。不接受数组或字符串"
+            }
+          }
+        } catch (e) {
+          if (obj.match(/^[\da-z]/i)) {
+            // obj = "'" + obj + "'"
+          } else {
+            obj = null
+            this.$notify({title: '您输入的JSON 字符串有误，请检查', message: e.toString()})
+          }
+        }
+        if (obj !== null) {
+          this.requestParams = obj
+        }
+        this.loadMethodInfo(id, obj !== null)
+      }
     },
     mounted() {
       setTimeout(() => {
-        // hljs.initHighlightingOnLoad()
-      }, 100)
+
+      }, 10)
 
     },
     computed: {
@@ -147,13 +184,18 @@
       }
     },
     methods: {
-      loadMethodInfo(id) {
-        this.currentId = id
-        let arr = id.split('@')
-        if (arr[1]) {
-          sysAPI.getInfo(arr[0], arr[1]).then(resp => {
-            this.methodInfo = resp.data
-            this.generateRequest(this.methodInfo)
+      loadMethodInfo(id, withoutChangeRequest) {
+        if (id && id.indexOf('/') > 4) {
+          this.currentId = id
+          sysAPI.getInfo(id).then(resp => {
+            let data = resp.data
+            if (!data.params || !data.params.length) {
+              data.params = []
+            }
+            this.methodInfo = data
+            if (!withoutChangeRequest) {
+              this.generateRequest(this.methodInfo)
+            }
           })
         }
       },
@@ -238,7 +280,7 @@
             if (format === 'date-time') {
               data = new Date()
             } else {
-              data = 'NewString'
+              data = 'New String'
             }
             break
           case 'table<string, string>':
@@ -266,7 +308,7 @@
         }
         return data
       },
-      generateRequest(schema) {
+      generateRequest(schema = this.methodInfo) {
         let param = schema.info.params
         let definitions = schema.definitions
         // console.log(schema, param)
@@ -279,19 +321,34 @@
           this.requestParams = {}
           return
         }
-        this.$set(this.requestParams, params)
+        console.log(this.requestParams, params)
+        // this.$set(this.requestParams, params)
+        this.requestParams = [1]
+        this.requestParams = {}
         this.requestParams = params
         // this.requestParams = params
       },
       doTest() {
+        if (this.badJsonErr) {
+          this.$notify.info({title: 'JSON 解析出错', message: this.badJsonErr});
+          return
+        }
         this.activeTab = '3' //switch to test panel
-        axios.post(this.methodInfo.uri, this.requestParams)
+        let token = getAuthToken()
+
+        axios.post(this.methodInfo.uri, this.requestParams, {
+          timeout: 3000,
+          headers: {'x-token': token}
+        })
           .then(response => {
             this.testResult = response
           })
           .catch(error => {
-            this.testResult = error;
+            this.testResult = error.response
           });
+      },
+      doRestore() {
+        this.generateRequest()
       },
       objectToArray(obj) {
         let arr = []

@@ -14,11 +14,11 @@
                   dbclick-event-name="btnEvt_edit"
                   :page.sync="page" :pageSize.sync="pageSize" :selected.sync="selectedList"
                   @quickEdit="quickEdit" @sort="sortField" @btnEvt_edit="handleEvent" @btnEvt_delete="handleEvent"
-                  @pageChange="getData()"
+                  @pageChange="getData()" @runSchedule="runSchedule"
       ></model-grid>
       <mform label-width="200px" :model.sync="currentRow"
-                   :isEditMode="isEditMode" withDialog :dataStruct="m_dataStruct" @inserted="inserted"
-                   :visible.sync="showForm" :component-map="componentMap">
+             :isEditMode="isEditMode" withDialog :dataStruct="m_dataStruct" @inserted="inserted"
+             :visible.sync="showForm" :component-map="componentMap" @runSchedule="runSchedule">
       </mform>
       <!--<k-form></k-form>-->
     </div>
@@ -31,6 +31,7 @@
   import KDataStruct from "../../components/KDataStruct.vue";
   import ModelGrid from "./scheduleGrid";
   import KBatchForm from "../../components/KBatchForm";
+  import api from '../../api/sysAPI'
 
   export default {
     name: 'scheduleIndex',
@@ -51,8 +52,7 @@
         this.$router.push({path: '/model/' + field.Comment + '/' + key});
       })
       return {
-        apiDict: {
-        },
+        apiDict: {},
         isEditMode: true,
         loading: false, //切换Loading显示状态
         currentDB: 'approot', //当前表对应的数据库
@@ -64,8 +64,7 @@
         selectedList: [],
         header_text: '',
         showBatchForm: false,
-        componentMap: {
-        }
+        componentMap: {}
       }
     },
     computed: {
@@ -73,7 +72,7 @@
         return isAdmin()
       }
     },
-    watch:{},
+    watch: {},
     created() {
       // console.log(this.isAdmin, 'isAdmin')
     },
@@ -165,8 +164,8 @@
             this.currentRow = data
             this.showForm = true
             break
-          case 'btnEvt_relation':
-            //ref.refRole.editRoleRefs(data)
+          case 'btnEvt_run':
+
             break
           case 'btnEvt_permission':
             //ref.permissions.editPermission(data)
@@ -207,6 +206,27 @@
         })
         this.showBatchForm = false
       },
+      /*schedule_status = {
+        waiting = -13,
+        bad_result = -3,
+        stopped = -7,
+        disabled = 0,
+        running = 7,
+        normal_result = 3,
+      }*/
+      runSchedule(item) {
+        item.status = 7
+        api.runSchedule(item.id).then(resp => {
+          setTimeout(() => item.status = -7, 1000)
+          let data = resp.data
+          this.$notify.success({title: '方法运行成功:', message: data});
+          item.last_action_status = 3
+        }).catch(err => {
+          setTimeout(() => item.status = -3, 1000)
+          this.$notify.error({title: '方法运行失败:', message: err.response});
+          item.last_action_status = -3
+        })
+      }
     }
   }
 </script>
