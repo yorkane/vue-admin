@@ -62,8 +62,8 @@
       <el-row class="jsonRow">
         <json-edior v-model="requestParams" size="mini" extra-tab-label="额外" :active-tab.sync="activeTab"
                     editor-label="测试参数编辑"
-                    preview-label="方法定义" :preview-data="methodInfo" result-label="测试结果" :result-data="testResult"
-                    :parse-error.sync="badJsonErr">
+                    preview-label="方法定义" :preview-data="methodInfo" result-label="完整请求" :result-data="testResult"
+                    :parse-error.sync="badJsonErr" :addition-preview="{ '预览最终结果' : testResult.data}">
           <div slot="button" style="margin:10px 0 0">
             <el-button @click="doTest">开始测试</el-button>
             <el-button @click="doRestore">默认参数</el-button>
@@ -157,7 +157,7 @@
         if (obj !== null) {
           this.requestParams = obj
         }
-        this.loadMethodInfo(id, obj !== null)
+        this.loadMethodInfo(id, obj != null)
       }
     },
     mounted() {
@@ -333,7 +333,7 @@
           this.$notify.info({title: 'JSON 解析出错', message: this.badJsonErr});
           return
         }
-        this.activeTab = '3' //switch to test panel
+        this.activeTab = '4' //switch to test panel
         let token = getAuthToken()
 
         axios.post(this.methodInfo.uri, this.requestParams, {

@@ -14,6 +14,14 @@ function getTimestamp() {
   return Math.floor(Date.now() / 10000) * 10
 }
 
+function console_error(res, err) {
+  let url = res.config.url
+  if (url.indexOf('/') === 0) {
+    url = location.origin + url
+  }
+  console.error('%c axios response failed:', 'background:yellow;color:red', err, '\n' + res.config.method + ' : ', url, ' Data: ', res.config.data)
+}
+
 // request拦截器
 service.interceptors.request.use(req => {
   if (process.env.IS_MOCK) {
@@ -63,6 +71,7 @@ service.interceptors.response.use(
         setAuthToken(token)
       }
       if (res.data && res.data.err) {
+        console_error(res, res.data.err)
         Message({
           message: res.data.err,
           type: 'error',
@@ -84,7 +93,12 @@ service.interceptors.response.use(
       return Promise.resolve(data)
     } else {
       let msg
-      console.log('err', error)// for debug
+      try {
+        msg = JSON.stringify(error.response)
+      } catch (e) {
+        msg = 'JSON parse err:' + e
+      }
+      console_error(res, msg)
       if (error.response && error.response.data) {
         msg = error.response.data
         msg = msg.err || error.message
@@ -94,7 +108,7 @@ service.interceptors.response.use(
           duration: 3 * 1000
         })
       }
-      console.error('axios-request:', error.config, ' \nResponse:', error.response, '\nError:', msg)
+
       // console.log(router)
       if (msg && msg.indexOf('401') > -1) {
         app.$notify.warning({title: '系统错误', message: msg});

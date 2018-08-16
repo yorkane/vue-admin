@@ -15,6 +15,15 @@
         <el-switch v-else-if="item.isBool" v-model="model[key]" disabled></el-switch>
         <el-switch v-else-if="item.isIntBool" v-model="model[key]" disabled
                    :active-value="1" :inactive-value="0"></el-switch>
+        <template v-else-if="item.isText">
+          <template v-if="model[item.Field].length > 50">
+            <el-popover trigger="hover" width="650">
+              <el-input readonly v-model.trim="model[item.Field]"  type="textarea" :autosize="{ minRows: 15, maxRows: 30}"></el-input>
+              <span slot="reference">{{model[item.Field].substring(0,50)}}</span>
+            </el-popover>
+          </template>
+          <span v-else>{{model[item.Field]}}</span>
+        </template>
         <span v-else>{{getFieldLabel(item)}}</span>
       </template>
       <template v-else>

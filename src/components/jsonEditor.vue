@@ -18,6 +18,11 @@
       <el-tab-pane :label="resultLabel" v-if="resultData || resultLabel !== 'Result'" lazy>
         <prism :language="resultType">{{ resultData }}</prism>
       </el-tab-pane>
+      <template v-if="additionPreview" v-for="(item, key) in additionPreview">
+        <el-tab-pane :label="key">
+          <prism language="html">{{ item }}</prism>
+        </el-tab-pane>
+      </template>
       <el-tab-pane v-if="extraTabLabel" :label="extraTabLabel">
         <slot name="tab">
           Extra content
@@ -154,6 +159,7 @@
       },
       previewData: [String, Object, Array],
       resultData: [String, Object, Array],
+      additionPreview: Object,
       parseError: String,
       source: String,
     },

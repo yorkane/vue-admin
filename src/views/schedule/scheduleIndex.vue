@@ -219,11 +219,11 @@
         api.runSchedule(item.id).then(resp => {
           setTimeout(() => item.status = -7, 1000)
           let data = resp.data
-          this.$notify.success({title: '方法运行成功:', message: data});
+          this.$notify.success({title: '定时器手动运行成功:', message: data});
           item.last_action_status = 3
         }).catch(err => {
           setTimeout(() => item.status = -3, 1000)
-          this.$notify.error({title: '方法运行失败:', message: err.response});
+          this.$notify.error({title: '定时器手动运行失败:', message: err});
           item.last_action_status = -3
         })
       }
