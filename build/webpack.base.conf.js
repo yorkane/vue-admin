@@ -3,14 +3,26 @@ var utils = require('./utils')
 var config = require('../config')
 var vueLoaderConfig = require('./vue-loader.conf')
 
-function resolve (dir) {
+function resolve(dir) {
   return path.join(__dirname, '..', dir)
 }
 
 module.exports = {
   //引入外部JS库
   externals: {
-    "ace": "ace",
+    //comments belows items to pack all libs into vendor.js.
+    vue: 'window.Vue',
+    "brace": "ace",
+    "vuex": "window.Vuex",
+    "vue-router": "window.VueRouter",
+    "element-ui": "window.ELEMENT",
+    "diff2html": "window.Diff2Html",
+    "prismjs": "Prism",
+    "qrcode": 'QRCode',
+    "ace-diff": 'AceDiff',
+    "difflib": 'difflib',
+    "nprogress": 'NProgress',
+    "axios": 'axios',
   },
   entry: {
     app: ["babel-polyfill", "./src/main.js"]

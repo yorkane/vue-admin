@@ -60,15 +60,15 @@
       <!--@btnEvt_inspect="handleEvent"-->
       <!--drag-order></model-grid>-->
       <el-row class="jsonRow">
-        <json-edior v-model="requestParams" size="mini" extra-tab-label="额外" :active-tab.sync="activeTab"
-                    editor-label="测试参数编辑"
-                    preview-label="方法定义" :preview-data="methodInfo" result-label="完整请求" :result-data="testResult"
-                    :parse-error.sync="badJsonErr" :addition-preview="{ '预览最终结果' : testResult.data}">
+        <json-editor v-model="requestParams" size="mini" extra-tab-label="额外" :active-tab.sync="activeTab"
+                     editor-label="测试参数编辑"
+                     preview-label="方法定义" :preview-data="methodInfo" result-label="完整请求" :result-data="testResult"
+                     :parse-error.sync="badJsonErr" :addition-preview="{ '预览最终结果' : testResult.data}">
           <div slot="button" style="margin:10px 0 0">
             <el-button @click="doTest">开始测试</el-button>
             <el-button @click="doRestore">默认参数</el-button>
           </div>
-        </json-edior>
+        </json-editor>
       </el-row>
 
       <k-form-wrap label-width="200px" :field-editable="false" :model.sync="currentRow" :API="api"
@@ -86,7 +86,7 @@
   import ModelGrid from "./grid.vue";
   import AutoHeightWrapper from "../../components/AutoHeightWrapper";
   import KFormWrap from "../../components/KFormWrap";
-  import JsonEdior from "../../components/jsonEditor";
+  import JsonEditor from "../../components/jsonEditor";
   import axios from 'axios'
   import {getAuthToken} from '../../utils/auth'
 
@@ -94,7 +94,7 @@
   export default {
     name: 'APITree',
     components: {
-      JsonEdior,
+      JsonEditor,
       Prism,
       KFormWrap,
       AutoHeightWrapper,
@@ -126,7 +126,7 @@
         methodInfo: {},
         activeTab: "0",
         testResult: '',
-        requestParams: {},
+        requestParams: [1, 2, 3, [{a: 1, b: 2}, {c: 1, d: 2}, {e: 1, d: 2}]],
         currentId: '',
         defaultOpenKey: [],
         badJsonErr: '',
@@ -337,7 +337,7 @@
         let token = getAuthToken()
 
         axios.post(this.methodInfo.uri, this.requestParams, {
-          timeout: 3000,
+          timeout: 60000, // Max 1 min timeout
           headers: {'x-token': token}
         })
           .then(response => {

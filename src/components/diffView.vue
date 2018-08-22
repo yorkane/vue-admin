@@ -89,8 +89,8 @@
           fromFile: this.fileName,
           toFile: this.fileName
         })
-        let diff2Html = Diff2Html.Diff2Html
-        console.log(Diff2Html, diff2Html)
+        let diff2Html = Diff2Html.Diff2Html || Diff2Html
+        // console.log(Diff2Html, diff2Html)
         let diffString = 'diff --git ' + this.fileName + ' ' + this.fileName + '\n' + diffArray.join('\n')
         let html = diff2Html.getPrettyHtml(diffString, options)
         // console.log(diffString, html)

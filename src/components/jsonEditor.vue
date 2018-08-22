@@ -41,7 +41,7 @@
         <template v-for="(item , index) in items">
           <tr>
             <td class="col_type">
-              <el-select v-model="item.type" @input="changeType(item)" :disabled="!item.isNew" :size="size">
+              <el-select v-model="item.type" @input="changeType(item)" :disabled="item.isNew===false" :size="size">
                 <el-option value="String"></el-option>
                 <el-option value="Number"></el-option>
                 <el-option value="Boolean"></el-option>
@@ -58,7 +58,7 @@
                 <span v-else style="padding: 4px"></span>
               </el-col>
               <el-col :span="23">
-                <el-input placeholder="请填写名称" v-model.trim="item.name" :disabled="!item.isNew" :size="size">
+                <el-input placeholder="请填写名称" v-model.trim="item.name" :disabled="item.isNew===false" :size="size">
                 </el-input>
               </el-col>
             </td>
@@ -93,7 +93,8 @@
           <tr v-if="(item.type === 'Array'||item.type === 'Object')"
               :title="item.show + '' + item.data[0]">
             <td colspan="7" style="width: 100%;margin:0;padding: 0 ">
-              <json-editor v-model="item.data" :le="level+1" :is-new="item.isNew" :parent="item" :type="item.type"
+              <json-editor v-model="item.data" :le="level+1" :is-new="item.isNew!==false" :parent="item"
+                           :type="item.type"
                            :size="size" :keyEntry="item.name" v-show="item.show"
                            :ref="'subEditor' + item.id"></json-editor>
             </td>
@@ -123,7 +124,10 @@
         type: Number,
         default: -1
       },
-      isNew: Boolean,
+      isNew: {
+        type: Boolean,
+        default: false
+      },
       type: {
         type: String,
         default: 'Object'
@@ -191,19 +195,21 @@
           this.updateParent()
         })
       }
-      this.parsedItems()
     },
     mounted() {
       this.syncValue()
     },
     watch: {
       value(val) {
-        this.parsedItems()
+        // this.parseItems()
         this.syncValue(val)
       },
       sourceCode(val) {
         // console.log(val)
         let obj
+        if (val[0] && val[0] === '[') {
+          this.valueType = 'array'
+        }
         try {
           obj = JSON.parse(val)
         } catch (e) {
@@ -226,8 +232,10 @@
           this.items = []
           setTimeout(() => {
             this.getSourceCode()
-            this.parsedItems()
+            // this.parseItems()
           }, 2)
+        } else {
+          this.parseItems()
         }
       },
       updateParent() {
@@ -241,15 +249,14 @@
         if (this.le >= 0) {
           for (let i = 0; i < this.items.length; i++) {
             let item = this.items[i]
+            if (item.name === undefined || item.name === 'undefined') continue;
             this.value[item.name] = item.data
-            // console.log(item.data)
           }
         } else {
         }
       },
       getSourceCode() {
         setTimeout(() => {
-          // console.log(this.$refs.level0)
           if (this.valueType !== 'object') {
             this.sourceCode = this.value
           } else {
@@ -258,6 +265,7 @@
             } catch (e) {
               if (this.value['undefined']) {
                 this.value['undefined'] = undefined
+                this.$delete(this.value['undefined'])
               }
               this.sourceCode = this.JSONFormat(JSON.stringify(this.value))
             }
@@ -274,10 +282,16 @@
             name: 'Key',
           }
         }
-        switch (this.type) {
+        let tp = this.type
+        if (this.le === 0) {
+          if (this.value[0]) {
+            tp = 'Array'
+          }
+        }
+        // console.log('Array:', this.type, this.items.length)
+        switch (tp) {
           case 'Array':
             let length = this.items.length
-            // let last_item = this.items[length - 1]
             this.items.push({
               isNew: true,
               data: item.data,
@@ -300,34 +314,32 @@
           default:
             break
         }
-        // console.log(this.items)
+        this.refreshItem(item)
       },
-      createNewItem(name, data, type) {
-        let item = {isNew: this.isNew, id: this.nc++}
+      createNewItem(name, data, type, isNew) {
+        let item = {isNew: isNew || this.isNew, id: this.nc++}
         this.$set(item, 'name', name)
         this.$set(item, 'data', data)
         this.$set(item, 'show', true)
         this.$set(item, 'type', type)
         return item
       },
-      parsedItems() {
-        // this.sourceCode = this.JSONFormat(JSON.stringify(this.value))
+      parseItems() {
         this.items = []
-        if (this.valueType !== 'object') {
+        if (this.valueType !== 'object') { //ignore basic data type
           this.items.push({
             type: this.valueType,
             data: this.value
           })
           return
         }
+        // console.log(this.value)
         let parent = this.parent || {type: this.type}
         for (let key in this.value) {
+          if (key === undefined || key === 'undefined' || val === null) continue; // Json object may missing interpret
           let val = this.value[key]
           let tp = typeof(val)
-          // console.log(key, '=', val)
-          let item = this.createNewItem(key, val, parent)
-          // this.$set(item,"name",key);
-          // this.$set(item,"data",val);
+          let item = this.createNewItem(key, val, parent.type)
           switch (tp) {
             case 'string':
               item.type = "String"
@@ -376,18 +388,28 @@
       changeType: function (item) {
         item.isNew = true
         if (item.type === 'Array') {
-          this.$set(item, "data", ['Auto Inject From: ' + item.id]);
+          this.$set(item, "data", ['New Array Element From: ' + item.id]);
         } else if (item.type === 'Object') {
-          this.$set(item, "data", {["AutoInject" + item.id]: "Auto Inject From:" + item.id});
+          this.$set(item, "data", {["NewObjectkey" + item.id]: "Object data From:" + item.id});
         } else {
           item.data = item.data.toString()
         }
+        this.refreshItem(item)
         item.show = true
       },
+      refreshItem(item) {
+        if (item.type === 'Array' || item.type === 'Object') {
+          setTimeout(() => {
+            let subNode = this.$refs['subEditor' + item.id][0]
+            // console.log(subNode)
+            subNode.parseItems()
+          }, 2)
+        }
+      },
       addSubNode(item) {
-        // console.log(this.$refs.subEditor, item.subIndex)
         let subNode = this.$refs['subEditor' + item.id]
         if (subNode) {
+          // console.log(subNode, subNode[0])
           subNode[0].addElement()
         } else {
         }
@@ -396,7 +418,9 @@
         let ni = Object.assign({}, item)
         ni.isNew = true
         ni.name = this.items.length
+        ni.id = this.nc++;
         this.items.push(ni)
+        this.refreshItem(ni)
       },
       JSONFormat(json) {
         //from https://github.com/phoboslab/json-format

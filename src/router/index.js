@@ -8,10 +8,10 @@ const _import = require('./_import_' + process.env.NODE_ENV)
 import Layout from '../views/layout/Layout'
 
 //Lazy load for those big js libs
-const text_code = () => import(/* webpackChunkName: "text-edit" */ '../viewsExtra/text/code.vue')
-const text_index = () => import(/* webpackChunkName: "text-edit" */ '../viewsExtra/text/index.vue')
-const text_compare = () => import(/* webpackChunkName: "text-edit" */ '../viewsExtra/text/compare.vue')
-const text_compareTool = () => import(/* webpackChunkName: "text-edit" */ '../viewsExtra/text/compareTool.vue')
+const text_code = () => import(/* webpackChunkName: "views" */ '../viewsExtra/text/code.vue')
+const text_index = () => import(/* webpackChunkName: "views" */ '../viewsExtra/text/index.vue')
+const text_compare = () => import(/* webpackChunkName: "views" */ '../viewsExtra/text/compare.vue')
+const text_compareTool = () => import(/* webpackChunkName: "views" */ '../viewsExtra/text/compareTool.vue')
 
 const model_index = () => import(/* webpackChunkName: "views" */ '../model/index.vue')
 const model_tree = () => import(/* webpackChunkName: "views" */ '../model/tree.vue')

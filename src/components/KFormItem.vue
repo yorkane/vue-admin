@@ -2,10 +2,10 @@
   <el-form-item v-show="!isHide && !item.hide_in_form" :class="isFieldNoValidate()?'no-validate':''" :size="size"
                 :label="getLabel()"
                 :prop="key">
-    <template slot="label">
-      <slot name="label">{{getLabel() + form.labelSuffix}}</slot>
-    </template>
-    <slot>
+    <div slot="label">
+      <slot name="label">{{getLabel() + form.labelSuffix}}1</slot>
+    </div>
+    <slot name="component">
       <template v-if="item.Field.match(/^(password|salt)/ig)">
       </template>
       <template v-else-if="isFieldReadOnly()">

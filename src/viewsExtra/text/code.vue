@@ -32,7 +32,6 @@
   </k-wrap>
 </template>
 <script>
-  import KDataStruct from "../../components/KDataStruct.vue";
   import axios from 'axios'
   import AceEditor from "../../components/ace-editor";
   import AutoHeightWrapper from "../../components/AutoHeightWrapper";

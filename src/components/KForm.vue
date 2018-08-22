@@ -10,7 +10,7 @@
           <slot name="form-item">
             <k-form-item :item="item" :size="size" v-if="(item.hide_in_form !== 1) || fieldEditable">
               <slot name="label" slot="label" :row="item">
-                <k-form-field-info :item="item" :edit-table="fieldEditable"></k-form-field-info>
+                <k-form-field-info slot="label" :item="item" :edit-table="fieldEditable"></k-form-field-info>
               </slot>
               <slot name="component" :row="item" :$index="index">
                 <component :is="getComponent(item.Field)" :item="item" v-model="model[item.Field]">

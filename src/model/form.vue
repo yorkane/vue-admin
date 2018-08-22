@@ -20,7 +20,7 @@
           <template slot="label">
             <field-info :edit-table="fieldEditable" :item.sync="item"></field-info>
           </template>
-          <component :is="getComponent(item.Field)" :item="item" v-model="model[item.Field]" :model="model"></component>
+          <component slot="component" :is="getComponent(item.Field)" :item="item" v-model="model[item.Field]" :model="model"></component>
         </k-form-item>
       </template>
       <el-button type="primary" @click="submitForm">{{isEditMode ? '保存修改' : '创建'}}</el-button>
