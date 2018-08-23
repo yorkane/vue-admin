@@ -82,7 +82,7 @@
       let editor = vm.editor = brace.edit(vm.$el);
       let options = vm.options;
       editor.$blockScrolling = Infinity;
-      brace.config.set("basePath", "https://cdn.jsdelivr.net/npm/brace@0.11.1/");
+      // brace.config.set("basePath", "https://cdn.jsdelivr.net/npm/brace@0.11.1/");
 
       /**
        * https://cdn.jsdelivr.net/npm/brace@0.11.1/index.min.js

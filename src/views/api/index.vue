@@ -63,9 +63,9 @@
         <json-editor v-model="requestParams" size="mini" extra-tab-label="额外" :active-tab.sync="activeTab"
                      editor-label="测试参数编辑"
                      preview-label="方法定义" :preview-data="methodInfo" result-label="完整请求" :result-data="testResult"
-                     :parse-error.sync="badJsonErr" :addition-preview="{ '预览最终结果' : testResult.data}">
+                     :parse-error.sync="badJsonErr" :addition-preview="{ '预览最终结果' : testResult.data || testResult}">
           <div slot="button" style="margin:10px 0 0">
-            <el-button @click="doTest">开始测试</el-button>
+            <el-button @click="doTest" :loading="loading">开始测试</el-button>
             <el-button @click="doRestore">默认参数</el-button>
           </div>
         </json-editor>
@@ -130,6 +130,7 @@
         currentId: '',
         defaultOpenKey: [],
         badJsonErr: '',
+        loading: false,
       }
     },
     created() {
@@ -251,15 +252,18 @@
         }
       },
       getDataByParam(param, definitions) {
+        if (param.default) {
+          return param.default
+        }
         let tp = param.type
         let format = param.format
         let data
         switch (tp) {
           case 'number':
-            data = 1
+            data = param.default || 1
             break
           case 'boolean':
-            data = false
+            data = param.default ? true : false
             break
           case 'number[]':
             data = [1, 2, 3, 4]
@@ -280,7 +284,7 @@
             if (format === 'date-time') {
               data = new Date()
             } else {
-              data = 'New String'
+              data = param.default || 'New String'
             }
             break
           case 'table<string, string>':
@@ -329,10 +333,12 @@
         // this.requestParams = params
       },
       doTest() {
+
         if (this.badJsonErr) {
-          this.$notify.info({title: 'JSON 解析出错', message: this.badJsonErr});
+          this.$notify.info({title: 'JSON 解析出错', message: this.badJsonErr}); //The input json not valid ignore request
           return
         }
+        this.loading = true
         this.activeTab = '4' //switch to test panel
         let token = getAuthToken()
 
@@ -341,11 +347,24 @@
           headers: {'x-token': token}
         })
           .then(response => {
+            this.loading = false
+            let data = response.data
+            if (data.err) {
+              // console.log(response.err)
+              this.testResult = data.err
+              return
+            }
             this.testResult = response
+            // if ()
           })
           .catch(error => {
-            this.testResult = error.response
+            this.loading = false
+            console.log(error)
+            this.testResult = error.response.err
           });
+        setTimeout(() => {
+          this.loading = false
+        }, 10000)
       },
       doRestore() {
         this.generateRequest()

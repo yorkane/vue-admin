@@ -13,14 +13,14 @@
         <!--<slot name="button"></slot>-->
       </el-tab-pane>
       <el-tab-pane :label="previewLabel" v-if="previewData || previewLabel !== 'Preview'" lazy>
-        <prism :language="previewType">{{ previewData }}</prism>
+        <prism>{{ previewData }}</prism>
       </el-tab-pane>
       <el-tab-pane :label="resultLabel" v-if="resultData || resultLabel !== 'Result'" lazy>
-        <prism :language="resultType">{{ resultData }}</prism>
+        <prism>{{ resultData }}</prism>
       </el-tab-pane>
       <template v-if="additionPreview" v-for="(item, key) in additionPreview">
         <el-tab-pane :label="key">
-          <prism language="html">{{ item }}</prism>
+          <prism>{{ item }}</prism>
         </el-tab-pane>
       </template>
       <el-tab-pane v-if="extraTabLabel" :label="extraTabLabel">
@@ -91,7 +91,7 @@
             </td>
           </tr>
           <tr v-if="(item.type === 'Array'||item.type === 'Object')"
-              :title="item.show + '' + item.data[0]">
+              :title="item.data[0]">
             <td colspan="7" style="width: 100%;margin:0;padding: 0 ">
               <json-editor v-model="item.data" :le="level+1" :is-new="item.isNew!==false" :parent="item"
                            :type="item.type"
@@ -107,9 +107,7 @@
 
 <script>
   import Vue from 'vue'
-  import 'prismjs'
-  import 'prismjs/themes/prism-tomorrow.css'
-  import Prism from 'vue-prism-component'
+  import Prism from '../components/Prism'
 
   var eventHub = new Vue()
   export default {

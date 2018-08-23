@@ -33,7 +33,6 @@
     "uglify-js": "^3.3.14",
     "vue": "^2.5.2",
     "vue-hot-reload-api": "^2.2.0",
-    "vue-prism-component": "^1.0.1",
     "vue-router": "^2.8.1",
     "vuex": "^2.5.0"
   },

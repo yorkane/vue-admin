@@ -11,6 +11,10 @@
 
       </el-row>
     </el-card>
+    <el-button @click="code= '[1,2,3,5]'"></el-button>
+    <el-button @click="code= '.csss { color:#111}'"></el-button>
+    <el-button @click="code= ' local a=1'"></el-button>
+    <prism>{{code}}</prism>
     <!--<context-menu class="right-menu"-->
     <!--:target="contextMenuTarget"-->
     <!--:show="contextMenuVisible"-->
@@ -19,6 +23,7 @@
     <!--<a href="javascript:;" @click="">引用</a>-->
     <!--<a href="javascript:;" @click="">删除</a>-->
     <!--</context-menu>-->
+
   </div>
 </template>
 <script>
@@ -27,12 +32,13 @@
   import ElCard from "element-ui/packages/card/src/main";
   import KForm from "../components/KForm";
   import KFormItem from "../components/KFormItem";
-
+  import Prism from '../components/Prism'
 
 
   const _import = require('../router/_import_' + process.env.NODE_ENV)
   export default {
     components: {
+      Prism,
       KFormItem,
       KForm,
       // ContextMenu,
@@ -44,6 +50,8 @@
         this.$router.push({path: '/model/' + field.Comment + '/' + key});
       })
       return {
+        lang: 'lua',
+        code: '<a href="javascript:;" @click="">复制</a>',
         model: {
           name: 'Yourtion',
           sub: {
