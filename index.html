@@ -2,7 +2,7 @@
 <html>
 <head>
   <link media="all" rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/element-ui@2.4.6/lib/theme-chalk/index.min.css"/>
+        href="https://cdn.jsdelivr.net/npm/element-ui@2.4.7/lib/theme-chalk/index.min.css"/>
   <meta charset="utf-8">
   <title>Vue Gate</title>
   <% if (htmlWebpackPlugin.options.isDev) {%>
@@ -10,10 +10,10 @@
   <script src="https://cdn.jsdelivr.net/npm/vuex@3.0.1/dist/vuex.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vue-router@3.0.1/dist/vue-router.js"></script>
   <script
-    src="https://cdn.jsdelivr.net/combine/npm/element-ui@2.4.6/lib/index.js,npm/qrcode@1.2.2/build/qrcode.min.js,npm/nprogress@0.2.0,npm/axios@0.18.0/dist/axios.min.js,npm/prismjs@1.15.0"></script>
+    src="https://cdn.jsdelivr.net/combine/npm/element-ui@2.4.7/lib/index.js,npm/qrcode@1.2.2/build/qrcode.min.js,npm/nprogress@0.2.0,npm/axios@0.18.0/dist/axios.min.js,npm/prismjs@1.15.0"></script>
   <%} else {%>
   <script
-    src="https://cdn.jsdelivr.net/combine/npm/vue@2.5.16,npm/vuex@3.0.1/dist/vuex.min.js,npm/vue-router@3.0.1/dist/vue-router.min.js,npm/element-ui@2.4.6/lib/index.min.js,npm/qrcode@1.2.2/build/qrcode.min.js,npm/nprogress@0.2.0,npm/axios@0.18.0/dist/axios.min.js,npm/prismjs@1.15.0"></script>
+    src="https://cdn.jsdelivr.net/combine/npm/vue@2.5.16,npm/vuex@3.0.1/dist/vuex.min.js,npm/vue-router@3.0.1/dist/vue-router.min.js,npm/element-ui@2.4.7/lib/index.min.js,npm/qrcode@1.2.2/build/qrcode.min.js,npm/nprogress@0.2.0,npm/axios@0.18.0/dist/axios.min.js,npm/prismjs@1.15.0"></script>
   <%}%>
   <%=htmlWebpackPlugin.options.test%>
   <% for (var css in htmlWebpackPlugin.files.css) { %>
